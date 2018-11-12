@@ -52,7 +52,6 @@ public class Triangle extends Polygon {
 
     public Triangle(Vector3D v1, Vector3D v2, Vector3D v3, Polygon p) {
         vectors = new Vector3D[3];
-        colors = new Vector3D[3];
         textures = new Vector2D[3];
 
         vectors[0] = v1;
@@ -63,9 +62,6 @@ public class Triangle extends Polygon {
 		textures[1] = p.textures[1];
 		textures[2] = p.textures[2];
 
-        colors[0] = p.colors[0];
-        colors[1] = p.colors[1];
-        colors[2] = p.colors[2];
 
         this.shade = p.shade;
 
@@ -87,6 +83,15 @@ public class Triangle extends Polygon {
         this.shade = p.shade;
 
         this.normal = normal();
+    }
+
+    public Triangle(Triangle t){
+        vectors = t.vectors;
+        textures =t.textures;
+
+        this.shade = t.shade;
+
+        normal = normal();
     }
 
 

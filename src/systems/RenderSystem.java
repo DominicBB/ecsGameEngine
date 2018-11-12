@@ -26,6 +26,7 @@ public class RenderSystem extends GameSystem {
     protected final RenderContext renderContext;
 
     private final List<Plane> fustrumClipPlanes = createFustrumClipPlanes();
+    private final List<Plane> zPlanes = createZClip();
 
     public RenderSystem(boolean addToUpdateList) {
         super(Arrays.asList(RenderableMesh.class, Transform.class), addToUpdateList);
@@ -58,8 +59,8 @@ public class RenderSystem extends GameSystem {
             RenderableMesh renderableMesh = (RenderableMesh) relevantComponents[0];
             Transform transform = (Transform) relevantComponents[1];
 
-//            renderMesh(transform, renderableMesh, projection);
-            wireframeMesh(transform, renderableMesh, projection);
+            renderMesh(transform, renderableMesh, projection);
+//            wireframeMesh(transform, renderableMesh, projection);
         }
 //        renderContext.drawPixels();
 
@@ -70,7 +71,7 @@ public class RenderSystem extends GameSystem {
     private Matrix4x4 constructProjMatrix(Scene scene, Camera camera) {
         Matrix4x4 projection = Matrix4x4.newProjectionMatrix(scene, camera).compose(moveToView);
         lookAt = Matrix4x4.newLookAt(camera.lookDir, camera.rightDir, camera.upDir, camera.position);
-        return lookAt.compose(projection);
+        return /*lookAt.compose*/(projection);
     }
 
 
@@ -83,15 +84,21 @@ public class RenderSystem extends GameSystem {
             t = matrix.multiply4x4(t, 1);
             if (Pipeline.isHidden(t, scene, camera))
                 continue;
-
             t = Pipeline.shadeTriangle(t, scene, camera);
-            t = projection.multiplyProjection(t);
-            if (true) {
-                List<Triangle> clipTriangles = Clipper.clipTriangle(fustrumClipPlanes,t);
-                if (clipTriangles.isEmpty()) continue;
-                clipTriangles.forEach(clipTriangle -> Draw.fillPolygon(clipTriangle, renderContext, renderableMesh.texture));
-            } else {
-                Draw.fillPolygon(t, renderContext, renderableMesh.texture);
+
+            t = lookAt.multiply4x4(t, 1);
+            List<Triangle> zClippedTriangles = Clipper.clipTriangle(zPlanes, t);
+            if (zClippedTriangles.isEmpty()) continue;
+            for (Triangle zClipped : zClippedTriangles) {
+
+                t = projection.multiplyProjection(t);
+                if (true) {
+                    List<Triangle> clipTriangles = Clipper.clipTriangle(fustrumClipPlanes, t);
+                    if (clipTriangles.isEmpty()) continue;
+                    clipTriangles.forEach(clipTriangle -> Draw.fillPolygon(clipTriangle, renderContext, renderableMesh.texture));
+                } else {
+                    Draw.fillPolygon(t, renderContext, renderableMesh.texture);
+                }
             }
         }
     }
@@ -105,13 +112,21 @@ public class RenderSystem extends GameSystem {
             t = matrix.multiply4x4(t, 1);
             if (Pipeline.isHidden(t, scene, camera))
                 continue;
-            t = projection.multiplyProjection(t);
-            if (true) {
-                List<Triangle> clipTriangles = Clipper.clipTriangle(fustrumClipPlanes,t);
-                if (clipTriangles.isEmpty()) continue;
-                clipTriangles.forEach(clipTriangle -> Draw.wireframePolygon(clipTriangle, renderContext));
-            } else {
-                Draw.wireframePolygon(t, renderContext);
+
+            t = lookAt.multiply4x4(t, 1);
+            List<Triangle> zClippedTriangles = Clipper.clipTriangle(zPlanes, t);
+            if (zClippedTriangles.isEmpty()) continue;
+            for (Triangle zClipped : zClippedTriangles) {
+
+                zClipped = projection.multiplyProjection(zClipped);
+                if (true) {//TODO bounding box being weird
+                    List<Triangle> clipTriangles = clipTriangles = Clipper.clipTriangle(fustrumClipPlanes, zClipped);
+                    if (!clipTriangles.isEmpty()) {
+                        clipTriangles.forEach(clipTriangle -> Draw.wireframePolygon(clipTriangle, renderContext));
+                    }
+                } else {
+                    Draw.wireframePolygon(zClipped, renderContext);
+                }
             }
         }
     }
@@ -147,17 +162,22 @@ public class RenderSystem extends GameSystem {
         return renderContext;
     }
 
-    private List<Plane> createFustrumClipPlanes(){
+    private List<Plane> createFustrumClipPlanes() {
         return Arrays.asList(
-                new Plane(new Vector3D(1.0f,0,0), new Vector3D(100f,0f,0f)),
-                new Plane(new Vector3D(-1.0f,0,0), new Vector3D(Window.defaultWidth - 100.5f,0f,0f)),
 
-                new Plane(new Vector3D(0f,1f,0), new Vector3D(100f,0,0f)),
-                new Plane(new Vector3D(0f,-1f,0), new Vector3D(0f,Window.defaultHeight - 100.5f,0f)),
+                new Plane(new Vector3D(1.0f, 0, 0), new Vector3D(200f, 0f, 0f)),
+                new Plane(new Vector3D(-1.0f, 0, 0), new Vector3D(Window.defaultWidth - 200.5f, 0f, 0f)),
 
-                new Plane(new Vector3D(0f,0,1), new Vector3D(0f,0f,/*camera.fNear*/0.1f))
-
+                new Plane(new Vector3D(0f, 1f, 0), new Vector3D(200f, 0, 0f)),
+                new Plane(new Vector3D(0f, -1f, 0), new Vector3D(0f, Window.defaultHeight - 200.5f, 0f))
         );
+    }
+
+    private List<Plane> createZClip() {
+        return Arrays.asList(
+                new Plane(new Vector3D(0f, 0, 1), new Vector3D(0f, 0f,/*camera.fNear*/.1f))
+        );
+
     }
 }
 

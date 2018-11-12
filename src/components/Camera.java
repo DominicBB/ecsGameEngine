@@ -26,7 +26,7 @@ public class Camera extends Component {
         upDir = new Vector3D(0, 1, 0);
         rightDir = new Vector3D(1, 0, 0);
 
-        fFar = 10f;
+        fFar = 1000f;
         fNear = 0.1f;
         fNorm = fFar / (fFar - fNear);
         fov = Math.toRadians(-140);

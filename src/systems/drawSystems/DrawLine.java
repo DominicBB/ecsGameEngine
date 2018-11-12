@@ -43,7 +43,7 @@ class DrawLine extends Draw{
 		i = 1;
 
 		while (i <= step) {
-			if (!Draw.isOutOfBounds(x, y)) {
+			if (true /*!Draw.isOutOfBounds(x, y)*/) {
 				int yi = (int) y;
 				int xi = (int) x;
 				/*if (zBuffer[yi][xi] == null || zBuffer[yi][xi].distance < z) {

@@ -14,79 +14,39 @@ public class Clipper {
     private static List<Vector3D> insidePoints = new ArrayList<>();
     private static List<Vector3D> outsidePoints = new ArrayList<>();
 
-    private static List<Triangle> triangles = new ArrayList<>();
-
     private static List<Triangle> toRemove = new ArrayList<>();
     private static List<Triangle> toAdd = new ArrayList<>();
 
     public static List<Triangle> clipTriangle(List<Plane> planes, Triangle t) {
+        List<Triangle> triangles = new ArrayList<>();
         triangles.clear();
         clear();
         triangles.add(t);
 
         for(Plane plane: planes){
-            if(!checkEachTriangle(plane)){
+            Boolean allOutside = !checkEachTriangle(plane, triangles);
+            updateAfterClip(triangles);
+            if(allOutside){
+                triangles.clear();
                 return triangles;
             }
             clear();
         }
-        /*//near plane
-        Vector3D nPlane = new Vector3D(0f, 0f, 1f);
-        Vector3D pPlane = new Vector3D(0f, 0f, fNear);
-        if(!checkEachTriangle(nPlane, pPlane)){
-            return triangles;
-        }
-
-        clear();
-        //left plane
-        nPlane = new Vector3D(1f, 0f, 0f);
-        pPlane = new Vector3D(0f, 0f, 0f);
-        if(!checkEachTriangle(nPlane, pPlane)){
-            return triangles;
-        }
-
-        clear();
-        //right plane
-        nPlane = new Vector3D(-1f, 0f, 0f);
-        pPlane = new Vector3D(Window.defaultWidth-1.5f, 0f, 0f);
-        if(!checkEachTriangle(nPlane, pPlane)){
-            return triangles;
-        }
-
-        clear();
-        //bottom plane
-        nPlane = new Vector3D(0f, 1f, 0f);
-        pPlane = new Vector3D(0f, 0f, 0f);
-        if(!checkEachTriangle(nPlane, pPlane)){
-            return triangles;
-        }
-
-        clear();
-        //top plane
-        nPlane = new Vector3D(0f, -1f, 0f);
-        pPlane = new Vector3D(0f, Window.defaultHeight-1.5f, 0f);
-        if(!checkEachTriangle(nPlane, pPlane)){
-            return triangles;
-        }*/
 
         return triangles;
     }
 
-    private static boolean checkEachTriangle(Plane plane){
-        int i = 0;
+    private static boolean checkEachTriangle(Plane plane, List<Triangle> triangles){
         for(Triangle triangle: triangles){
             linesToClip(plane, triangle);
             if (!clippedTriangle(plane, triangle)){
-                updateAfterClip();
                 return false;
             }
-            i++;
         }
-        updateAfterClip();
         return true;
     }
 
-    private static void updateAfterClip(){
+    private static void updateAfterClip(List<Triangle> triangles){
         triangles.removeAll(toRemove);
         triangles.addAll(toAdd);
         toAdd.clear();
@@ -119,6 +79,7 @@ public class Clipper {
             return true;
         }
         toRemove.add(t);
+        //whole triangle is outside
         if (outsidePoints.size() == 3) {
             return false;
         }
