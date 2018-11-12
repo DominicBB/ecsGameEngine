@@ -27,7 +27,9 @@ public class Clipper {
             Boolean allOutside = !checkEachTriangle(plane, triangles);
             updateAfterClip(triangles);
             if(allOutside){
-                triangles.clear();
+                if(triangles.size() > 1) {
+                    triangles.remove(triangles.size() - 1);
+                }
                 return triangles;
             }
             clear();

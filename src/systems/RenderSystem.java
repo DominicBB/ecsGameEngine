@@ -59,8 +59,8 @@ public class RenderSystem extends GameSystem {
             RenderableMesh renderableMesh = (RenderableMesh) relevantComponents[0];
             Transform transform = (Transform) relevantComponents[1];
 
-            renderMesh(transform, renderableMesh, projection);
-//            wireframeMesh(transform, renderableMesh, projection);
+//            renderMesh(transform, renderableMesh, projection);
+            wireframeMesh(transform, renderableMesh, projection);
         }
 //        renderContext.drawPixels();
 
