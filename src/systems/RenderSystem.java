@@ -59,8 +59,8 @@ public class RenderSystem extends GameSystem {
             RenderableMesh renderableMesh = (RenderableMesh) relevantComponents[0];
             Transform transform = (Transform) relevantComponents[1];
 
-//            renderMesh(transform, renderableMesh, projection);
-            wireframeMesh(transform, renderableMesh, projection);
+            renderMesh(transform, renderableMesh, projection);
+//            wireframeMesh(transform, renderableMesh, projection);
         }
 //        renderContext.drawPixels();
 
@@ -81,23 +81,29 @@ public class RenderSystem extends GameSystem {
         boolean needsClipping = needsClipping(transform.minimumBoundingBox, camera, projection);
 
         for (Triangle t : mesh.triangles) {
+            //apply any transforms to mesh
             t = matrix.multiply4x4(t, 1);
+
+            //hide and shade
             if (Pipeline.isHidden(t, scene, camera))
                 continue;
             t = Pipeline.shadeTriangle(t, scene, camera);
 
+            //look at
             t = lookAt.multiply4x4(t, 1);
+
             List<Triangle> zClippedTriangles = Clipper.clipTriangle(zPlanes, t);
             if (zClippedTriangles.isEmpty()) continue;
             for (Triangle zClipped : zClippedTriangles) {
-
-                t = projection.multiplyProjection(t);
+                //project
+                zClipped = projection.multiplyProjection(zClipped);
                 if (true) {
-                    List<Triangle> clipTriangles = Clipper.clipTriangle(fustrumClipPlanes, t);
+                    //clip against screen boundries
+                    List<Triangle> clipTriangles = Clipper.clipTriangle(fustrumClipPlanes, zClipped);
                     if (clipTriangles.isEmpty()) continue;
                     clipTriangles.forEach(clipTriangle -> Draw.fillPolygon(clipTriangle, renderContext, renderableMesh.texture));
                 } else {
-                    Draw.fillPolygon(t, renderContext, renderableMesh.texture);
+                    Draw.fillPolygon(zClipped, renderContext, renderableMesh.texture);
                 }
             }
         }
@@ -133,20 +139,25 @@ public class RenderSystem extends GameSystem {
 
 
     private boolean needsClipping(MinimumBoundingBox minimumBoundingBox, Camera camera, Matrix4x4 projection) {
-        MinimumBoundingBox prjectedBox = new MinimumBoundingBox();
-        prjectedBox.min = projection.multiplyProjection(minimumBoundingBox.min);
-        prjectedBox.max = projection.multiplyProjection(minimumBoundingBox.max);
+        MinimumBoundingBox lookedAtBox = new MinimumBoundingBox();
+        lookedAtBox.min = lookAt.multiply4x4(minimumBoundingBox.min, 1);
+        lookedAtBox.max = lookAt.multiply4x4(minimumBoundingBox.max, 1);
 
-        drawBoundingBox(prjectedBox);
-        if (prjectedBox.min.x < 0 || prjectedBox.max.x > Window.defaultWidth - 1) {
+        if (lookedAtBox.min.z < camera.fNear) {
             return true;
         }
-        if (prjectedBox.min.y < 0 || prjectedBox.max.y > Window.defaultHeight - 1) {
+
+        lookedAtBox.min = projection.multiplyProjection(lookedAtBox.min);
+        lookedAtBox.max = projection.multiplyProjection(lookedAtBox.max);
+
+        if (lookedAtBox.min.x < 0 || lookedAtBox.max.x > Window.defaultWidth - 1.5) {
             return true;
         }
-        if (prjectedBox.min.z < camera.fNear) {
+        if (lookedAtBox.min.y < 0 || lookedAtBox.max.y > Window.defaultHeight - 1.5) {
             return true;
+
         }
+//        drawBoundingBox(lookedAtBox);
 
         return false;
     }
@@ -169,7 +180,9 @@ public class RenderSystem extends GameSystem {
                 new Plane(new Vector3D(-1.0f, 0, 0), new Vector3D(Window.defaultWidth - 200.5f, 0f, 0f)),
 
                 new Plane(new Vector3D(0f, 1f, 0), new Vector3D(200f, 0, 0f)),
-                new Plane(new Vector3D(0f, -1f, 0), new Vector3D(0f, Window.defaultHeight - 200.5f, 0f))
+                new Plane(new Vector3D(0f, -1f, 0), new Vector3D(0f, Window.defaultHeight - 200.5f, 0f)),
+                new Plane(new Vector3D(0f, 0, 1), new Vector3D(0f, 0f,/*camera.fNear*/.1f))
+
         );
     }
 

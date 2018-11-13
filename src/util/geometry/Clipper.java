@@ -23,43 +23,44 @@ public class Clipper {
         clear();
         triangles.add(t);
 
-        for(Plane plane: planes){
+        for (Plane plane : planes) {
             Boolean allOutside = !checkEachTriangle(plane, triangles);
             updateAfterClip(triangles);
-            if(allOutside){
-                if(triangles.size() > 1) {
+            if (allOutside) {
+                if (triangles.size() > 1) {
                     triangles.remove(triangles.size() - 1);
                 }
                 return triangles;
             }
-            clear();
         }
 
         return triangles;
     }
 
-    private static boolean checkEachTriangle(Plane plane, List<Triangle> triangles){
-        for(Triangle triangle: triangles){
+    private static boolean checkEachTriangle(Plane plane, List<Triangle> triangles) {
+        int i = 0;
+        for (Triangle triangle : triangles) {
             linesToClip(plane, triangle);
-            if (!clippedTriangle(plane, triangle)){
-                return false;
+            if (!clippedTriangle(plane, triangle)) {
+                i++;
             }
+            clear();
         }
-        return true;
+        return i == 0;
     }
 
-    private static void updateAfterClip(List<Triangle> triangles){
+    private static void updateAfterClip(List<Triangle> triangles) {
         triangles.removeAll(toRemove);
         triangles.addAll(toAdd);
         toAdd.clear();
+        toRemove.clear();
     }
 
-    private static void clear(){
+    private static void clear() {
         insideTex.clear();
         outsidePoints.clear();
         outsideTex.clear();
         insidePoints.clear();
-        toRemove.clear();
     }
 
     private static void linesToClip(Plane plane, Triangle t) {
@@ -105,7 +106,7 @@ public class Clipper {
 
             newT2 = new Triangle(insidePoints.get(0), insidePoints.get(1), vectors[0],
                     insideTex.get(0), insideTex.get(1), textures[0], t);
-            newT2 =Pipeline.orderCW(newT2);
+            newT2 = Pipeline.orderCW(newT2);
 
             toAdd.add(newT2);
 
@@ -114,11 +115,11 @@ public class Clipper {
             vectors[1] = intersectPoint(scaler, insidePoints.get(0), outsidePoints.get(1));
             textures[1] = intersectPoint(scaler, insideTex.get(0), outsideTex.get(1));
 
-            textures[2] = outsideTex.get(0);
+            textures[2] = insideTex.get(0);
             vectors[2] = insidePoints.get(0);
         }
 
-        Triangle newT = new Triangle(vectors,textures, t);
+        Triangle newT = new Triangle(vectors, textures, t);
         newT = Pipeline.orderCW(newT);
         toAdd.add(newT);
         return true;
