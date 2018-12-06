@@ -1,14 +1,15 @@
 package listners;
 
 import components.Component;
-import systems.GameSystem;
-import systems.SystemCommunicator;
+import core.coreSystems.EntityListnerSystem;
+import core.coreSystems.GameSystem;
+import core.coreSystems.SystemCommunicator;
 
 import java.util.List;
 
 public class SingleEntityListner extends EntityListner {
-    public SingleEntityListner(List<Class<? extends Component>> requiredComponents, GameSystem gameSystem) {
-        super(requiredComponents, gameSystem);
+    public SingleEntityListner(List<Class<? extends Component>> requiredComponents, EntityListnerSystem entityListnerSystem) {
+        super(requiredComponents, entityListnerSystem);
         SystemCommunicator.onEntityListnerCreate(this);
     }
 }

@@ -1,15 +1,17 @@
 package components;
 
-import util.Bitmap;
-import util.Mesh;
+import Rendering.Materials.Material;
+import Rendering.renderUtil.Bitmap;
+import Rendering.renderUtil.IndexedMesh;
+import Rendering.renderUtil.Texture;
 
 public class RenderableMesh extends Component {
-	public Mesh mesh;
-	public Bitmap texture;
+	public IndexedMesh indexedMesh;
+	public Material material;
 
-	public RenderableMesh(Mesh mesh, Bitmap texture) {
-		this.mesh = mesh;
-		this.texture = texture;
+	public RenderableMesh(IndexedMesh indexedMesh, Material material) {
+		this.indexedMesh = indexedMesh;
+		this.material = material;
 	}
 
 	public RenderableMesh() {

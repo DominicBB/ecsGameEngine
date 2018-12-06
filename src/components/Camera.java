@@ -1,19 +1,20 @@
 package components;
 
-import util.geometry.Vector3D;
+import core.Window;
+import util.Mathf.Mathf3D.Vector3D;
 
 public class Camera extends Component {
     public Vector3D position;
     public Vector3D lookDir;
     public Vector3D upDir;
     public Vector3D rightDir;
-    public Vector3D target;
 
-    public float fFar;
-    public float fNear;
-    public float fNorm;
+    public float zFar;
+    public float zNear;
+    public float zRange;
     public float fFov;
     public float fYaw;
+    public float fFov_AR;
     private double fov;
 
     public Camera() {
@@ -26,11 +27,12 @@ public class Camera extends Component {
         upDir = new Vector3D(0, 1, 0);
         rightDir = new Vector3D(1, 0, 0);
 
-        fFar = 1000f;
-        fNear = 0.1f;
-        fNorm = fFar / (fFar - fNear);
+        zFar = 1000f;
+        zNear = 0.1f;
+        zRange = zFar - zNear;
         fov = Math.toRadians(-140);
-        fFov = -1f;/*(float) (1f / (Math.tan(fov / 2)));*/
+        fFov = (float) Math.tan(fov / 2);
+        fFov_AR = fFov / Window.getAspectRatio();
         fYaw = 0.0f;
     }
 }

@@ -1,7 +1,7 @@
 package listners;
 
 import components.Component;
-import systems.GameSystem;
+import core.coreSystems.GameSystem;
 
 import java.util.List;
 

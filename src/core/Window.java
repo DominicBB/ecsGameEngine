@@ -1,7 +1,7 @@
 package core;
 
-import systems.InputSystem;
-import util.RenderContext;
+import core.coreSystems.InputSystem;
+import Rendering.renderUtil.RenderContext;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,8 +29,12 @@ public class Window extends JFrame {
         createWindow();
     }
 
+    public static float getAspectRatio() {
+        return (float) defaultHeight / (float) defaultWidth;
+    }
+
     private void createWindow() {
-        this.setMinimumSize(new Dimension(defaultWidth , defaultHeight ));
+        this.setMinimumSize(new Dimension(defaultWidth, defaultHeight));
         this.setVisible(true);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.toFront();
@@ -48,7 +52,7 @@ public class Window extends JFrame {
     }
 
     private void setupInputSystem() {
-        InputSystem inputSystem = new InputSystem(true);
+        InputSystem inputSystem = new InputSystem();
         this.addKeyListener(inputSystem);
         this.addMouseListener(inputSystem);
     }
@@ -75,7 +79,7 @@ public class Window extends JFrame {
         this.requestFocus();
 
         renderContext.copyTo3BGR(displayImageContents);
-        graphics.drawImage(displayImage,0,0,null);
+        graphics.drawImage(displayImage, 0, 0, null);
         bufferStrategy.show();
     }
 
