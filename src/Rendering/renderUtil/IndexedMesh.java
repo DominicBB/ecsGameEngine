@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Rendering.Materials.Material;
-import components.TransformComponent;
 import util.Mathf.Mathf3D.Bounds.AABoundingBox;
 import util.Mathf.Mathf3D.Matrix4x4;
 import util.Mathf.Mathf3D.Transform;
@@ -28,10 +27,10 @@ public class IndexedMesh {
     }
 
 
-    public final void draw(RenderContext renderContext, Material material,
+    public final void draw(Renderer renderer, Material material,
                            Transform transform) {
         Matrix4x4 transMatrix = transform.compose();
-        Matrix4x4 projTransMatrix = renderContext.MVP.compose(transMatrix);
+        RenderState.objmvp = RenderState.mvp.compose(transMatrix);
 
         /*for (Vertex vertex : vertices) {
             transformedVertices.add(vertex.mulMatrix(projTransMatrix, transMatrix));
@@ -39,7 +38,7 @@ public class IndexedMesh {
 
         for (int i = 0; i < triIndices.size(); i += 3) {
 
-            renderContext.drawTriangle(
+            renderer.drawTriangle(
                     vertices.get(i),
                     vertices.get(i + 1),
                     vertices.get(i + 2),

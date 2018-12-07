@@ -31,8 +31,13 @@ public class Vector2D {
         return new Vector2D(this.x + other.x, this.y + other.y);
     }
 
-    public Vector2D scale(float scaler) {
+    public Vector2D mul(float scaler) {
         return new Vector2D(this.x * scaler, this.y * scaler);
+    }
+
+    public void scale(float scaler) {
+        this.x = x * scaler;
+        this.y = y * scaler;
     }
 
     public Vector2D divide(float divider) {

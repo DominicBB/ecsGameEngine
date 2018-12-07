@@ -16,17 +16,21 @@ public class Transform {
 
     private AABoundingBox aaBoundingBox;
 
-    private float fYaw;
+//    private float fYaw;
 
     public Transform() {
         this.position = Vector3D.newZeros();
         this.forwardDir = Vector3D.newForward();
         this.upDir = Vector3D.newUp();
         this.rightDir = Vector3D.newRight();
+        this.scale = Vector3D.newOnes();
+        this.translation = Vector3D.newZeros();
+//        this.qRotation =
+        this.rotation = Vector3D.newZeros();
 
         this.aaBoundingBox = AABoundingBox.zeros();
 
-        this.fYaw = 0.0f;
+//        this.fYaw = 0.0f;
     }
 
     public void translate(float x, float y, float z) {
@@ -101,6 +105,19 @@ public class Transform {
         this.forwardDir = Vector3D.FORWARD.minus(upDir.mul(Vector3D.FORWARD.dotProduct(upDir)));
         this.rightDir = upDir.crossProduct(forwardDir);
     }
+
+    public Vector3D getForwardDir() {
+        return forwardDir;
+    }
+
+    public Vector3D getUpDir() {
+        return upDir;
+    }
+
+    public Vector3D getRightDir() {
+        return rightDir;
+    }
+
 
     private Vector3D calcUpFromDir(Vector3D dir) {
         return Vector3D.UP.minus(dir.mul(Vector3D.UP.dotProduct(dir)));

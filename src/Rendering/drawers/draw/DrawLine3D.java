@@ -1,7 +1,7 @@
 package Rendering.drawers.draw;
 
 import Rendering.drawers.Draw;
-import Rendering.renderUtil.RenderContext;
+import Rendering.renderUtil.Renderer;
 import util.Mathf.Mathf3D.Vector3D;
 
 public class DrawLine3D extends Draw {
@@ -13,9 +13,9 @@ public class DrawLine3D extends Draw {
      * @param v2
      * @param c1
      * @param c2
-     * @param renderContext
+     * @param renderer
      */
-    public static void drawLine(Vector3D v1, Vector3D v2, Vector3D c1, Vector3D c2, RenderContext renderContext) {
+    public static void drawLine(Vector3D v1, Vector3D v2, Vector3D c1, Vector3D c2, Renderer renderer) {
         // DDA implementation, with z buff
         float dx, dy, dz, step, x, y, z;
         Vector3D dc;
@@ -47,13 +47,13 @@ public class DrawLine3D extends Draw {
                 int yi = (int) y;
                 int xi = (int) x;
 				/*if (zBuffer[yi][xi] == null || zBuffer[yi][xi].distance < z) {
-					zBuffer[yi][xi] = new ZBuffer(z, c);*/
+					zBuffer[yi][xi] = new FloatBuffer(z, c);*/
 
 				/*if (zBuffer[yi][xi] < z) {
 					zBuffer[yi][xi] = (int)z;
 
 				}*/
-                renderContext.setPixel(xi, yi, (byte) c.w, (byte) c.x, (byte) c.y, (byte) c.z);
+                renderer.colorBuffer.setPixel(xi, yi, (byte) c.w, (byte) c.x, (byte) c.y, (byte) c.z);
 
             }
             x = x + dx;
@@ -65,7 +65,7 @@ public class DrawLine3D extends Draw {
         }
     }
 
-    public static void drawLine(Vector3D v1, Vector3D v2, Vector3D color, RenderContext renderContext) {
+    public static void drawLine(Vector3D v1, Vector3D v2, Vector3D color, Renderer renderer) {
         // DDA implementation, with z buff
         float dx, dy, dz, step, x, y, z;
         int i;
@@ -93,13 +93,13 @@ public class DrawLine3D extends Draw {
                 int yi = (int) y;
                 int xi = (int) x;
 				/*if (zBuffer[yi][xi] == null || zBuffer[yi][xi].distance < z) {
-					zBuffer[yi][xi] = new ZBuffer(z, c);*/
+					zBuffer[yi][xi] = new FloatBuffer(z, c);*/
 
 				/*if (zBuffer[yi][xi] < z) {
 					zBuffer[yi][xi] = (int)z;
 
 				}*/
-                renderContext.setPixel(xi, yi, color);
+                renderer.colorBuffer.setPixel(xi, yi, color);
 
             }
             x = x + dx;

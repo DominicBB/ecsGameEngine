@@ -5,7 +5,6 @@ import Rendering.renderUtil.Lerpers.LerpValues;
 import util.Mathf.Mathf2D.Vector2D;
 import util.Mathf.Mathf3D.Vector3D;
 
-
 public class Edge {
 
     public VertexOut v1;
@@ -21,15 +20,6 @@ public class Edge {
     public float deltaYceil;
     public int deltaYInt;
 
-    /*public final float xStep, zStep, wStep;
-
-    public final float specularityStep;
-
-    public final float tuStep, tvStep;
-    public final float suStep, svStep;
-
-    public final float sColorx, sColory, sColorz, sColora;*/
-
     public int handiness;
 
     protected Material material;
@@ -41,26 +31,6 @@ public class Edge {
         this.material = material;
         setUp();
         this.lerpValues = new LerpValues(v1.p_proj, yStart, v1.texCoord, v1.specCoord, v1.spec, v1.surfaceColor);
-
-        /*//calculate steps
-        sColorx = (v2.surfaceColor.x - v1.surfaceColor.x) / deltaYceil;
-        sColory = (v2.surfaceColor.y - v1.surfaceColor.y) / deltaYceil;
-        sColorz = (v2.surfaceColor.z - v1.surfaceColor.z) / deltaYceil;
-        sColora = (v2.surfaceColor.w - v1.surfaceColor.w) / deltaYceil;
-
-
-        suStep = (v2.specCoord.x - v1.specCoord.x) / deltaYceil;
-        svStep = (v2.specCoord.y - v1.specCoord.y) / deltaYceil;
-
-        specularityStep = (v2.spec - v1.spec) / deltaYceil;
-
-        xStep = deltaX / deltaYceil;
-        zStep = (v2.p_proj.z - v1.p_proj.z) / deltaYceil;
-        wStep = (v2.p_proj.w - v1.p_proj.w) / deltaYceil;
-
-        tuStep = (v2.texCoord.x - v1.texCoord.x) / deltaYceil;
-        tvStep = (v2.texCoord.y - v1.texCoord.y) / deltaYceil;*/
-
 
     }
 

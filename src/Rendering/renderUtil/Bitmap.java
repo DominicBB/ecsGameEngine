@@ -49,7 +49,7 @@ public class Bitmap {
     }
 
     /**
-     * Set ARGB of pixel
+     * Set ABGR of pixel
      *
      * @param x
      * @param y
@@ -58,9 +58,10 @@ public class Bitmap {
     public void setPixel(int x, int y, Vector3D color) {
         setPixel(x, y,
                 (byte) (((int) color.w >> 24) & 0xFF),
-                (byte) (((int) color.x >> 16) & 0xFF),
+                (byte) (((int) color.z) & 0xFF),
                 (byte) (((int) color.y >> 8) & 0xFF),
-                (byte) (((int) color.z) & 0xFF));
+                (byte) (((int) color.x >> 16) & 0xFF)
+        );
     }
 
     /**
@@ -110,12 +111,12 @@ public class Bitmap {
     }
 
     //TODO: does this work
-    public Vector3D getPixel(int x, int y){
-        int i = (y*width + x) <<2;
+    public Vector3D getPixelColor(int x, int y) {
+        int i = (y * width + x) << 2;
         return new Vector3D(
-                byteArray[i+3] & 0xFF,
-                byteArray[i+2] & 0xFF,
-                byteArray[i+1] & 0xFF,
+                byteArray[i + 3] & 0xFF,
+                byteArray[i + 2] & 0xFF,
+                byteArray[i + 1] & 0xFF,
                 byteArray[i] & 0xFF
         );
     }

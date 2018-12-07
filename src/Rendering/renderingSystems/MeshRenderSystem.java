@@ -1,9 +1,9 @@
 package Rendering.renderingSystems;
 
-import Rendering.renderUtil.RenderContext;
+import Rendering.Clipping.ClippingSystem;
+import Rendering.renderUtil.Renderer;
 import components.*;
 import core.coreSystems.EntityListnerSystem;
-import util.Mathf.Mathf3D.Matrix4x4;
 
 import java.util.Arrays;
 
@@ -20,17 +20,17 @@ public class MeshRenderSystem extends EntityListnerSystem {
         //not used
     }
 
-    public final void render(RenderContext renderContext) {
-//        Matrix4x4 MVP = constructProjMatrix(scene, camera);
-        for (int entityID : entityListner.getEntityIDsOfInterest()) {
-            //grab components
-            Component[] relevantComponents = entityListner.getRelevantComponents(entityID);
-            RenderableMesh renderableMesh = (RenderableMesh) relevantComponents[0];
-            TransformComponent transformComponent = (TransformComponent) relevantComponents[1];
+    public final void render(RenderableMesh renderableMesh, TransformComponent transformComponent, Renderer renderer) {
 
-            renderableMesh.indexedMesh.draw(renderContext, renderableMesh.material, transformComponent.transform);
+        switch (ClippingSystem.decideClippingMode(renderableMesh.aaBoundingBox)) {
+            case ALLOUTSIDE:
+                return;
+            case CLIPPING:
+                ClippingSystem.needsClipping = true;
+            case ALLINSIDE:
+                ClippingSystem.needsClipping = false;
         }
-//        renderContext.drawPixels();
+        renderableMesh.indexedMesh.draw(renderer, renderableMesh.material, transformComponent.transform);
 
     }
 
@@ -38,11 +38,11 @@ public class MeshRenderSystem extends EntityListnerSystem {
         this.renderSystem = renderSystem;
     }
 
-    /*private void renderMesh(TransformComponent transform, RenderableMesh renderableMesh, Matrix4x4 MVP) {
+    /*private void renderMesh(TransformComponent transform, RenderableMesh renderableMesh, Matrix4x4 mvp) {
         IndexedMesh indexedMesh = renderableMesh.indexedMesh;
         Matrix4x4 transformMatrix = *//*lookAt.compose*//*(Transform.compose(transform));
 
-        boolean needsClipping = needsClipping(transform.aaBoundingBox, camera, MVP);
+        boolean needsClipping = needsClipping(transform.aaBoundingBox, camera, mvp);
         for (Triangle t : indexedMesh.triangles) {
             //apply any transforms to indexedMesh
             t = transformMatrix.multiply4x4(t, 1);
@@ -55,18 +55,18 @@ public class MeshRenderSystem extends EntityListnerSystem {
             //look at
             t = lookAt.multiply4x4(t, 1);
 
-            List<Triangle> zClippedTriangles = Clipper.clipTriangle(zPlanes, t);
+            List<Triangle> zClippedTriangles = TriangleClipper.clipTriangle(zPlanes, t);
             if (zClippedTriangles.isEmpty()) continue;
             for (Triangle zClipped : zClippedTriangles) {
                 //project
-                zClipped = MVP.multiplyProjection(zClipped);
+                zClipped = mvp.multiplyProjection(zClipped);
                 if (true) {
                     //clip against screen boundries
-                    List<Triangle> clipTriangles = Clipper.clipTriangle(fustrumClipPlanes, zClipped);
+                    List<Triangle> clipTriangles = TriangleClipper.clipTriangle(fustrumClipPlanes, zClipped);
                     if (clipTriangles.isEmpty()) continue;
-                    clipTriangles.forEach(clipTriangle -> Draw.fillPolygon(clipTriangle, renderContext, renderableMesh.texture));
+                    clipTriangles.forEach(clipTriangle -> Draw.fillPolygon(clipTriangle, renderer, renderableMesh.texture));
                 } else {
-                    Draw.fillPolygon(zClipped, renderContext, renderableMesh.texture);
+                    Draw.fillPolygon(zClipped, renderer, renderableMesh.texture);
                 }
             }
         }

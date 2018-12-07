@@ -4,7 +4,10 @@ import Rendering.renderUtil.Bitmap;
 
 public class MaterialCoef {
     private String name;
+    private Bitmap texture;
     private Bitmap specularMap;
+
+
 
     private float ambientFactor = 1f;
     private float diffuseFactor = 1f;
@@ -20,6 +23,7 @@ public class MaterialCoef {
         this.specularFactor = specularFactor;
         this.specularPower = specularPower;
     }
+
 
     //TODO: create static known materials
 }

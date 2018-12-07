@@ -73,7 +73,7 @@ public abstract class ECSSystem extends BaseSystem implements Runnable {
 
     private void renderUpdate(){
         renderSystem.update();
-        window.update(renderSystem.getRenderContext());
+        window.update(renderSystem.getRenderer());
 
     }
 

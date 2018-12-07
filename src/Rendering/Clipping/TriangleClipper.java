@@ -1,5 +1,6 @@
-package Rendering.renderUtil;
+package Rendering.Clipping;
 
+import Rendering.renderUtil.VertexOut;
 import util.Mathf.Mathf2D.Vector2D;
 import util.Mathf.Mathf3D.Plane;
 import util.Mathf.Mathf3D.Triangle;
@@ -8,7 +9,7 @@ import util.Mathf.Mathf3D.Vector3D;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Clipper {
+public class TriangleClipper {
 
     private static List<VertexOut> insidePoints = new ArrayList<>();
     private static List<VertexOut> outsidePoints = new ArrayList<>();
@@ -41,18 +42,18 @@ public class Clipper {
     }
 
     private static boolean checkEachTriangle(Plane plane, List<VertexOut> vertices) {
-        int j = 0;
+        int triangleCompletlyOutsideCount = 0;
         for (int i = 0; i < vertices.size(); i += 3) {
             linesToClip(plane, vertices.get(i));
             linesToClip(plane, vertices.get(i + 1));
             linesToClip(plane, vertices.get(i + 2));
 
             if (!clippedTriangle(plane, vertices.get(i), vertices.get(i + 1), vertices.get(i + 2))) {
-                j++;
+                triangleCompletlyOutsideCount++;
             }
             clear();
         }
-        return j == 0;
+        return triangleCompletlyOutsideCount == 0;
     }
 
     private static void updateAfterClip(List<VertexOut> vertices) {
@@ -93,36 +94,33 @@ public class Clipper {
             return false;
         }
 
-        VertexOut[] vertices = new VertexOut[3];
-        /*Vector3D[] vectors = new Vector3D[3];
-        Vector2D[] textures = new Vector2D[3];*/
-
+        VertexOut[] clippedTriVertices = new VertexOut[3];
 
         float scaler = calculateScaler(plane, insidePoints.get(0).p_proj, outsidePoints.get(0).p_proj);
-        vertices[0] = intersectPoint(scaler, insidePoints.get(0), outsidePoints.get(0));
+        clippedTriVertices[0] = intersectPoint(scaler, insidePoints.get(0), outsidePoints.get(0));
 
         if (outsidePoints.size() == 1) {//create two new triangles
             VertexOut[] vertices2 = new VertexOut[3];
             vertices2[0] = insidePoints.get(0);
             vertices2[1] = insidePoints.get(1);
-            vertices2[2] = vertices[0];
+            vertices2[2] = clippedTriVertices[0];
             vertices2 = Triangle.orderCW(vertices2);
             addVertices(vertices2);
 
             scaler = calculateScaler(plane, insidePoints.get(1).p_proj, outsidePoints.get(0).p_proj);
 
-            vertices[1] = intersectPoint(scaler, insidePoints.get(1), outsidePoints.get(0));
-            vertices[2] = insidePoints.get(1);
+            clippedTriVertices[1] = intersectPoint(scaler, insidePoints.get(1), outsidePoints.get(0));
+            clippedTriVertices[2] = insidePoints.get(1);
 
-        } else {//one new
+        } else {//one new triangle
             scaler = calculateScaler(plane, insidePoints.get(0).p_proj, outsidePoints.get(1).p_proj);
 
-            vertices[1] = intersectPoint(scaler, insidePoints.get(0), outsidePoints.get(1));
-            vertices[2] = insidePoints.get(0);
+            clippedTriVertices[1] = intersectPoint(scaler, insidePoints.get(0), outsidePoints.get(1));
+            clippedTriVertices[2] = insidePoints.get(0);
         }
 
-        vertices = Triangle.orderCW(vertices);
-        addVertices(vertices);
+        clippedTriVertices = Triangle.orderCW(clippedTriVertices);
+        addVertices(clippedTriVertices);
         return true;
     }
 
@@ -162,8 +160,8 @@ public class Clipper {
 
     private static Vector2D intersectPoint(float scaler, Vector2D inside, Vector2D outside) {
         Vector2D dif = inside.minus(outside);
-        Vector2D insideToIntersect = dif.scale(scaler);
-        return inside.plus(insideToIntersect);
+        dif.scale(scaler);
+        return inside.plus(dif);
     }
 
     private static float intersectPoint(float scaler, float inside, float outside) {

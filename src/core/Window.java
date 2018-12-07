@@ -1,7 +1,7 @@
 package core;
 
 import core.coreSystems.InputSystem;
-import Rendering.renderUtil.RenderContext;
+import Rendering.renderUtil.Renderer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -75,10 +75,10 @@ public class Window extends JFrame {
         fps = frames;
     }
 
-    public void update(RenderContext renderContext) {
+    public void update(Renderer renderer) {
         this.requestFocus();
 
-        renderContext.copyTo3BGR(displayImageContents);
+        renderer.colorBuffer.copyTo3BGR(displayImageContents);
         graphics.drawImage(displayImage, 0, 0, null);
         bufferStrategy.show();
     }

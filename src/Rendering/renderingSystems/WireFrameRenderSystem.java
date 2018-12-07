@@ -1,10 +1,9 @@
 package Rendering.renderingSystems;
 
 
-import Rendering.renderUtil.RenderContext;
+import Rendering.renderUtil.Renderer;
 import components.*;
 import core.coreSystems.EntityListnerSystem;
-import util.Mathf.Mathf3D.Matrix4x4;
 
 import java.util.Arrays;
 
@@ -18,16 +17,10 @@ public class WireFrameRenderSystem extends EntityListnerSystem {
     }
 
 
-    public void render(RenderContext renderContext) {
+    public void render(RenderableMesh renderableMesh, TransformComponent transformComponent, Renderer renderer) {
 
-        for (int entityID : entityListner.getEntityIDsOfInterest()) {
-            //grab components
-            Component[] relevantComponents = entityListner.getRelevantComponents(entityID);
-            RenderableMesh renderableMesh = (RenderableMesh) relevantComponents[0];
-            TransformComponent transformComponent = (TransformComponent) relevantComponents[1];
+//            wireframeMesh(transformComponent, renderableMesh, mvp);
 
-//            wireframeMesh(transformComponent, renderableMesh, MVP);
-        }
     }
 
     @Override
@@ -35,10 +28,10 @@ public class WireFrameRenderSystem extends EntityListnerSystem {
 
     }
 
-    /*private void wireframeMesh(TransformComponent transform, RenderableMesh renderableMesh, Matrix4x4 MVP) {
+    /*private void wireframeMesh(TransformComponent transform, RenderableMesh renderableMesh, Matrix4x4 mvp) {
         IndexedMesh indexedMesh = renderableMesh.indexedMesh;
         Matrix4x4 matrix = (Transform.compose(transform));
-        boolean needsClipping = needsClipping(transform.aaBoundingBox, camera, MVP);
+        boolean needsClipping = needsClipping(transform.aaBoundingBox, camera, mvp);
 
         for (Triangle t : indexedMesh.triangles) {
             t = matrix.multiply4x4(t, 1);
@@ -46,18 +39,18 @@ public class WireFrameRenderSystem extends EntityListnerSystem {
                 continue;
 
             t = lookAt.multiply4x4(t, 1);
-            List<Triangle> zClippedTriangles = Clipper.clipTriangle(zPlanes, t);
+            List<Triangle> zClippedTriangles = TriangleClipper.clipTriangle(zPlanes, t);
             if (zClippedTriangles.isEmpty()) continue;
             for (Triangle zClipped : zClippedTriangles) {
 
-                zClipped = MVP.multiplyProjection(zClipped);
+                zClipped = mvp.multiplyProjection(zClipped);
                 if (true) {//TODO bounding box being weird
-                    List<Triangle> clipTriangles = clipTriangles = Clipper.clipTriangle(fustrumClipPlanes, zClipped);
+                    List<Triangle> clipTriangles = clipTriangles = TriangleClipper.clipTriangle(fustrumClipPlanes, zClipped);
                     if (!clipTriangles.isEmpty()) {
-                        clipTriangles.forEach(clipTriangle -> Draw.wireframePolygon(clipTriangle, renderContext));
+                        clipTriangles.forEach(clipTriangle -> Draw.wireframePolygon(clipTriangle, renderer));
                     }
                 } else {
-                    Draw.wireframePolygon(zClipped, renderContext);
+                    Draw.wireframePolygon(zClipped, renderer);
                 }
             }
         }

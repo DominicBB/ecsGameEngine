@@ -4,8 +4,6 @@ import components.Component;
 import components.PhysicsComponents.RigidBody;
 import components.TransformComponent;
 import core.coreSystems.Time;
-import util.Mathf.Mathf3D.Matrix4x4;
-import util.Mathf.Mathf3D.Transform;
 import util.Mathf.Mathf3D.Vector3D;
 
 import java.util.Arrays;

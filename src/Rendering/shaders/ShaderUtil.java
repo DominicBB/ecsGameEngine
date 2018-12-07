@@ -1,7 +1,9 @@
 package Rendering.shaders;
 
 import Rendering.Materials.Material;
-import Rendering.renderUtil.RenderContext;
+import Rendering.renderUtil.RenderState;
+import Rendering.renderUtil.Renderer;
+import util.FloatBuffer;
 import util.Mathf.Mathf3D.Vector3D;
 
 abstract class ShaderUtil {
@@ -26,16 +28,16 @@ abstract class ShaderUtil {
                 (float) Math.pow(Math.max(0f, n_worldSpace.dotProduct(halfWayDir)), specPower));
     }
 
-    static float calculateSpecular(Vector3D n_ws, Vector3D pos_ws, RenderContext renderContext, Material material) {
+    static float calculateSpecular(Vector3D n_ws, Vector3D pos_ws, Material material) {
         Vector3D viewDir;
-        (viewDir = renderContext.getCameraPos().minus(pos_ws)).normalise();
+        (viewDir = RenderState.camera.transform.position.minus(pos_ws)).normalise();
 
         float spec = specular(n_ws,
-                renderContext.getLightingState().lightDir,
+                RenderState.lightingState.lightDir,
                 viewDir,
                 material.getSpecularFactor(),
                 material.getSpecularPower(),
-                renderContext.getLightingState().attenuation);
+                RenderState.lightingState.attenuation);
 
         return spec;
     }
@@ -68,10 +70,9 @@ abstract class ShaderUtil {
     }
 
 
-    static boolean zBufferTest(float[] zBuffer, float zVal, int x, int y, int width) {
-        int i = y * width + x;
-        if (zBuffer[i] > zVal) {
-            zBuffer[i] = zVal;
+    static boolean zBufferTest(FloatBuffer zBuffer, float zVal, int x, int y) {
+        if (zBuffer.getFloat(x, y) > zVal) {
+            zBuffer.setFloat(x, y, zVal);
             return true;
         }
         return false;

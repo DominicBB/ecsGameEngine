@@ -1,17 +1,19 @@
 package Rendering.Materials;
 
 import Rendering.renderUtil.Bitmap;
+import Rendering.renderUtil.Colorf;
 import Rendering.renderUtil.Texture;
-import Rendering.shaders.ShaderType;
+import Rendering.shaders.interfaces.IGeometryShader;
 import Rendering.shaders.interfaces.IShader;
 import util.Mathf.Mathf;
 import util.Mathf.Mathf3D.Vector3D;
 
-public abstract class Material {
+public class Material {
     private String name;
 
     private IShader shader;
-    public ShaderType shaderType;
+    private IGeometryShader geometryShader;
+
     private Texture texture;
     private Bitmap specularMap;
     private Bitmap normalMap;
@@ -24,16 +26,15 @@ public abstract class Material {
 
     private Vector3D color;
 
+    private boolean hasGeometryShader;
     private boolean isSpecular;
     private boolean hasSpecularMap;
-    private boolean isTextured;
     private boolean hasTexture;
     private boolean isDiffuse;
     private boolean isAmbient;
     private boolean hasNormalMap;
 
     public Material(MaterialCoef materialCoef) {
-
     }
 
     public Material(String name, IShader shader, float ambientFactor, float diffuseFactor, float specularFactor) {
@@ -43,9 +44,9 @@ public abstract class Material {
         this.diffuseFactor = diffuseFactor;
         this.specularFactor = specularFactor;
 
-        this.isSpecular = true;
-        this.isTextured = true;
-        this.isDiffuse= true;
+        this.color = Vector3D.newOnes();
+
+        this.isDiffuse = true;
         this.isAmbient = true;
     }
 
@@ -65,13 +66,30 @@ public abstract class Material {
         this.shader = shader;
     }
 
+    public IGeometryShader getGeometryShader() {
+        return geometryShader;
+    }
+
+    public void setGeometryShader(IGeometryShader geometryShader) {
+        if (geometryShader == null)
+            hasGeometryShader = false;
+        else
+            hasGeometryShader = true;
+
+        this.geometryShader = geometryShader;
+    }
+
     public Texture getTexture() {
         return texture;
     }
 
     public void setTexture(Texture texture) {
+        if (texture == null)
+            hasTexture = false;
+        else
+            hasTexture = true;
+
         this.texture = texture;
-        this.hasTexture = true;
     }
 
     public Bitmap getSpecularMap() {
@@ -79,8 +97,12 @@ public abstract class Material {
     }
 
     public void setSpecularMap(Bitmap specularMap) {
+        if (specularMap == null)
+            hasSpecularMap = false;
+        else
+            hasSpecularMap = true;
+
         this.specularMap = specularMap;
-        this.hasSpecularMap = true;
     }
 
     public Bitmap getNormalMap() {
@@ -88,8 +110,12 @@ public abstract class Material {
     }
 
     public void setNormalMap(Bitmap normalMap) {
+        if (normalMap == null)
+            hasNormalMap = false;
+        else
+            hasNormalMap = true;
+
         this.normalMap = normalMap;
-        hasNormalMap = true;
     }
 
     public float getAmbientFactor() {
@@ -129,7 +155,7 @@ public abstract class Material {
     }
 
     public void setDefualtSpecularColor(Vector3D defualtSpecularColor) {
-        this.defualtSpecularColor = defualtSpecularColor;
+        this.defualtSpecularColor = Colorf.clamp(defualtSpecularColor);
     }
 
     public Vector3D getColor() {
@@ -137,7 +163,7 @@ public abstract class Material {
     }
 
     public void setColor(Vector3D color) {
-        this.color = color;
+        this.color = Colorf.clamp(color);
     }
 
     public boolean isAmbient() {
@@ -160,8 +186,8 @@ public abstract class Material {
         return hasTexture;
     }
 
-    public boolean isTextured() {
-        return isTextured;
+    public boolean hasGeometryShader() {
+        return hasGeometryShader;
     }
 
     public boolean hasNormalMap() {
@@ -181,8 +207,25 @@ public abstract class Material {
         isSpecular = specular;
     }
 
-    public void setTextured(boolean textured) {
-        isTextured = textured;
-    }
 
+    public Material(String name, IShader shader, IGeometryShader geometryShader, Texture texture,
+                    Bitmap specularMap, Bitmap normalMap, float ambientFactor, float diffuseFactor,
+                    float specularFactor, float specularPower, Vector3D defualtSpecularColor, Vector3D color,
+                    boolean isSpecular, boolean isDiffuse, boolean isAmbient) {
+        this.name = name;
+        this.shader = shader;
+        setGeometryShader(geometryShader);
+        setTexture(texture);
+        setSpecularMap(specularMap);
+        setNormalMap(normalMap);
+        setAmbientFactor(ambientFactor);
+        setDiffuseFactor(diffuseFactor);
+        setSpecularFactor(specularFactor);
+        setSpecularPower(specularPower);
+        setDefualtSpecularColor(defualtSpecularColor);
+        setColor(color);
+        setAmbient(isAmbient);
+        setDiffuse(isDiffuse);
+        setSpecular(isSpecular);
+    }
 }

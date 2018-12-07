@@ -30,7 +30,7 @@ public class LerperFactory extends BaseLerperFactory {
     public LerpValues reuseLerpValues(Material material, LerpValues lerpValues, VertexOut v1, VertexOut v2,
                                       float diviser) {
         lerpValues.reset();
-        switch (material.shaderType) {
+        switch (material.getShader().getShaderType()) {
             case GOURUAD:
                 lerpValues.setLerper(gouruadLerper(material, v1, v2, diviser));
             case FLAT:

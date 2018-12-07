@@ -19,7 +19,7 @@ public class RowLerperFactory extends BaseLerperFactory {
     public LerpValues createLerpValues(Material material, LerpValues lerpValues, LerpValues l1, LerpValues l2,
                                        float diviser) {
         lerpValues.reset();
-        switch (material.shaderType) {
+        switch (material.getShader().getShaderType()) {
             case GOURUAD:
                 lerpValues.setLerper(gouruadLerper(material, l1, l2, diviser));
             case FLAT:

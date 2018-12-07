@@ -6,7 +6,7 @@ import Rendering.Materials.Material;
 import Rendering.renderUtil.Edge;
 import Rendering.renderUtil.Lerpers.LerpValues;
 import Rendering.renderUtil.Lerpers.RowLerperFactory;
-import Rendering.renderUtil.RenderContext;
+import Rendering.renderUtil.Renderer;
 import util.Mathf.Mathf3D.Vector3D;
 
 abstract class Rasterizer {
@@ -14,25 +14,23 @@ abstract class Rasterizer {
     private static RowLerperFactory rowLerperFactory = new RowLerperFactory();
     private static final LerpValues lerpValues = LerpValues.newEmpty();
 
-    protected static void rasterizeRow(Edge left, Edge right, int y, Material material, RenderContext renderContext) {
-        //TODO: texCorrd and specCood * width and height of png
-
+    protected static void rasterizeRow(Edge left, Edge right, int y, Material material, Renderer renderer) {
         lerpValues.reset();
 
         float dx = right.lerpValues.getPos_proj().x - left.lerpValues.getPos_proj().x;
 
 
         rowLerperFactory.createLerpValues(material, lerpValues, left.lerpValues, right.lerpValues, dx);
-
+        lerpValues.setyInt(y);
         int from = (int) Math.ceil(left.lerpValues.getPos_proj().x);
         int to = (int) Math.ceil(right.lerpValues.getPos_proj().x);
 
         for (int x = from; x < to; x++) {
 
             lerpValues.setxInt(x);
-            Vector3D color = material.getShader().frag(lerpValues, renderContext, material);
+            Vector3D color = material.getShader().frag(lerpValues, renderer.getzBuffer(), material);
             if (color != null)
-                renderContext.setPixel(x, y, color);
+                renderer.onFragShaded(x, y, color, material);
 
             lerpValues.lerp();
         }

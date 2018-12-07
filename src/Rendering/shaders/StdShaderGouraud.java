@@ -2,11 +2,11 @@ package Rendering.shaders;
 
 import Rendering.Materials.Material;
 import Rendering.renderUtil.Lerpers.LerpValues;
-import Rendering.renderUtil.RenderContext;
+import Rendering.renderUtil.RenderState;
 import Rendering.renderUtil.Vertex;
 import Rendering.renderUtil.VertexOut;
 import Rendering.shaders.interfaces.IShader;
-import core.Window;
+import util.FloatBuffer;
 import util.Mathf.Mathf3D.Vector3D;
 
 import static Rendering.shaders.ShaderUtil.calculateSpecular;
@@ -16,18 +16,18 @@ import static Rendering.shaders.ShaderUtil.ambient;
 public class StdShaderGouraud implements IShader {
 
     @Override
-    public final VertexOut vert(Vertex vIn, RenderContext renderContext, Material material) {
+    public final VertexOut vert(Vertex vIn, Material material) {
 
-        //transform vertex into MVP
-        Vector3D pos_proj = (renderContext.MVP.multiply4x4(vIn.vec));
+        //transform vertex into mvp
+        Vector3D pos_proj = (RenderState.objmvp.multiply4x4(vIn.vec));
         Vector3D sColor = Vector3D.newZeros();
 
         if (material.isDiffuse()) {
 
-            Vector3D diffuse = diffuse(renderContext.getLightingState().lightColor,
-                    renderContext.getLightingState().lightDir,
+            Vector3D diffuse = diffuse(RenderState.lightingState.lightColor,
+                    RenderState.lightingState.lightDir,
                     vIn.normal,
-                    renderContext.getLightingState().attenuation,
+                    RenderState.lightingState.attenuation,
                     material.getDiffuseFactor());
 
             sColor.add(diffuse);
@@ -35,26 +35,24 @@ public class StdShaderGouraud implements IShader {
 
         float spec = 1f;
         if (material.isSpecular()) {
-            spec = calculateSpecular(vIn.normal, vIn.vec, renderContext, material);
+            spec = calculateSpecular(vIn.normal, vIn.vec, material);
             if (!material.hasSpecularMap()) {
                 sColor.add(material.getDefualtSpecularColor().mul(spec));
             }
         }
 
         if (material.isAmbient()) {
-            sColor.add(ambient(renderContext.getLightingState().ambientColor, material.getAmbientFactor()));
+            sColor.add(ambient(RenderState.lightingState.ambientColor, material.getAmbientFactor()));
         }
 
         return new VertexOut(pos_proj, vIn.texCoord, vIn.specCoord, spec, sColor, vIn.normal, vIn.vec);
     }
 
     @Override
-    public final Vector3D frag(LerpValues lerpValues, RenderContext renderContext, Material material) {
+    public final Vector3D frag(LerpValues lerpValues, FloatBuffer zBuffer, Material material) {
 
-        if (!ShaderUtil.zBufferTest(renderContext.getzBuffer(), lerpValues.getPos_proj().w,
-                (int) lerpValues.getPos_proj().x, lerpValues.getyInt(), Window.defaultWidth)) {
+        if (!ShaderUtil.zBufferTest(zBuffer, lerpValues.getPos_proj().w, lerpValues.getxInt(), lerpValues.getyInt()))
             return null;
-        }
 
         if (material.isSpecular()) {
             lerpValues.getSurfaceColor().add(calcSpecular(lerpValues, material));
@@ -73,7 +71,7 @@ public class StdShaderGouraud implements IShader {
     private Vector3D calcSpecular(LerpValues lerpValues, Material material) {
         if (material.hasSpecularMap()) {
 
-            Vector3D specColor = material.getSpecularMap().getPixel((int) lerpValues.getSpecCoord().x,
+            Vector3D specColor = material.getSpecularMap().getPixelColor((int) lerpValues.getSpecCoord().x,
                     (int) lerpValues.getSpecCoord().y);
 
             return specColor.mul(lerpValues.getSpecularity());
@@ -84,12 +82,13 @@ public class StdShaderGouraud implements IShader {
 
     private Vector3D calcTextureColor(LerpValues lerpValues, Material material) {
         lerpValues.getSurfaceColor().
-                componentMul(material.getTexture().texture.getPixel((int) lerpValues.getTexCoord().x,
+                componentMul(material.getTexture().texture.getPixelColor((int) lerpValues.getTexCoord().x,
                         (int) lerpValues.getTexCoord().y));
         return lerpValues.getSurfaceColor();
     }
 
     private static final ShaderType SHADER_TYPE = ShaderType.PHONG;
+
     @Override
     public ShaderType getShaderType() {
         return SHADER_TYPE;

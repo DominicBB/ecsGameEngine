@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Rendering.Materials.Material;
-import Rendering.drawers.Draw;
 import Rendering.renderUtil.Edge;
 import Rendering.renderUtil.EdgeFactory;
-import Rendering.renderUtil.RenderContext;
+import Rendering.renderUtil.Renderer;
 
 import Rendering.renderUtil.VertexOut;
 
@@ -16,7 +15,7 @@ public class TriangleRasterizer extends Rasterizer {
     private static Edge e1 = Edge.newEmpty(), e2 = Edge.newEmpty(), e3 = Edge.newEmpty();
     private static List<Edge> edges = new ArrayList<>(3);
 
-    public static void fillTriangle(VertexOut v1, VertexOut v2, VertexOut v3, RenderContext renderContext, Material material) {
+    public static void fillTriangle(VertexOut v1, VertexOut v2, VertexOut v3, Renderer renderer, Material material) {
         edges.clear();
         constructEdges(v1, v2, v3, material);
         addEdges();
@@ -24,7 +23,7 @@ public class TriangleRasterizer extends Rasterizer {
         removeHorizontal(edges);
 
         if (edges.size() == 2) {
-            scan(edges.get(0), edges.get(1), material, renderContext);
+            scan(edges.get(0), edges.get(1), material, renderer);
         } else {
 
             Edge e1 = edges.get(0);
@@ -33,15 +32,15 @@ public class TriangleRasterizer extends Rasterizer {
 
             if (e1HasGreatestYChange(e1, e2, e3)) {
                 // e1 has greatest y change
-                scan(e1, e2, e3, material, renderContext);
+                scan(e1, e2, e3, material, renderer);
 
             } else if (e2HasGreatestYChange(e2, e3)) {
                 // e2 has greatest y change
-                scan(e2, e3, e1, material, renderContext);
+                scan(e2, e3, e1, material, renderer);
 
             } else {
                 // e3 has greatest y change
-                scan(e3, e1, e2, material, renderContext);
+                scan(e3, e1, e2, material, renderer);
             }
         }
     }
@@ -58,15 +57,15 @@ public class TriangleRasterizer extends Rasterizer {
         edges.add(e3);
     }
 
-    private static void scan(Edge leftEdge, Edge rightEdge, Material material, RenderContext renderContext) {
+    private static void scan(Edge leftEdge, Edge rightEdge, Material material, Renderer renderer) {
         if (leftEdge.handiness == 0) {
-            scanSegment(leftEdge, rightEdge, leftEdge.yStart, leftEdge.deltaYceil, material, renderContext);
+            scanSegment(leftEdge, rightEdge, leftEdge.yStart, leftEdge.deltaYceil, material, renderer);
         } else {
-            scanSegment(rightEdge, leftEdge, rightEdge.yStart, rightEdge.deltaYceil, material, renderContext);
+            scanSegment(rightEdge, leftEdge, rightEdge.yStart, rightEdge.deltaYceil, material, renderer);
         }
     }
 
-    private static void scan(Edge tallestEdge, Edge bottomEdge, Edge topEdge, Material material, RenderContext renderContext) {
+    private static void scan(Edge tallestEdge, Edge bottomEdge, Edge topEdge, Material material, Renderer renderer) {
         //swap topEdge and bottomEdge if needed
         if (bottomEdge.v2.p_proj.y > topEdge.v2.p_proj.y) {
             Edge temp = bottomEdge;
@@ -75,21 +74,21 @@ public class TriangleRasterizer extends Rasterizer {
         }
 
         if (tallestEdge.handiness == 0) {
-            scanSegment(tallestEdge, bottomEdge, bottomEdge.yStart, bottomEdge.deltaYceil, material, renderContext);
+            scanSegment(tallestEdge, bottomEdge, bottomEdge.yStart, bottomEdge.deltaYceil, material, renderer);
 
-            scanSegment(tallestEdge, topEdge, topEdge.yStart, topEdge.deltaYceil, material, renderContext);
+            scanSegment(tallestEdge, topEdge, topEdge.yStart, topEdge.deltaYceil, material, renderer);
         } else {
-            scanSegment(bottomEdge, tallestEdge, bottomEdge.yStart, bottomEdge.deltaYceil, material, renderContext);
+            scanSegment(bottomEdge, tallestEdge, bottomEdge.yStart, bottomEdge.deltaYceil, material, renderer);
 
-            scanSegment(topEdge, tallestEdge, topEdge.yStart, topEdge.deltaYceil, material, renderContext);
+            scanSegment(topEdge, tallestEdge, topEdge.yStart, topEdge.deltaYceil, material, renderer);
         }
     }
 
 
-    private static void scanSegment(Edge left, Edge right, int y, float yChange, Material material, RenderContext renderContext) {
+    private static void scanSegment(Edge left, Edge right, int y, float yChange, Material material, Renderer renderer) {
         int i = 1;
         while (i <= yChange) {
-            rasterizeRow(left, right, y, material, renderContext);
+            rasterizeRow(left, right, y, material, renderer);
             left.step();
             right.step();
             y++;
