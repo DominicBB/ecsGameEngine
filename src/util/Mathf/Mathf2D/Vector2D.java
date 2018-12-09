@@ -1,6 +1,5 @@
 package util.Mathf.Mathf2D;
 
-import org.jetbrains.annotations.Contract;
 
 public class Vector2D {
     public float x;
@@ -86,32 +85,26 @@ public class Vector2D {
         return "[" + x + "," + y + "]";
     }
 
-    @Contract(" -> new")
     public static Vector2D newDown() {
         return new Vector2D(0f, -1f);
     }
 
-    @Contract(" -> new")
     public static Vector2D newUp() {
         return new Vector2D(0f, 1f);
     }
 
-    @Contract(" -> new")
     public static Vector2D newLeft() {
         return new Vector2D(-1f, 0f);
     }
 
-    @Contract(" -> new")
     public static Vector2D newRight() {
         return new Vector2D(1f, 0f);
     }
 
-    @Contract(" -> new")
     public static Vector2D newOnes() {
         return new Vector2D(1f, 1f);
     }
 
-    @Contract(" -> new")
     public static Vector2D newZeros() {
         return new Vector2D(0f, 0f);
     }

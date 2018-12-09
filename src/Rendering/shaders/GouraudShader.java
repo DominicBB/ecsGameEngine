@@ -13,7 +13,7 @@ import static Rendering.shaders.ShaderUtil.calculateSpecular;
 import static Rendering.shaders.ShaderUtil.diffuse;
 import static Rendering.shaders.ShaderUtil.ambient;
 
-public class StdShaderGouraud implements IShader {
+public class GouraudShader implements IShader {
 
     @Override
     public final VertexOut vert(Vertex vIn, Material material) {

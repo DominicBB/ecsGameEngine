@@ -1,6 +1,6 @@
 package Rendering.Materials;
 
-import Rendering.renderUtil.Bitmap;
+import Rendering.renderUtil.Bitmaps.Bitmap;
 
 public class MaterialCoef {
     private String name;

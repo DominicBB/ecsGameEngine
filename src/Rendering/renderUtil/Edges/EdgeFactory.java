@@ -1,7 +1,8 @@
-package Rendering.renderUtil;
+package Rendering.renderUtil.Edges;
 
 import Rendering.Materials.Material;
 import Rendering.renderUtil.Lerpers.LerperFactory;
+import Rendering.renderUtil.VertexOut;
 
 public class EdgeFactory {
 

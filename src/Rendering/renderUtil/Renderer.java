@@ -1,10 +1,9 @@
 package Rendering.renderUtil;
 
 import Rendering.Clipping.ClippingSystem;
-import Rendering.Clipping.TriangleClipper;
 import Rendering.Materials.Material;
 import Rendering.drawers.Draw;
-import util.Mathf.Mathf3D.Plane;
+import Rendering.renderUtil.Bitmaps.ColorBuffer;
 import util.Mathf.Mathf3D.Triangle;
 import util.FloatBuffer;
 import util.Mathf.Mathf3D.Vector3D;
@@ -24,8 +23,7 @@ public class Renderer {
         this.zBuffer = new FloatBuffer(width, height);
     }
 
-
-    public final void drawTriangle(Vertex v1, Vertex v2, Vertex v3, Material material) {
+    public void drawTriangle(Vertex v1, Vertex v2, Vertex v3, Material material) {
 
         /*List<Vertex> zClippedTriangles = clip(zPlanes, v1, v2, v3);
         if (zClippedTriangles.isEmpty()) return;*/

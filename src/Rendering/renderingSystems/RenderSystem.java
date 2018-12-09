@@ -24,7 +24,6 @@ public class RenderSystem extends EntityListnerSystem {
 
     final Renderer renderer;
 
-
     public RenderSystem() {
         super(Arrays.asList(RenderableMesh.class, TransformComponent.class));
         constructMoveToViewMatrix();

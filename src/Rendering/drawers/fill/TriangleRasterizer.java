@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Rendering.Materials.Material;
-import Rendering.renderUtil.Edge;
-import Rendering.renderUtil.EdgeFactory;
+import Rendering.renderUtil.Edges.Edge;
+import Rendering.renderUtil.Edges.EdgeFactory;
 import Rendering.renderUtil.Renderer;
 
 import Rendering.renderUtil.VertexOut;

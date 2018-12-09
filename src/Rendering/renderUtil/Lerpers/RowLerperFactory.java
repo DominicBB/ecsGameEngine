@@ -1,7 +1,7 @@
 package Rendering.renderUtil.Lerpers;
 
 import Rendering.Materials.Material;
-import Rendering.renderUtil.Bitmap;
+import Rendering.renderUtil.Bitmaps.Bitmap;
 import util.Mathf.Mathf2D.Vector2D;
 
 public class RowLerperFactory extends BaseLerperFactory {

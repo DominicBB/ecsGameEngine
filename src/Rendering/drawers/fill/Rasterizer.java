@@ -3,7 +3,7 @@ package Rendering.drawers.fill;
 import java.util.List;
 
 import Rendering.Materials.Material;
-import Rendering.renderUtil.Edge;
+import Rendering.renderUtil.Edges.Edge;
 import Rendering.renderUtil.Lerpers.LerpValues;
 import Rendering.renderUtil.Lerpers.RowLerperFactory;
 import Rendering.renderUtil.Renderer;

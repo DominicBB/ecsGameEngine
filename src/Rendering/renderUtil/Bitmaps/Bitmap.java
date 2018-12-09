@@ -1,4 +1,4 @@
-package Rendering.renderUtil;
+package Rendering.renderUtil.Bitmaps;
 
 import util.Mathf.Mathf3D.Vector3D;
 

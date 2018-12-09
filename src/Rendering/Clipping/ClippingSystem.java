@@ -22,8 +22,6 @@ public class ClippingSystem {
         return needsClipping(aabb);
     }
 
-
-
     private static ClippingMode needsClipping(AABoundingBox aabb) {
         AABoundingBox projectedBox = new AABoundingBox(
                 RenderState.mvp.multiply4x4(aabb.getCenter()),

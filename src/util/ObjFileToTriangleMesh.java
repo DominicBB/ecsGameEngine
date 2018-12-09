@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import Rendering.renderUtil.TriangleMesh;
+import Rendering.renderUtil.Meshes.TriangleMesh;
 import util.Mathf.Mathf2D.Vector2D;
 import util.Mathf.Mathf3D.Bounds.AABoundingBox;
 import util.Mathf.Mathf3D.Quad;
@@ -22,11 +22,7 @@ public class ObjFileToTriangleMesh {
 
     //	private static String faceLine = "f\\s([0-9]+(\\/[0-9]+)?\\s){3}";
     private static String faceSplit = "([0-9]+(\\/[0-9]+)?\\s)";
-
-
-
-
-
+    
     public static TriangleMesh loadFromPath(String path) {
         File file = new File(path);
         try {
@@ -114,16 +110,17 @@ public class ObjFileToTriangleMesh {
         return null;
     }
 
+    private static Vector3D minExtents;
+    private static Vector3D maxExtents;
     private static void updateBoundingBox(TriangleMesh triangleMesh, Vector3D vector3D) {
-        AABoundingBox aabb = triangleMesh.aaBoundingBox;
-        if (vector3D.x > aabb.maxExtents.x) aabb.maxExtents.x = vector3D.x;
-        if (vector3D.x < aabb.minExtents.x) aabb.minExtents.x = vector3D.x;
+        if (vector3D.x > maxExtents.x) maxExtents.x = vector3D.x;
+        if (vector3D.x < minExtents.x) minExtents.x = vector3D.x;
 
-        if (vector3D.y > aabb.maxExtents.y) aabb.maxExtents.y = vector3D.y;
-        if (vector3D.y < aabb.minExtents.y) aabb.minExtents.y = vector3D.y;
+        if (vector3D.y > maxExtents.y) maxExtents.y = vector3D.y;
+        if (vector3D.y < minExtents.y) minExtents.y = vector3D.y;
 
-        if (vector3D.z > aabb.maxExtents.z) aabb.maxExtents.z = vector3D.z;
-        if (vector3D.z < aabb.minExtents.z) aabb.minExtents.z = vector3D.z;
+        if (vector3D.z > maxExtents.z) maxExtents.z = vector3D.z;
+        if (vector3D.z < minExtents.z) minExtents.z = vector3D.z;
     }
 
     private static Vector3D readVector(String line) {

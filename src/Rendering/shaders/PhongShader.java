@@ -13,7 +13,7 @@ import static Rendering.shaders.ShaderUtil.calculateSpecular;
 import static Rendering.shaders.ShaderUtil.diffuse;
 import static Rendering.shaders.ShaderUtil.ambient;
 
-public class StandardShaderPhong implements IShader {
+public class PhongShader implements IShader {
     @Override
     public final VertexOut vert(Vertex vIn, Material material) {
 

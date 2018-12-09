@@ -6,7 +6,7 @@ import Rendering.renderUtil.Renderer;
 import util.FloatBuffer;
 import util.Mathf.Mathf3D.Vector3D;
 
-abstract class ShaderUtil {
+final class ShaderUtil {
     /**
      * Expensive :)
      *

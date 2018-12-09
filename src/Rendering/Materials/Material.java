@@ -1,8 +1,8 @@
 package Rendering.Materials;
 
-import Rendering.renderUtil.Bitmap;
+import Rendering.renderUtil.Bitmaps.Bitmap;
 import Rendering.renderUtil.Colorf;
-import Rendering.renderUtil.Texture;
+import Rendering.renderUtil.Bitmaps.Texture;
 import Rendering.shaders.interfaces.IGeometryShader;
 import Rendering.shaders.interfaces.IShader;
 import util.Mathf.Mathf;

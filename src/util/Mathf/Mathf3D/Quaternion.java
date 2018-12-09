@@ -13,8 +13,13 @@ public class Quaternion {
         this.w = w;
     }
 
-    public Quaternion(float theta, Vector3D axis) {
-        float halfA = theta / 2f;
+    /**
+     *
+     * @param angle in radians
+     * @param axis
+     */
+    public Quaternion(float angle, Vector3D axis) {
+        float halfA = angle / 2f;
         w = (float) Math.cos(halfA);
         float sinHalfA = (float) Math.sin(halfA);
         x = axis.x * sinHalfA;
@@ -60,6 +65,10 @@ public class Quaternion {
         return new Quaternion(x - q.x, y - q.y, z - q.z, w - q.w);
     }
 
+    public float dotProduct(Quaternion other) {
+        return x * other.x + y * other.y + z * other.z + w * other.w;
+    }
+
     public Quaternion multiply(Quaternion q) {
         return new Quaternion(
                 x * q.getW() + w * q.getX() + y * q.getZ() - z * q.getY(),
@@ -80,7 +89,53 @@ public class Quaternion {
 
     public Vector3D rotate(Vector3D v) {
         Quaternion q = multiply(v);
-        return new Vector3D(q.x,q.y,q.z);
+        return new Vector3D(q.x, q.y, q.z);
+    }
+
+    public Matrix4x4 toMatrix4x4() {
+        return Matrix4x4.newRotation(this);
+    }
+
+    public static Quaternion newIdentity() {
+        return new Quaternion(0f, 0f, 0f, 1f);
+    }
+
+    public static Quaternion newFromRotationMatrix4x4(Matrix4x4 rotMatrix) {
+        return null; //TODO:
+    }
+
+    private static final float LERP_INSTEAD_THREASHHOLD = 0.995f;
+
+    public static Quaternion slerp(Quaternion from, Quaternion to, float t) {
+        from.normalise();
+        to.normalise();
+
+        float dot = from.dotProduct(to);
+
+        if (dot < 0.0f) {
+            to = to.scale(-1);
+            dot = -dot;
+        }
+
+        if (dot > LERP_INSTEAD_THREASHHOLD) {
+            return lerp(from, to, t);
+        }
+
+        float theta_0 = (float) Math.acos(dot);
+        float theta = theta_0 * t;
+        float sin_theta = (float) Math.sin(theta);
+        float sin_theta_0 = (float) Math.sin(theta_0);
+
+        float s0 = (float) Math.cos(theta) - dot * sin_theta / sin_theta_0;
+        float s1 = sin_theta / sin_theta_0;
+
+        return from.scale(s0).plus(to.scale(s1));
+    }
+
+    public static Quaternion lerp(Quaternion from, Quaternion to, float t) {
+        Quaternion result = from.plus(to.minus(from)).scale(t);
+        result.normalise();
+        return result;
     }
 
     public float getX() {

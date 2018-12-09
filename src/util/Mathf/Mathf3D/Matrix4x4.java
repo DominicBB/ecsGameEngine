@@ -1,8 +1,5 @@
 package util.Mathf.Mathf3D;
 
-import components.Camera;
-import components.Scene;
-
 public class Matrix4x4 {
 
     private float[][] values;
@@ -177,14 +174,62 @@ public class Matrix4x4 {
         });
     }
 
-    public static Matrix4x4 newRotation(Quaternion q) {
-        return new Matrix4x4(new float[][]{
-                {q.getW(), q.getZ(), -q.getX(), -q.getY()},
-                {-q.getZ(), q.getW(), q.getY(), -q.getX()},
-                {q.getX(), -q.getY(), q.getW(), -q.getZ()},
-                {q.getY(), q.getX(), q.getZ(), q.getW()}
-        });
+    /**
+     * QUATERNION MUST BE NORMALISED
+     *
+     * @param q QUATERNION MUST BE NORMALISED
+     * @return
+     */
+    public static Matrix4x4 newRotationNormalisedQ(Quaternion q) {
+        float xx = q.getX() * q.getX();
+        float xy = q.getX() * q.getY();
+        float xz = q.getX() * q.getZ();
+        float xw = q.getX() * q.getW();
 
+        float yy = q.getY() * q.getY();
+        float yz = q.getY() * q.getZ();
+        float yw = q.getY() * q.getW();
+
+        float zz = q.getZ() * q.getZ();
+        float zw = q.getZ() * q.getW();
+
+        return new Matrix4x4(new float[][]{
+                {1 - 2 * (yy + zz), 2 * (xy + zw), 2 * (xz + yw), 0.0f},
+                {2 * (xy + zw), 1 - 2 * (xx + zz), 2 * (yz + xw), 0.0f},
+                {2 * (xz - yw), 2 * (yz + xw), 1 - 2 * (xx + yy), 0.0f},
+                {0.0f, 0.0f, 0.0f, 1.0f}
+        });
+    }
+
+    /**
+     *
+     * @param q
+     * @return
+     */
+    public static Matrix4x4 newRotation(Quaternion q) {
+        float sqw = q.getW() * q.getW();
+        float sqx = q.getX() * q.getX();
+        float sqy = q.getY() * q.getY();
+        float sqz = q.getZ() * q.getZ();
+
+        float invs = 1 / (sqx + sqy + sqz + sqw);
+
+        float xy = q.getX() * q.getY();
+        float zw = q.getZ() * q.getW();
+
+        float xz = q.getX() * q.getZ();
+        float yw = q.getY() * q.getW();
+
+        float yz = q.getY() * q.getZ();
+        float xw = q.getX() * q.getW();
+
+
+        return new Matrix4x4(new float[][]{
+                {(sqx - sqy - sqz + sqw) * invs,2.0f * (xy - zw)*invs ,2.0f * (xz + yw) * invs , 0.0f},
+                {2.0f * (xy + zw)*invs * invs,(-sqx + sqy - sqz + sqw) * invs, 2.0f * (yz - xw) * invs, 0.0f},
+                {2.0f * (xz - yw) * invs, 2.0f * (yz + xw) * invs, (-sqx - sqy + sqz + sqw) * invs, 0.0f},
+                {0.0f, 0.0f, 0.0f, 1.0f}
+        });
     }
 
     public static Matrix4x4 newRotation(Vector3D r) {

@@ -1,4 +1,4 @@
-package Rendering.renderUtil;
+package Rendering.renderUtil.Bitmaps;
 
 public class Texture {
     public Bitmap texture;
