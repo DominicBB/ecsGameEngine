@@ -1,5 +1,7 @@
 package core;
 
+import Rendering.renderUtil.Bitmaps.Bitmap;
+import Rendering.renderUtil.Bitmaps.ColorBuffer;
 import core.coreSystems.InputSystem;
 import Rendering.renderUtil.Renderer;
 
@@ -75,10 +77,9 @@ public class Window extends JFrame {
         fps = frames;
     }
 
-    public void update(Renderer renderer) {
+    public void update(Bitmap colorBuffer) {
         this.requestFocus();
-
-        renderer.colorBuffer.copyTo3BGR(displayImageContents);
+        colorBuffer.copyTo3BGR(displayImageContents);
         graphics.drawImage(displayImage, 0, 0, null);
         bufferStrategy.show();
     }

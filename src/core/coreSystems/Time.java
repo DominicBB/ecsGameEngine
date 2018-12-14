@@ -16,22 +16,25 @@ public class Time {
     static long deltaNano;
     static double numUpdatesTodo;
 
-    static void start(){
+    static void start() {
         startTime = System.currentTimeMillis();
         lastTime = System.nanoTime();
     }
 
-    static void updateTimes(double ns) {
+    static void updateTimes() {
         nanoTime = System.nanoTime();
         timeMili = System.currentTimeMillis();
-        time = timeMili/1000f;
+        time = (float) timeMili / 1000f;
 
         deltaNano = nanoTime - lastTime;
-        unscaledDeltaTime = (float) (deltaNano / 1000000000.0);
+        unscaledDeltaTime = (float) ((double) deltaNano / 1000000000.0);
         deltaTime = unscaledDeltaTime * timeScale;
 
-        numUpdatesTodo += deltaNano / ns;
         lastTime = nanoTime;
+    }
+
+    static void updateNumUpdatesToDo(double ns) {
+        numUpdatesTodo += ((double) (System.nanoTime() - lastTime)) / ns;
     }
 
     public static float timeScale = 1f;

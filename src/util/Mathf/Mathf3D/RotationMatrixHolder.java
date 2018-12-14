@@ -1,5 +1,6 @@
 package util.Mathf.Mathf3D;
 
+@Deprecated
 public class RotationMatrixHolder {
 
 	public Matrix4x4 zRot;

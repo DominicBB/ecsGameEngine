@@ -59,7 +59,7 @@ public class ObjFileToIndexedMesh {
                     vnDict.add(readVector(line));
                 }
 
-                //texture
+                //texturePath
                 else if (line.startsWith("vt")) {
                     vtDict.add(readVector(line));
                 }
@@ -83,24 +83,25 @@ public class ObjFileToIndexedMesh {
                         //start at 1 so skip line start ("f")
                         for (i = 1; i < faceVertices.length; i++) {
                             String[] v_vt_vn = faceVertices[i].split("\\/");
-                            vIndexs[i - 1] = Integer.parseInt(v_vt_vn[0]);
+                            vIndexs[i - 1] = Integer.parseInt(v_vt_vn[0])-1;
 
                             //get vertex
                             Vertex v = vertices.get(vIndexs[i - 1]);
 
-                            //add texture to vertex
-                            if (v_vt_vn.length > 2) {
-                                Vector3D tx = vtDict.get(Integer.parseInt(v_vt_vn[1]));
+                            //add texturePath to vertex
+                            if (v_vt_vn.length > 1) {
+                                Vector3D tx = vtDict.get(Integer.parseInt(v_vt_vn[1])-1);
                                 if (tx != null) {
                                     v.texCoord = new Vector2D(tx.x, tx.y);
                                 }
                             }
 
                             //add normal to vertex
-                            if (v_vt_vn.length > 3) {
-                                Vector3D vn = vnDict.get(Integer.parseInt(v_vt_vn[2]));
+                            if (v_vt_vn.length > 2) {
+                                Vector3D vn = vnDict.get(Integer.parseInt(v_vt_vn[2])-1);
                                 if (vn != null) {
                                     v.normal = new Vector3D(vn.x, vn.y, vn.z);
+                                    v.normal.normalise();
                                 }
                             }
                         }

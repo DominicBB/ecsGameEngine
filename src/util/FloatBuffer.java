@@ -12,7 +12,7 @@ public class FloatBuffer {
         this.fBuffer = new float[width * height];
     }
 
-    public float getFloat(int index){
+    public float getFloat(int index) {
         return fBuffer[index];
     }
 
@@ -24,9 +24,10 @@ public class FloatBuffer {
         this.fBuffer[y * width + x] = value;
     }
 
-    public void setFloat(int index, float value){
+    public void setFloat(int index, float value) {
         fBuffer[index] = value;
     }
+
     public float[] getBuffer() {
         return fBuffer;
     }

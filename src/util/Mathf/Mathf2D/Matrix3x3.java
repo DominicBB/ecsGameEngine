@@ -75,7 +75,7 @@ public class Matrix3x3 {
     }
 
 
-    public static Matrix3x3 newProjectionMatrix(Scene s, Camera c) {
+    public static Matrix3x3 newProjection(Scene s, Camera c) {
         return new Matrix3x3(
                 new float[][] {
                         { s.aRatio* c.fFov, 0.0f, 0.0f, 0.0f },

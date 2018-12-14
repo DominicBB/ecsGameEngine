@@ -1,13 +1,20 @@
 package Rendering.renderingSystems;
 
 
+import Rendering.Clipping.ClippingSystem;
+import Rendering.drawers.Draw;
+import Rendering.renderUtil.RenderState;
 import Rendering.renderUtil.Renderer;
+import Rendering.renderUtil.Vertex;
 import components.*;
-import core.coreSystems.EntityListnerSystem;
+import core.coreSystems.EntityGrabberSystem;
+import util.Mathf.Mathf3D.Matrix4x4;
+import util.Mathf.Mathf3D.Vector3D;
 
 import java.util.Arrays;
+import java.util.List;
 
-public class WireFrameRenderSystem extends EntityListnerSystem {
+public class WireFrameRenderSystem extends EntityGrabberSystem {
 
     private final RenderSystem renderSystem;
 
@@ -20,7 +27,18 @@ public class WireFrameRenderSystem extends EntityListnerSystem {
     public void render(RenderableMesh renderableMesh, TransformComponent transformComponent, Renderer renderer) {
 
 //            wireframeMesh(transformComponent, renderableMesh, mvp);
+        switch (ClippingSystem.decideClippingMode(renderableMesh.aaBoundingBox)) {
+            case ALLOUTSIDE:
+                return;
+            case CLIPPING:
+                ClippingSystem.needsClipping = true;
+                break;
+            case ALLINSIDE:
+                ClippingSystem.needsClipping = false;
+                break;
+        }
 
+        renderableMesh.indexedMesh.drawWireframe(renderer, renderableMesh.material, transformComponent.transform);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package Rendering.shaders.interfaces;
 
 import Rendering.Materials.Material;
-import Rendering.renderUtil.Lerpers.LerpValues;
+import Rendering.renderUtil.Lerpers.Interpolants;
 import Rendering.renderUtil.Vertex;
 import Rendering.renderUtil.VertexOut;
 import Rendering.shaders.ShaderType;
@@ -13,6 +13,6 @@ public interface IShader {
 
     VertexOut vert(Vertex vertex, Material material);
 
-    Vector3D frag(LerpValues vertex, FloatBuffer zBuffer, Material material);
+    Vector3D frag(Interpolants vertex, FloatBuffer zBuffer, Material material);
 
 }

@@ -4,8 +4,8 @@ package Rendering.renderUtil.Lerpers;
 import util.Mathf.Mathf2D.Vector2D;
 import util.Mathf.Mathf3D.Vector3D;
 
-public class LerpValues {
-    Vector3D pos_proj;
+public class Interpolants {
+    Vector3D p_proj;
 
     private int yInt = 0;
     private int xInt = 0;
@@ -14,6 +14,7 @@ public class LerpValues {
     private Vector2D specCoord;
 
     private float specularity;
+    private float invW;
 
     private Vector3D surfaceColor;
 
@@ -22,26 +23,27 @@ public class LerpValues {
 
     private ILerper lerper;
 
-    public LerpValues(Vector3D pos_proj, int yInt, Vector2D textCoord, Vector2D specCoord,
-                      float specularity, Vector3D surfaceColor) {
-        this.pos_proj = pos_proj;
+    public Interpolants(Vector3D p_proj, int yInt, Vector2D textCoord, Vector2D specCoord,
+                        float specularity, Vector3D surfaceColor, float invW) {
+        this.p_proj = p_proj;
         this.yInt = yInt;
         this.textCoord = textCoord;
         this.specCoord = specCoord;
         this.specularity = specularity;
         this.surfaceColor = surfaceColor;
+        this.invW = invW;
     }
 
     public void lerp() {
         lerper.lerp(this);
     }
 
-    public Vector3D getPos_proj() {
-        return pos_proj;
+    public Vector3D getP_proj() {
+        return p_proj;
     }
 
-    public void setPos_proj(Vector3D pos_proj) {
-        this.pos_proj = pos_proj;
+    public void setP_proj(Vector3D p_proj) {
+        this.p_proj = p_proj;
     }
 
     public int getyInt() {
@@ -84,6 +86,14 @@ public class LerpValues {
         this.specularity = specularity;
     }
 
+    public float getInvW() {
+        return invW;
+    }
+
+    public void setInvW(float invW) {
+        this.invW = invW;
+    }
+
     public Vector3D getSurfaceColor() {
         return surfaceColor;
     }
@@ -108,36 +118,40 @@ public class LerpValues {
         this.p_ws = p_ws;
     }
 
-    public void setLerper(ILerper gouruadLerper) {
+    public void setLerper(ILerper lerper) {
         this.lerper = lerper;
     }
 
     public void reset() {
-        this.pos_proj = Vector3D.ZERO;
+        this.p_proj = Vector3D.ZERO;
         this.yInt = 0;
         this.textCoord = Vector2D.ZERO;
         this.specCoord = Vector2D.ZERO;
         this.specularity = 0f;
-        this.surfaceColor = Vector3D.ZERO;
+        this.surfaceColor = Vector3D.ONE;
     }
 
-    public final void reset(Vector3D pos_proj, int yStart, Vector2D texCoord, Vector2D specCoord, float spec, Vector3D surfaceColor) {
-        this.pos_proj = pos_proj;
+    public final void reset(Vector3D p_proj, int yStart, Vector2D texCoord, Vector2D specCoord,
+                            float spec, Vector3D surfaceColor, float invW) {
+
+        this.p_proj = new Vector3D(p_proj.x, p_proj.y, p_proj.z, p_proj.w);
         this.yInt = yStart;
-        this.textCoord = texCoord;
-        this.specCoord = specCoord;
+        this.textCoord = new Vector2D(texCoord.x, texCoord.y);
+        this.specCoord = new Vector2D(specCoord.x, specCoord.y);
         this.specularity = spec;
-        this.surfaceColor = surfaceColor;
+        this.surfaceColor = new Vector3D(surfaceColor.x, surfaceColor.y, surfaceColor.z, surfaceColor.w);
+        this.invW = invW;
     }
 
-    public static LerpValues newEmpty() {
-        return new LerpValues(
+    public static Interpolants newEmpty() {
+        return new Interpolants(
                 Vector3D.newOnes(),
                 0,
                 Vector2D.newOnes(),
                 Vector2D.newOnes(),
                 0f,
-                Vector3D.newOnes()
+                Vector3D.newOnes(),
+                1f
         );
     }
 }

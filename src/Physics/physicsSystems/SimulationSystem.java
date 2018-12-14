@@ -16,8 +16,8 @@ public class SimulationSystem extends PhysicsSystem {
 
     @Override
     public void update() {
-        for (int entityID : entityListner.getEntityIDsOfInterest()) {
-            Component[] relevantComponents = entityListner.getRelevantComponents(entityID);
+        for (int entityID : entityGrabber.getEntityIDsOfInterest()) {
+            Component[] relevantComponents = entityGrabber.getRelevantComponents(entityID);
             RigidBody rigidBody = (RigidBody) relevantComponents[0];
             TransformComponent transformComponent = (TransformComponent) relevantComponents[1];
 
@@ -38,7 +38,7 @@ public class SimulationSystem extends PhysicsSystem {
 
     private void moveEntity(RigidBody rigidBody, TransformComponent transform) {
 //        Matrix4x4.newTranslation(rigidBody.velocity.mul(Time.getDeltaTime())).multiply4x4(transform.transform.position);
-        transform.transform.position.add(rigidBody.velocity.mul(Time.getDeltaTime()));
+        transform.transform.translate(rigidBody.velocity.mul(Time.getDeltaTime()));
     }
 
 

@@ -1,8 +1,7 @@
 package listners;
 
 import components.Component;
-import core.coreSystems.EntityListnerSystem;
-import core.coreSystems.GameSystem;
+import core.coreSystems.EntityGrabberSystem;
 import core.coreSystems.SystemCommunicator;
 import util.Bag;
 import util.IntBag;
@@ -11,18 +10,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class EntityListner {
+public abstract class EntityGrabber {
     protected final Collection<Class<? extends Component>> requiredComponents;
 
-    protected EntityListnerSystem attachedTo;
+    protected EntityGrabberSystem attachedTo;
     protected IntBag componentIndexsOfInterest;
     protected List<Integer> entityIDsOfInterest = new ArrayList<>();
 
 
-    public EntityListner(List<Class<? extends Component>> requiredComponents, EntityListnerSystem entityListnerSystem) {
+    public EntityGrabber(List<Class<? extends Component>> requiredComponents, EntityGrabberSystem entityGrabberSystem) {
         this.requiredComponents = requiredComponents;
         componentIndexsOfInterest = new IntBag(requiredComponents.size(), 10);
-        attachedTo = entityListnerSystem;
+        attachedTo = entityGrabberSystem;
         SystemCommunicator.registerEntityListner(this);
         SystemCommunicator.onEntityListnerCreate(this);
     }
@@ -34,7 +33,10 @@ public abstract class EntityListner {
     public void addComponentsOfInterest(int[] componentIndexs, int entityID) {
         componentIndexsOfInterest.set(componentIndexs, entityID);
         entityIDsOfInterest.add(entityID);
+        onEntityGrabbed(componentIndexs, entityID);
     }
+
+    public abstract void onEntityGrabbed(int[] componentIndexs, int entityID);
 
     public Bag<Component> getAllComponentsOnEntity(int entityID){
         return SystemCommunicator.getAllComponentsOnEntity(entityID);
@@ -58,7 +60,7 @@ public abstract class EntityListner {
                 getComponentIndexsOfInterest().get(entityID));
     }
 
-    public EntityListnerSystem getAttachedTo() {
+    public EntityGrabberSystem getAttachedTo() {
         return attachedTo;
     }
 

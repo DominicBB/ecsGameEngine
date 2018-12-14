@@ -43,7 +43,8 @@ public class TriangleClipper {
 
     private static boolean checkEachTriangle(Plane plane, List<VertexOut> vertices) {
         int triangleCompletlyOutsideCount = 0;
-        for (int i = 0; i < vertices.size(); i += 3) {
+        final int end = vertices.size() - 1;
+        for (int i = 0; i < end; i += 3) {
             linesToClip(plane, vertices.get(i));
             linesToClip(plane, vertices.get(i + 1));
             linesToClip(plane, vertices.get(i + 2));
@@ -142,14 +143,15 @@ public class TriangleClipper {
         //TODO: optimise with regards to material
         Vector3D newP_proj = intersectPoint(scaler, inside.p_proj, outside.p_proj);
         Vector2D newTexCoord = intersectPoint(scaler, inside.texCoord, outside.texCoord);
-        Vector2D newSpecCoord = intersectPoint(scaler, inside.specCoord, outside.specCoord);
-        float spec = intersectPoint(scaler, inside.spec, outside.spec);
+        Vector2D newSpecCoord = inside.specCoord;/* intersectPoint(scaler, inside.specCoord, outside.specCoord);*/
+        float spec = 1f;/* intersectPoint(scaler, inside.spec, outside.spec);*/
         Vector3D sColor = intersectPoint(scaler, inside.surfaceColor, outside.surfaceColor);
-        Vector3D newP_ws = intersectPoint(scaler, inside.p_ws, outside.p_ws);
-        Vector3D newN_ws = intersectPoint(scaler, inside.n_ws, outside.n_ws);
+        /*Vector3D newP_ws = intersectPoint(scaler, inside.p_ws, outside.p_ws);
+        Vector3D newN_ws = intersectPoint(scaler, inside.n_ws, outside.n_ws);*/
+        float invZ = intersectPoint(scaler, inside.invW, outside.invW);
 
 
-        return new VertexOut(newP_proj, newTexCoord, newSpecCoord, spec, sColor, newN_ws, newP_ws);
+        return new VertexOut(newP_proj, newTexCoord, newSpecCoord, spec, sColor, null, null, invZ);
     }
 
     private static Vector3D intersectPoint(float scaler, Vector3D inside, Vector3D outside) {

@@ -21,7 +21,7 @@ public class Bitmap {
     }
 
     /**
-     * loads an image from file, useful for texture mapping
+     * loads an image from file, useful for texturePath mapping
      *
      * @param filename
      * @throws IOException
@@ -57,10 +57,10 @@ public class Bitmap {
      */
     public void setPixel(int x, int y, Vector3D color) {
         setPixel(x, y,
-                (byte) (((int) color.w >> 24) & 0xFF),
-                (byte) (((int) color.z) & 0xFF),
-                (byte) (((int) color.y >> 8) & 0xFF),
-                (byte) (((int) color.x >> 16) & 0xFF)
+                (byte) (((int) color.w) & 0xFF),
+                (byte) (((int) color.x) & 0xFF),
+                (byte) (((int) color.y) & 0xFF),
+                (byte) (((int) color.z) & 0xFF)
         );
     }
 

@@ -6,9 +6,8 @@ public class Transform {
     private Quaternion rotation;
     //private Vector3D rotation;
     private Vector3D scale;
-    private Vector3D translation;
 
-    public Vector3D position;
+    private Vector3D position;
 
     private Vector3D forwardDir;
     private Vector3D upDir;
@@ -24,7 +23,6 @@ public class Transform {
         this.upDir = Vector3D.newUp();
         this.rightDir = Vector3D.newRight();
         this.scale = Vector3D.newOnes();
-        this.translation = Vector3D.newZeros();
         this.rotation = Quaternion.newIdentity();
 
         this.aaBoundingBox = AABoundingBox.zeros();
@@ -33,9 +31,13 @@ public class Transform {
     }
 
     public void translate(float x, float y, float z) {
-        translation.x += x;
-        translation.y += y;
-        translation.z += z;
+        position.x += x;
+        position.y += y;
+        position.z += z;
+    }
+
+    public void translate(Vector3D position) {
+        this.position.add(position);
     }
 
     public void scale(float x, float y, float z) {
@@ -56,7 +58,7 @@ public class Transform {
     }
 
     public void rotate(Quaternion rotation) {
-        rotation.multiply(rotation);
+        this.rotation = rotation.multiply(this.rotation);
         updateDirections(rotation);
     }
 
@@ -72,15 +74,17 @@ public class Transform {
 
 
     public Matrix4x4 compose() {
-        return Matrix4x4.newTranslation(translation).compose(Matrix4x4.newScale(scale)).
-                compose(Matrix4x4.newRotation(rotation));
+        return Matrix4x4.newRotation(rotation).compose(Matrix4x4.newScale(scale)).
+                compose(Matrix4x4.newTranslation(position));
+        /*return Matrix4x4.newTranslation(position).compose(Matrix4x4.newScale(scale)).
+                compose(Matrix4x4.newRotation(rotation));*/
     }
 
 
     public Matrix4x4 composeWith(Transform transform2) {
         Quaternion newR = rotation.multiply(transform2.rotation);
         Vector3D newS = scale.plus(transform2.scale);
-        Vector3D newT = translation.plus(transform2.translation);
+        Vector3D newT = position.plus(transform2.position);
 
         Matrix4x4 rot = Matrix4x4.newRotation(newR);
         Matrix4x4 compsedScale = Matrix4x4.newScale(newS);
@@ -97,7 +101,7 @@ public class Transform {
         this.rightDir = rotation.rotate(rightDir);
     }
 
-    private void setDirections(Quaternion rotation){
+    private void setDirections(Quaternion rotation) {
         this.upDir = rotation.rotate(Vector3D.UP);
         this.forwardDir = rotation.rotate(Vector3D.FORWARD);
         this.rightDir = rotation.rotate(Vector3D.RIGHT);
@@ -142,8 +146,18 @@ public class Transform {
         return scale;
     }
 
-    public Vector3D getTranslation() {
-        return translation;
+    public Vector3D getPosition() {
+        return position;
+    }
+
+    public void setPosition(float x, float y, float z) {
+        this.position.x = x;
+        this.position.y = y;
+        this.position.z = z;
+    }
+
+    public void setPosition(Vector3D position) {
+        this.position = position;
     }
 
     private Vector3D calcUpFromDir(Vector3D dir) {

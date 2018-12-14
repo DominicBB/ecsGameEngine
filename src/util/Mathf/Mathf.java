@@ -5,10 +5,15 @@ import util.Mathf.Mathf3D.Vector3D;
 
 public class Mathf {
     public static final float epsilon = 0.00000001f;
+    public static final float PI = (float) Math.PI;
 
     public static float clamp(float min, float value, float max) {
         return (value > max) ? max : (value < min) ? min : value;
     }
+
+    /*public static float clamp(float min, float value, float max) {
+        return (value < max) ? (value > min) ? value : min : max;
+    }*/
 
     public static Vector3D clamp(Vector3D minComponents, Vector3D value, Vector3D maxComponents) {
         return new Vector3D(
@@ -34,5 +39,17 @@ public class Mathf {
 
     public static float abs(float f) {
         return (f < 0f) ? -f : f;
+    }
+
+    public static float lerp(float from, float to, float lerpAmt) {
+        return from + ((to - from) * lerpAmt);
+    }
+
+    public static float toRadians(float angleDeg) {
+        return angleDeg / 180.0f * PI;
+    }
+
+    public static float unsafeMax(float f0, float f1) {
+        return (f0 >= f1) ? f0 : f1;
     }
 }

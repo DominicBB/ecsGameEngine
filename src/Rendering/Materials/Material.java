@@ -64,6 +64,9 @@ public class Material {
 
     public void setShader(IShader shader) {
         this.shader = shader;
+        if (shader instanceof IGeometryShader) {
+            setGeometryShader((IGeometryShader) shader);
+        }
     }
 
     public IGeometryShader getGeometryShader() {

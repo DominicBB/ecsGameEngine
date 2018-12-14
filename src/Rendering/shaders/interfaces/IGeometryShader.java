@@ -6,5 +6,5 @@ import Rendering.renderUtil.VertexOut;
 
 public interface IGeometryShader {
     int getVerticesPerPrimitive();
-    VertexOut[] geom(VertexOut[] vertexOut, Renderer renderer, Material material);
+    VertexOut[] geom(VertexOut[] vertexOut, Material material);
 }

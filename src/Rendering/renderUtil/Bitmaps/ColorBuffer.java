@@ -17,6 +17,4 @@ public class ColorBuffer extends Bitmap {
         byteArray[buffIndex + 2] = (byte) ((bitmap.byteArray[tIndex + 2] & 0xFF) * shade.y); //g
         byteArray[buffIndex + 3] = (byte) ((bitmap.byteArray[tIndex + 3] & 0xFF) * shade.x);//r
     }
-
-
 }

@@ -48,7 +48,7 @@ public class ObjFileToTriangleMesh {
                 if (line.startsWith("vn")) {
                     vnDict[vnCount++] = readVector(line);
                 }
-                //texture mappings
+                //texturePath mappings
                 else if (line.startsWith("vt")) {
                     vtDict[vtCount++] = readVector(line);
                 }
@@ -75,7 +75,7 @@ public class ObjFileToTriangleMesh {
                             String[] f_vt_vn = face[i].split("\\/");
                             //take f
                             vectors[i - 1] = vecterDict[Integer.parseInt(f_vt_vn[0])];
-                            //texture
+                            //texturePath
                             if (f_vt_vn.length > 2) {
                                 Vector3D tx = vtDict[Integer.parseInt(f_vt_vn[1])];
                                 if (tx != null) {

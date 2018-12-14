@@ -2,7 +2,9 @@ package core.coreSystems;
 
 import Physics.physicsSystems.PhysicsSystem;
 import Rendering.renderingSystems.RenderSystem;
+import core.EntityFactory;
 import core.Window;
+import listners.EntityGrabber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +27,7 @@ public abstract class ECSSystem extends BaseSystem implements Runnable {
     private core.Window window;
 
 
-    private double updatesPerSecond;
+    private double updatesPerSecond = 60.0;
     private long frameTimer;
     private int framesCount;
 
@@ -33,36 +35,43 @@ public abstract class ECSSystem extends BaseSystem implements Runnable {
         SystemCommunicator.setEcsSystem(this);
         SystemCommunicator.setComponentSystem(componentSystem);
         this.window = new core.Window();
+        EntityFactory.entitySystem = entitySystem;
+        renderSystem = new RenderSystem();
     }
 
     @Override
     public void run() {
         Time.start();
 
-        double ns = 1000000000.0 / updatesPerSecond;
+        double nsPerUpdate = 1000000000.0 / updatesPerSecond;
         frameTimer = Time.getStartTime();
         framesCount = 0;
         boolean render;
 
         while (isRunning) {
             render = false;
+//            Time.updateTimes();
+            Time.updateNumUpdatesToDo(nsPerUpdate);
             while (Time.numUpdatesTodo >= 1) {
-                Time.updateTimes(ns);
+                Time.updateTimes();//TODO
+//                System.out.println(Time.getDeltaTime()+" DELTA");
+//                System.out.println(Time.numUpdatesTodo+" numUpdates");
                 physicsUpdate();
                 doUpdates();
                 Time.numUpdatesTodo--;
                 render = true;
             }
 
-            if(render){
+            if (render) {
                 renderUpdate();
                 framesCount++;
             }
             upkeepFps();
+
         }
     }
 
-    private void physicsUpdate(){
+    private void physicsUpdate() {
 
     }
 
@@ -71,14 +80,14 @@ public abstract class ECSSystem extends BaseSystem implements Runnable {
         this.updateGameSystems();
     }
 
-    private void renderUpdate(){
+    private void renderUpdate() {
         renderSystem.update();
-        window.update(renderSystem.getRenderer());
+        window.update(renderSystem.getRenderer().colorBuffer);
 
     }
 
-    private void upkeepFps(){
-        if (Time.time - frameTimer > 1000) {
+    private void upkeepFps() {
+        if (Time.timeMili - frameTimer > 1000) {
             frameTimer += 1000;
             window.setFPS(framesCount);
             System.out.println(framesCount);

@@ -10,6 +10,7 @@ public class GouruadLerper implements ILerper {
     public final Vector2D specCoordStep;
 
     public float specStep;
+    public float invWStep;
 
 
     public GouruadLerper() {
@@ -18,36 +19,18 @@ public class GouruadLerper implements ILerper {
         this.texCoordStep = Vector2D.newZeros();
         this.specCoordStep = Vector2D.newZeros();
         specStep = 0f;
-    }
-
-    public GouruadLerper(Vector3D sColorStep, Vector2D texCoordStep,
-                         Vector2D specCoordStep, float specStep, Vector3D n_ws_step, Vector3D p_ws_step) {
-        this.p_proj_step = Vector3D.newZeros();
-        this.sColorStep = sColorStep;
-        this.texCoordStep = texCoordStep;
-        this.specCoordStep = specCoordStep;
-        this.specStep = specStep;
-
+        invWStep = 0f;
     }
 
 
     @Override
-    public final void lerp(LerpValues lp) {
+    public final void lerp(Interpolants lp) {
+        lp.getP_proj().add(p_proj_step);
         lp.getTexCoord().add(texCoordStep);
         lp.getSpecCoord().add(specCoordStep);
         lp.setSpecularity(lp.getSpecularity() + specStep);
         lp.getSurfaceColor().add(sColorStep);
+        lp.setInvW(lp.getInvW() + invWStep);
     }
 
-    @Override
-    public final void reuse(Vector3D sColorStep, Vector2D texCoordStep,
-                            Vector2D specCoordStep, float specStep, Vector3D n_ws_step, Vector3D p_ws_step) {
-
-        this.sColorStep.set(sColorStep);
-        this.texCoordStep.set(texCoordStep);
-        this.specCoordStep.set(specCoordStep);
-
-        this.specStep = specStep;
-
-    }
 }

@@ -35,10 +35,10 @@ public abstract class Draw {
         DrawLine3D.drawLine(t.vectors[2], t.vectors[0], t.reflectance, renderContext);
     }*/
 
-    public static void wireframePolygon(Triangle t, Vector3D c1, Vector3D c2, Renderer renderer) {
-        DrawLine3D.drawLine(t.vectors[0], t.vectors[1], c1, c2, renderer);
-        DrawLine3D.drawLine(t.vectors[1], t.vectors[2], c1, c2, renderer);
-        DrawLine3D.drawLine(t.vectors[2], t.vectors[0], c1, c2, renderer);
+    public static void wireframePolygon(VertexOut v0, VertexOut v1, VertexOut v2, Renderer renderer, Material material) {
+        DrawLine3D.drawLine(v0, v1, material, renderer);
+        DrawLine3D.drawLine(v1, v2, material, renderer);
+        DrawLine3D.drawLine(v2, v1, material, renderer);
     }
 
     public static void drawLine(Vector3D v1, Vector3D v2, Vector3D c, Vector3D c2, Renderer renderer) {

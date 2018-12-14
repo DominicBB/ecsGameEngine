@@ -43,11 +43,19 @@ public class Matrix4x4 {
         });
     }
 
-    public Vector3D multiply4x4(Vector3D v) {
+    /*public Vector3D multiply4x4(Vector3D v) {
         float x = (v.x * values[0][0] + v.y * values[0][1] + v.z * values[0][2]) + (v.w * values[0][3]);
         float y = (v.x * values[1][0] + v.y * values[1][1] + v.z * values[1][2]) + (v.w * values[1][3]);
         float z = (v.x * values[2][0] + v.y * values[2][1] + v.z * values[2][2]) + (v.w * values[2][3]);
         float w = (v.x * values[3][0] + v.y * values[3][1] + v.z * values[3][2]) + (v.w * values[3][3]);
+
+        return new Vector3D(x, y, z, w);
+    }*/
+    public Vector3D multiply4x4(Vector3D v) {
+        float x = (v.x * values[0][0] + v.y * values[1][0] + v.z * values[2][0]) + (v.w * values[3][0]);
+        float y = (v.x * values[0][1] + v.y * values[1][1] + v.z * values[2][1]) + (v.w * values[3][1]);
+        float z = (v.x * values[0][2] + v.y * values[1][2] + v.z * values[2][2]) + (v.w * values[3][2]);
+        float w = (v.x * values[0][3] + v.y * values[1][3] + v.z * values[2][3]) + (v.w * values[3][3]);
 
         return new Vector3D(x, y, z, w);
     }
@@ -77,14 +85,14 @@ public class Matrix4x4 {
     public static Matrix4x4 newLookAt(Vector3D f, Vector3D r, Vector3D up, Vector3D offset) {
         return new Matrix4x4(
                 new float[][]{
-                        {r.x, r.y, r.z, -offset.dotProduct(r)},
-                        {up.x, up.y, up.z, -offset.dotProduct(up)},
-                        {f.x, f.y, f.z, -offset.dotProduct(f)},
-                        {0.0f, 0.0f, 0.0f, 1.0f}});
+                        {r.x, r.y, r.z, 0f},
+                        {up.x, up.y, up.z, 0f},
+                        {f.x, f.y, f.z, 0f},
+                        {offset.x, offset.y, offset.z, 1.0f}});
     }
 
 
-   /* public static Matrix4x4 newProjectionMatrix(float aRatio, float fFov, float zNear, float zRange) {
+   /* public static Matrix4x4 newProjection(float aRatio, float fFov, float zNear, float zRange) {
         return new Matrix4x4(
                 new float[][]{
                         {aRatio * fFov, 0.0f, 0.0f, 0.0f},
@@ -94,15 +102,26 @@ public class Matrix4x4 {
                 });
     }*/
 
-    public static Matrix4x4 newProjectionMatrix(float fFov_aRatio, float fFov, float zNear, float zFar) {
-        float zRange = zNear - zFar;
+    public static Matrix4x4 newProjection(float fFov_aRatio, float fFov, float zNear, float zFar) {
+        float zRange = (zFar - zNear);
         return new Matrix4x4(
                 new float[][]{
                         {fFov_aRatio, 0.0f, 0.0f, 0.0f},
-                        {0.0f, fFov, 0.0f, 0.0f},
-                        {0.0f, 0.0f, (zFar + zNear) / zRange, (2 * zFar * zNear) / zRange},
-                        {0.0f, 0.0f, -1.0f, 0.0f}
+                        {0.0f, -fFov, 0.0f, 0.0f},
+                        {0.0f, 0.0f, -zFar / zRange, -1.0f},
+                        {0.0f, 0.0f, -(zFar * zNear) / zRange, 0.0f}
                 });
+    }
+
+    public static Matrix4x4 InitPerspective(float fov, float aspectRatio, float zNear, float zFar) {
+        //float tanHalfFOV = (float) Math.tan(fov / 2);
+        float zRange = zNear - zFar;
+        return new Matrix4x4(new float[][]{
+                {aspectRatio, 0, 0, 0},
+                {0, fov, 0, 0},
+                {0, 0, (-zNear - zFar) / zRange, 2 * zFar * zNear / zRange},
+                {0.0f, 0f, 1f, 0f}
+        });
     }
 
     public static Matrix4x4 newProjectionToView(float fFov_aRatio, float fFov, float zNear, float zFar) {
@@ -123,10 +142,10 @@ public class Matrix4x4 {
     public static Matrix4x4 newTranslation(float tx, float ty, float tz) {
         return new Matrix4x4(
                 new float[][]{
-                        {1.0f, 0.0f, 0.0f, tx},
-                        {0.0f, 1.0f, 0.0f, ty},
-                        {0.0f, 0.0f, 1.0f, tz},
-                        {1.0f, 1.0f, 1.0f, 1.0f}});
+                        {1.0f, 0.0f, 0.0f, 0.0f},
+                        {0.0f, 1.0f, 0.0f, 0.0f},
+                        {0.0f, 0.0f, 1.0f, 0.0f},
+                        {tx, ty, tz, 1.0f}});
     }
 
     public static Matrix4x4 newScale(Vector3D translation) {
@@ -202,7 +221,6 @@ public class Matrix4x4 {
     }
 
     /**
-     *
      * @param q
      * @return
      */
@@ -225,8 +243,8 @@ public class Matrix4x4 {
 
 
         return new Matrix4x4(new float[][]{
-                {(sqx - sqy - sqz + sqw) * invs,2.0f * (xy - zw)*invs ,2.0f * (xz + yw) * invs , 0.0f},
-                {2.0f * (xy + zw)*invs * invs,(-sqx + sqy - sqz + sqw) * invs, 2.0f * (yz - xw) * invs, 0.0f},
+                {(sqx - sqy - sqz + sqw) * invs, 2.0f * (xy - zw) * invs, 2.0f * (xz + yw) * invs, 0.0f},
+                {2.0f * (xy + zw) * invs * invs, (-sqx + sqy - sqz + sqw) * invs, 2.0f * (yz - xw) * invs, 0.0f},
                 {2.0f * (xz - yw) * invs, 2.0f * (yz + xw) * invs, (-sqx - sqy + sqz + sqw) * invs, 0.0f},
                 {0.0f, 0.0f, 0.0f, 1.0f}
         });

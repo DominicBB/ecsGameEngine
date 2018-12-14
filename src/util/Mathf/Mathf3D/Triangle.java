@@ -128,11 +128,16 @@ public class Triangle extends Polygon {
         float e2X = v3.x - v1.x;
         float e2Y = v3.y - v1.y;
 
-        return e1X * e2Y + e2X * e1Y;
+        return e1X * e2Y - e2X * e1Y;
     }
 
     public static Vector3D normal(Vertex[] vertices) {
-        return vertices[1].vec.minus(vertices[0].vec).crossProduct(vertices[2].vec.minus(vertices[0].vec)).normal();
+        return ((vertices[1].vec.minus(vertices[0].vec)).crossProduct(vertices[2].vec.minus(vertices[0].vec))).normal();
+    }
+
+    public static Vector3D normal(VertexOut[] vertices) {
+//        return ((vertices[1].p_proj.minus(vertices[0].p_proj)).crossProduct(vertices[2].p_proj.minus(vertices[0].p_proj))).normal();
+        return ((vertices[1].p_ws.minus(vertices[0].p_ws)).crossProduct(vertices[2].p_ws.minus(vertices[0].p_ws))).normal();
     }
 }
 

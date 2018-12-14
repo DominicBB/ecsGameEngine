@@ -6,7 +6,7 @@ import java.util.Queue;
 
 import components.Component;
 import core.Entity;
-import listners.EntityListner;
+import listners.EntityGrabber;
 import util.Bag;
 
 /**
@@ -125,22 +125,22 @@ public class EntitySystem extends BaseSystem {
         }
     }
 
-    public void onEntityListnerCreate(EntityListner entityListner) {
-        int size = entityListner.getRequiredComponents().size();
+    public void onEntityListnerCreate(EntityGrabber entityGrabber) {
+        int size = entityGrabber.getRequiredComponents().size();
         int[] componentIndexs;
         int i;
         int cI;
         for (Entity entity : entities) {
             i = 0;
             componentIndexs = new int[size];
-            for (Class<? extends Component> c : entityListner.getRequiredComponents()) {
+            for (Class<? extends Component> c : entityGrabber.getRequiredComponents()) {
                 if ((cI = findComponentOfType(entity.getComponents(), c)) != -1) {
                     componentIndexs[i++] = cI;
                 } else {
                     break;
                 }
                 if (i == (size)) {
-                    entityListner.addComponentsOfInterest(componentIndexs, entity.getId());
+                    entityGrabber.addComponentsOfInterest(componentIndexs, entity.getId());
                     break;
                 }
             }

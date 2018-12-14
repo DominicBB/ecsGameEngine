@@ -4,7 +4,7 @@ import Physics.physicsSystems.PhysicsSystem;
 import Rendering.renderingSystems.RenderSystem;
 import components.Component;
 import core.Entity;
-import listners.EntityListner;
+import listners.EntityGrabber;
 import util.Bag;
 
 /**
@@ -43,8 +43,8 @@ public class SystemCommunicator {
         SystemCommunicator.componentSystem.onComponentAddedToEntity(entity.getId(), entity.getComponents());
     }
 
-    public static void onEntityListnerCreate(EntityListner entityListner) {
-        SystemCommunicator.entitySystem.onEntityListnerCreate(entityListner);
+    public static void onEntityListnerCreate(EntityGrabber entityGrabber) {
+        SystemCommunicator.entitySystem.onEntityListnerCreate(entityGrabber);
     }
 
 
@@ -52,8 +52,8 @@ public class SystemCommunicator {
         SystemCommunicator.ecsSystem.registerGameSystem(gameSystem);
     }
 
-    public static void registerEntityListner(EntityListner entityListner) {
-        SystemCommunicator.componentSystem.registerEntityListner(entityListner);
+    public static void registerEntityListner(EntityGrabber entityGrabber) {
+        SystemCommunicator.componentSystem.registerEntityListner(entityGrabber);
     }
     public static void registerPhysicsSystem(PhysicsSystem physicsSystem) {
         SystemCommunicator.ecsSystem.registerPhysicsSystem(physicsSystem);

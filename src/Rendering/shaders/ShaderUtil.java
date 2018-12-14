@@ -1,9 +1,11 @@
 package Rendering.shaders;
 
 import Rendering.Materials.Material;
+import Rendering.renderUtil.Bitmaps.Bitmap;
 import Rendering.renderUtil.RenderState;
-import Rendering.renderUtil.Renderer;
 import util.FloatBuffer;
+import util.Mathf.Mathf;
+import util.Mathf.Mathf2D.Vector2D;
 import util.Mathf.Mathf3D.Vector3D;
 
 final class ShaderUtil {
@@ -18,8 +20,8 @@ final class ShaderUtil {
      * @param attenuation
      * @return
      */
-    static float specular(Vector3D n_worldSpace, Vector3D lightDir, Vector3D viewDir_worldSpace,
-                          float specFactor, float specPower, float attenuation) {
+    private static float specular(Vector3D n_worldSpace, Vector3D lightDir, Vector3D viewDir_worldSpace,
+                                  float specFactor, float specPower, float attenuation) {
         Vector3D halfWayDir;
         (halfWayDir = lightDir.plus(viewDir_worldSpace)).normalise();
 
@@ -30,7 +32,7 @@ final class ShaderUtil {
 
     static float calculateSpecular(Vector3D n_ws, Vector3D pos_ws, Material material) {
         Vector3D viewDir;
-        (viewDir = RenderState.camera.transform.position.minus(pos_ws)).normalise();
+        (viewDir = RenderState.camera.transform.getPosition().minus(pos_ws)).normalise();
 
         float spec = specular(n_ws,
                 RenderState.lightingState.lightDir,
@@ -39,7 +41,16 @@ final class ShaderUtil {
                 material.getSpecularPower(),
                 RenderState.lightingState.attenuation);
 
-        return spec;
+        return Mathf.unsafeMax(0f, spec);
+    }
+
+    static Vector3D calcSpecularAtFrag(Vector2D specCoord, float spec, float z, Material material) {
+        if (material.hasSpecularMap()) {
+            Vector3D specColor = perspectiveCorrectBitmap(specCoord, material.getSpecularMap(), z);
+            return specColor.mul(spec);
+        } else {
+            return material.getDefualtSpecularColor().mul(spec);
+        }
     }
 
     /**
@@ -55,7 +66,7 @@ final class ShaderUtil {
     static Vector3D diffuse(Vector3D lightColor, Vector3D lightDir, Vector3D norm, float attenuation, float diffuseFactor) {
         float cosTheta = (norm.dotProduct(lightDir));
 
-        return lightColor.mul(cosTheta * attenuation * diffuseFactor);
+        return lightColor.mul(Mathf.clamp(0f, cosTheta * attenuation * diffuseFactor, 1f));
     }
 
     /**
@@ -76,5 +87,16 @@ final class ShaderUtil {
             return true;
         }
         return false;
+    }
+
+    static Vector3D perspectiveCorrectBitmap(Vector2D coord, Bitmap bitmap, float z) {
+        return bitmap.getPixelColor((int) (coord.x * z), (int) (coord.y * z));
+    }
+
+    static Vector2D scaleToBitmap(Vector2D in, Bitmap bitmap) {
+        return new Vector2D(
+                in.x * (bitmap.getWidth() - 1) /*+ 0.5f*/,
+                in.y * (bitmap.getHeight() - 1) /*+ 0.5f*/
+        );
     }
 }

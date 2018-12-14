@@ -1,7 +1,7 @@
 package core.coreSystems;
 
 import components.Component;
-import listners.EntityListner;
+import listners.EntityGrabber;
 import util.Bag;
 
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.List;
  * updates each GameSystems entity references if there is a match
  */
 public class ComponentSystem extends BaseSystem {
-    private List<EntityListner> entityListners = new ArrayList<>();
+    private List<EntityGrabber> entityGrabbers = new ArrayList<>();
 
     void onEntityCreate(int entityID, Bag<Component> components) {
         checkForListnerMatch(entityID, components);
@@ -24,28 +24,28 @@ public class ComponentSystem extends BaseSystem {
     //TODO yikes, too many loops
 
     /**
-     * Go through every EntityListner and add entityID's and componentIndexs that contain the required components
+     * Go through every EntityGrabber and add entityID's and componentIndexs that contain the required components
      * @param entityID
      * @param components
      */
     private void checkForListnerMatch(int entityID, Bag<Component> components) {
-        int[] componentIndexs;//what the EntityListner gets
+        int[] componentIndexs;//what the EntityGrabber gets
         int sizeOfReqs;
         int i;
         int cI;
-        for (EntityListner entityListner : entityListners) {
-            sizeOfReqs = entityListner.getRequiredComponents().size();
+        for (EntityGrabber entityGrabber : entityGrabbers) {
+            sizeOfReqs = entityGrabber.getRequiredComponents().size();
             componentIndexs = new int[sizeOfReqs];
             i = 0;
 
-            for (Class<? extends Component> requirement : entityListner.getRequiredComponents()) {
+            for (Class<? extends Component> requirement : entityGrabber.getRequiredComponents()) {
                 if ((cI = findComponentIndexOfType(components, requirement)) != -1) {
                     componentIndexs[i++] = cI;
                 }else{
                     break;
                 }
                 if (i == (sizeOfReqs)) {
-                    entityListner.addComponentsOfInterest(componentIndexs,entityID);
+                    entityGrabber.addComponentsOfInterest(componentIndexs,entityID);
                     break;
                 }
             }
@@ -71,7 +71,7 @@ public class ComponentSystem extends BaseSystem {
 
     }
 
-    public void registerEntityListner(EntityListner entityListner) {
-        entityListners.add(entityListner);
+    public void registerEntityListner(EntityGrabber entityGrabber) {
+        entityGrabbers.add(entityGrabber);
     }
 }

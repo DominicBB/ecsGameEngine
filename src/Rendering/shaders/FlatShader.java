@@ -2,75 +2,77 @@ package Rendering.shaders;
 
 
 import Rendering.Materials.Material;
-import Rendering.renderUtil.Lerpers.LerpValues;
+import Rendering.renderUtil.Lerpers.Interpolants;
 import Rendering.renderUtil.RenderState;
-import Rendering.renderUtil.Renderer;
 import Rendering.renderUtil.Vertex;
 import Rendering.renderUtil.VertexOut;
 import Rendering.shaders.interfaces.IGeometryShader;
 import Rendering.shaders.interfaces.IShader;
 import util.FloatBuffer;
+import util.Mathf.Mathf3D.Triangle;
 import util.Mathf.Mathf3D.Vector3D;
 
-import static Rendering.shaders.ShaderUtil.calculateSpecular;
-import static Rendering.shaders.ShaderUtil.diffuse;
-import static Rendering.shaders.ShaderUtil.ambient;
+import static Rendering.shaders.ShaderUtil.*;
 
 public class FlatShader implements IShader, IGeometryShader {
     private final int verticiesPerPrimitive = 3;
 
     @Override
     public final VertexOut vert(Vertex vertex, Material material) {
-        Vector3D pos_proj = RenderState.objmvp.multiply4x4(vertex.vec);
+        Vector3D p_proj = RenderState.mvp.multiply4x4(vertex.vec);
         return new VertexOut(
-                pos_proj,
+                p_proj,
                 vertex.texCoord,
                 vertex.specCoord,
                 1f,
-                Vector3D.newOnes(),
+                Vector3D.newZeros(),
                 vertex.normal,
-                vertex.vec
+                RenderState.world.multiply4x4(vertex.vec),
+                1f/p_proj.w
         );
     }
 
     @Override
-    public final Vector3D frag(LerpValues lerpValues, FloatBuffer zBuffer, Material material) {
+    public final VertexOut[] geom(VertexOut[] vertices, Material material) {
+        Vector3D averageNorm = (vertices[0].n_ws.sqrMagnitude() == 0f) ? Triangle.normal(vertices) : averageNormal(vertices);
 
-        if (!ShaderUtil.zBufferTest(zBuffer, lerpValues.getPos_proj().w, lerpValues.getxInt(), lerpValues.getyInt()))
+        Vector3D surfaceColor = vertices[0].surfaceColor;
+
+        float spec = calculateBasicLighting(averageNorm, vertices[0].p_ws, material, surfaceColor);
+
+        for (int i = 0; i < vertices.length; i++) {
+            vertices[i] = new VertexOut(vertices[i].p_proj,
+                    vertices[i].texCoord,
+                    vertices[i].specCoord,
+                    spec,
+                    surfaceColor,
+                    vertices[i].n_ws,
+                    vertices[i].p_ws,
+                    vertices[i].invW);
+        }
+
+        return vertices;
+    }
+
+    @Override
+    public final Vector3D frag(Interpolants lP, FloatBuffer zBuffer, Material material) {
+        float z = 1f/lP.getInvW();
+        if (!ShaderUtil.zBufferTest(zBuffer, z, lP.getxInt(), lP.getyInt()))
             return null;
 
 
         if (material.isSpecular()) {
-            lerpValues.getSurfaceColor().add(calcSpecular(lerpValues, material));
+            lP.getSurfaceColor().add(calcSpecularAtFrag(lP.getSpecCoord(), lP.getSpecularity(),z, material));
         }
 
         Vector3D color;
         if (material.hasTexture()) {
-            color = calcTextureColor(lerpValues, material);
+            color = perspectiveCorrectBitmap(lP.getTexCoord(),material.getTexture().texture,z);
         } else {
-            color = lerpValues.getSurfaceColor().componentMul(material.getColor());
+            color = lP.getSurfaceColor().componentMul(material.getColor());
         }
 
         return color;
-    }
-
-    private Vector3D calcSpecular(LerpValues lerpValues, Material material) {
-        if (material.hasSpecularMap()) {
-
-            Vector3D specColor = material.getSpecularMap().getPixelColor((int) lerpValues.getSpecCoord().x,
-                    (int) lerpValues.getSpecCoord().y);
-
-            return specColor.mul(lerpValues.getSpecularity());
-        } else {
-            return material.getDefualtSpecularColor().mul(lerpValues.getSpecularity());
-        }
-    }
-
-    private Vector3D calcTextureColor(LerpValues lerpValues, Material material) {
-        lerpValues.getSurfaceColor().
-                componentMul(material.getTexture().texture.getPixelColor((int) lerpValues.getTexCoord().x,
-                        (int) lerpValues.getTexCoord().y));
-        return lerpValues.getSurfaceColor();
     }
 
     @Override
@@ -78,34 +80,14 @@ public class FlatShader implements IShader, IGeometryShader {
         return verticiesPerPrimitive;
     }
 
-    @Override
-    public final VertexOut[] geom(VertexOut[] vertices, Renderer renderer, Material material) {
-        VertexOut[] vOut = new VertexOut[3];
-        Vector3D averageNorm = averageNormal(vertices);
-        Vector3D surfaceColor = vertices[0].surfaceColor;
 
-        float spec = calculateBasicLighting(averageNorm, vertices[0].p_ws, renderer, material, surfaceColor);
-
-
-        for (int i = 0; i < vOut.length; i++) {
-            vOut[i] = new VertexOut(vertices[i].p_proj,
-                    vertices[i].texCoord,
-                    vertices[i].specCoord,
-                    spec,
-                    surfaceColor,
-                    vertices[i].n_ws,
-                    vertices[i].p_ws);
-        }
-        return vOut;
-    }
-
-    private float calculateBasicLighting(Vector3D n, Vector3D p, Renderer renderer, Material material, Vector3D sColor) {
+    private float calculateBasicLighting(Vector3D n, Vector3D p, Material material, Vector3D sColor) {
         if (material.isDiffuse()) {
-            sColor.add(calcDiffuse(n, renderer, material));
+            sColor.add(calcDiffuse(n, material));
         }
         float specularity = 1f;
         if (material.isSpecular()) {
-            specularity = calcSpecularity(n, p, renderer, material, sColor);
+            specularity = calcSpecularity(n, p, material, sColor);
         }
 
         if (material.isAmbient()) {
@@ -115,7 +97,7 @@ public class FlatShader implements IShader, IGeometryShader {
         return specularity;
     }
 
-    private Vector3D calcDiffuse(Vector3D n, Renderer renderer, Material material) {
+    private Vector3D calcDiffuse(Vector3D n, Material material) {
         return diffuse(RenderState.lightingState.lightColor,
                 RenderState.lightingState.lightDir,
                 n,
@@ -123,9 +105,8 @@ public class FlatShader implements IShader, IGeometryShader {
                 material.getDiffuseFactor());
     }
 
-    private float calcSpecularity(Vector3D n, Vector3D p, Renderer renderer,
+    private float calcSpecularity(Vector3D n, Vector3D p,
                                   Material material, Vector3D sColor) {
-
         float specularity = calculateSpecular(n, p, material);
         if (!material.hasSpecularMap()) {
             sColor.add(material.getDefualtSpecularColor().mul(specularity));
@@ -141,9 +122,8 @@ public class FlatShader implements IShader, IGeometryShader {
         return sum.divide(vecs.length);
     }
 
-    private static final ShaderType SHADER_TYPE = ShaderType.FLAT;
     @Override
     public ShaderType getShaderType() {
-        return SHADER_TYPE;
+        return ShaderType.FLAT;
     }
 }
