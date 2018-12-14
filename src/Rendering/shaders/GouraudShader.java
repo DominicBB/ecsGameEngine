@@ -15,6 +15,46 @@ import static Rendering.shaders.ShaderUtil.*;
 public class GouraudShader implements IShader {
 
     @Override
+    public void vertNonAlloc(Vertex vIn, Material material, VertexOut out) {
+        out.p_proj.set((RenderState.mvp.multiply4x4(vIn.vec)));
+        out.surfaceColor.set(Vector3D.newZeros());
+        out.p_ws.set(RenderState.world.multiply4x4(vIn.vec));
+        out.n_ws.set(RenderState.transform.getRotation().rotate(vIn.normal));
+        out.invW = 1f / out.p_proj.w;
+
+        if (material.hasTexture()) {
+            out.texCoord.set(scaleToBitmap(vIn.texCoord, material.getTexture().texture));
+            out.texCoord.scale(out.invW);
+        }
+
+        if (material.isDiffuse()) {
+
+            Vector3D diffuse = diffuse(RenderState.lightingState.lightColor,
+                    RenderState.lightingState.lightDir,
+                    out.n_ws,
+                    RenderState.lightingState.attenuation,
+                    material.getDiffuseFactor());
+
+            out.surfaceColor.add(diffuse);
+        }
+
+        out.spec = 1f;
+        if (material.isSpecular()) {
+            out.spec = calculateSpecular(out.n_ws, out.p_ws, material);
+            if (!material.hasSpecularMap()) {
+                out.surfaceColor.add(material.getDefualtSpecularColor().mul(out.spec));
+            } else {
+                out.specCoord.set(scaleToBitmap(vIn.specCoord, material.getSpecularMap()));
+                out.specCoord.scale(out.invW);
+            }
+        }
+
+        if (material.isAmbient()) {
+            out.surfaceColor.add(ambient(RenderState.lightingState.ambientColor, material.getAmbientFactor()));
+        }
+    }
+
+    @Override
     public final VertexOut vert(Vertex vIn, Material material) {
 
         Vector3D p_proj = (RenderState.mvp.multiply4x4(vIn.vec));
@@ -47,8 +87,8 @@ public class GouraudShader implements IShader {
             if (!material.hasSpecularMap()) {
                 sColor.add(material.getDefualtSpecularColor().mul(spec));
             } else {
-                specCoord = specCoord.mul(invW);
-//                scaleToBitmap(specCoord, material.getSpecularMap());
+                specCoord.set(scaleToBitmap(specCoord, material.getSpecularMap()));
+                specCoord.scale(invW);
             }
         }
 
@@ -58,6 +98,7 @@ public class GouraudShader implements IShader {
 
         return new VertexOut(p_proj, texCoord, specCoord, spec, sColor, n_ws, p_ws, invW);
     }
+
 
     @Override
     public final Vector3D frag(Interpolants lP, FloatBuffer zBuffer, Material material) {

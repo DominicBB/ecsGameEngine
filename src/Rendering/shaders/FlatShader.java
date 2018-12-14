@@ -28,8 +28,13 @@ public class FlatShader implements IShader, IGeometryShader {
                 Vector3D.newZeros(),
                 vertex.normal,
                 RenderState.world.multiply4x4(vertex.vec),
-                1f/p_proj.w
+                1f / p_proj.w
         );
+    }
+
+    @Override
+    public void vertNonAlloc(Vertex vIn, Material material, VertexOut out) {
+
     }
 
     @Override
@@ -56,18 +61,18 @@ public class FlatShader implements IShader, IGeometryShader {
 
     @Override
     public final Vector3D frag(Interpolants lP, FloatBuffer zBuffer, Material material) {
-        float z = 1f/lP.getInvW();
+        float z = 1f / lP.getInvW();
         if (!ShaderUtil.zBufferTest(zBuffer, z, lP.getxInt(), lP.getyInt()))
             return null;
 
 
         if (material.isSpecular()) {
-            lP.getSurfaceColor().add(calcSpecularAtFrag(lP.getSpecCoord(), lP.getSpecularity(),z, material));
+            lP.getSurfaceColor().add(calcSpecularAtFrag(lP.getSpecCoord(), lP.getSpecularity(), z, material));
         }
 
         Vector3D color;
         if (material.hasTexture()) {
-            color = perspectiveCorrectBitmap(lP.getTexCoord(),material.getTexture().texture,z);
+            color = perspectiveCorrectBitmap(lP.getTexCoord(), material.getTexture().texture, z);
         } else {
             color = lP.getSurfaceColor().componentMul(material.getColor());
         }

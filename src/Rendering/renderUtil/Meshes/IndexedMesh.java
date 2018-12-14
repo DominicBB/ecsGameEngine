@@ -9,9 +9,11 @@ import Rendering.renderUtil.Renderer;
 import Rendering.renderUtil.Vertex;
 import Rendering.renderUtil.VertexOut;
 import Rendering.shaders.interfaces.IShader;
+import util.Mathf.Mathf2D.Vector2D;
 import util.Mathf.Mathf3D.Bounds.AABoundingBox;
 import util.Mathf.Mathf3D.Matrix4x4;
 import util.Mathf.Mathf3D.Transform;
+import util.Mathf.Mathf3D.Vector3D;
 
 public class IndexedMesh {
     public List<Vertex> vertices;
@@ -31,6 +33,15 @@ public class IndexedMesh {
         this.aaBoundingBox = aaBoundingBox;
 //        this.transformedVertices = new ArrayList<>(vertices.size());
         this.transformedVertices = new VertexOut[vertices.size()];
+        initTV();
+    }
+
+    private void initTV(){
+        for (int i = 0; i < transformedVertices.length; i++) {
+            transformedVertices[i] = new VertexOut(Vector3D.newZeros(),
+                    Vector2D.newZeros(),Vector2D.newZeros(),
+                    0f,Vector3D.newZeros(),Vector3D.newZeros(),Vector3D.newZeros(),0f);
+        }
     }
 
 
@@ -42,10 +53,15 @@ public class IndexedMesh {
         RenderState.transform = transform;
 
         IShader shader = material.getShader();
-        for (int i = 0; i < transformedVertices.length; i++) {
+       /* for (int i = 0; i < transformedVertices.length; i++) {
             transformedVertices[i] = (shader.vert(vertices.get(i), material));
 
+        }*/
+
+        for (int i = 0; i < transformedVertices.length; i++) {
+            shader.vertNonAlloc(vertices.get(i), material, transformedVertices[i]);
         }
+
         final int end = triIndices.size();
         for (int i = 0; i < end; i += 3) {
 

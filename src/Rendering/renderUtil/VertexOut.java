@@ -14,8 +14,8 @@ public class VertexOut {
     public final Vector3D p_ws;
     public final Vector3D n_ws;
 
-    public final float spec;
-    public final float invW;
+    public float spec;
+    public float invW;
 
     public VertexOut(Vector3D p_proj, Vector2D texCoord, Vector2D specCoord, float spec, Vector3D surfaceColor,
                      Vector3D n_ws, Vector3D p_ws, float invW) {

@@ -2,7 +2,6 @@ package Rendering.Clipping;
 
 import Rendering.renderUtil.VertexOut;
 import util.Mathf.Mathf;
-import util.Mathf.Mathf3D.Vector3D;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,13 +36,16 @@ public class TriCullSpaceClip {
             return;
 
 
+
         clipVerticesAgainstPlanes(0, clippedVs);//x
         if (clippedVs.isEmpty())
             return;
         clipVerticesAgainstPlanes(1, clippedVs);//y
         if (clippedVs.isEmpty())
             return;
-        //clipVerticesAgainstPlanes(2, clippedVs);//z
+        clipVerticesAgainstPlanes(2, clippedVs);//z
+
+
 
     }
 
@@ -56,55 +58,45 @@ public class TriCullSpaceClip {
 
     private static void clipAgainstPlane(int planeComponent, float planeF, List<VertexOut> in, List<VertexOut> out) {
         VertexOut previous = in.get(0);
-        float pComponent = previous.p_proj.getComponentValue(planeComponent) * planeF;
-        boolean prevInside = isVertInside(pComponent, previous.p_proj.w, planeF);
+        float prevComponent = previous.p_proj.getComponentValue(planeComponent) * planeF;
+        boolean prevInside = isVertInside(prevComponent, previous.p_proj.w);
 
         for (int i = 1; i < in.size(); i++) {
-
             VertexOut c = in.get(i);
-            float cComponent = c.p_proj.getComponentValue(planeComponent) * planeF;
-            prevInside = clipVertex(previous, prevInside, c, pComponent, cComponent, planeF, out);
+            float currComponent = c.p_proj.getComponentValue(planeComponent) * planeF;
+            prevInside = clipVertex(previous, prevInside, c, prevComponent, currComponent, out);
             previous = c;
-            pComponent = cComponent;
-
+            prevComponent = currComponent;
         }
+
         //clip initial
-        /*VertexOut c = in.get(0);
-        float cComponent = c.p_proj.getComponentValue(planeComponent) * planeF;
-        clipVertex(previous, prevInside, c, pComponent, cComponent, planeF, out);*/
+        VertexOut c = in.get(0);
+        float currComponent = c.p_proj.getComponentValue(planeComponent) * planeF;
+        clipVertex(previous, prevInside, c, prevComponent, currComponent, out);
         in.clear();
     }
 
-    private static boolean clipVertex(VertexOut previous, boolean prevInside, VertexOut in,
-                                      float pComponent, float cComponent, float planeF,
+    private static boolean clipVertex(VertexOut previous, boolean prevInside, VertexOut c,
+                                      float prevComponent, float currComponent,
                                       List<VertexOut> res) {
 
-        boolean isVertexInside = isVertInside(cComponent, in.p_proj.w, planeF);
+        boolean isVertexInside = isVertInside(currComponent, c.p_proj.w);
 
         if (isVertexInside ^ prevInside)
-            res.add(calculateClippedVertex(previous, in, pComponent, cComponent, planeF));
+            res.add(calculateClippedVertex(previous, c, prevComponent, currComponent));
 
         if (isVertexInside)
-            res.add(in);
+            res.add(c);
 
         return isVertexInside;
     }
 
     private static VertexOut calculateClippedVertex(VertexOut previous, VertexOut current, float pComponent,
-                                                    float cComponent, float planeF) {
-        float lerpAmt;
-        if (planeF > 0f) {
+                                                    float cComponent) {
 
-            float diff = previous.p_proj.w - pComponent;
-            lerpAmt = diff / (diff - (current.p_proj.w - cComponent));
-
-        } else {
-
-            float diff = previous.p_proj.w + pComponent;
-            lerpAmt = diff / (diff - (current.p_proj.w + cComponent));
-        }
+        float diff = previous.p_proj.w - pComponent;
+        float lerpAmt = diff / (diff - (current.p_proj.w - cComponent));
         return previous.lerp(current, lerpAmt);
-
     }
 
     private static boolean allInside(VertexOut v0, VertexOut v1, VertexOut v2) {
@@ -130,7 +122,7 @@ public class TriCullSpaceClip {
         outsidePoints.clear();
     }
 
-    private static boolean isVertInside(float component, float w, float planeF) {
-        return component <= (w /** planeF*/);
+    private static boolean isVertInside(float component, float w) {
+        return component <= w;
     }
 }

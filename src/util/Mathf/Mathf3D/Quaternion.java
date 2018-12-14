@@ -13,8 +13,11 @@ public class Quaternion {
         this.w = w;
     }
 
+    public static Quaternion values(float x, float y, float z, float w) {
+        return new Quaternion(x, y, z, w);
+    }
+
     /**
-     *
      * @param angle in radians
      * @param axis
      */
@@ -25,6 +28,10 @@ public class Quaternion {
         x = axis.x * sinHalfA;
         y = axis.y * sinHalfA;
         z = axis.z * sinHalfA;
+    }
+
+    public static Quaternion angleAxis(float angle, Vector3D axis) {
+        return new Quaternion(angle, axis);
     }
 
     public float magnitude() {
@@ -88,7 +95,7 @@ public class Quaternion {
     }
 
     public Vector3D rotate(Vector3D v) {
-        Quaternion q = multiply(v);
+        Quaternion q = multiply(v).multiply(conjugate());
         return new Vector3D(q.x, q.y, q.z);
     }
 

@@ -118,9 +118,9 @@ public class Matrix4x4 {
         float zRange = zNear - zFar;
         return new Matrix4x4(new float[][]{
                 {aspectRatio, 0, 0, 0},
-                {0, fov, 0, 0},
-                {0, 0, (-zNear - zFar) / zRange, 2 * zFar * zNear / zRange},
-                {0.0f, 0f, 1f, 0f}
+                {0, -fov, 0, 0},
+                {0, 0, -(-zNear - zFar) / zRange, -1f},
+                {0.0f, 0f, 2f * zFar * zNear / zRange, 0f}
         });
     }
 

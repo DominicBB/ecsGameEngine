@@ -27,6 +27,11 @@ public class PhongShader implements IShader {
     }
 
     @Override
+    public void vertNonAlloc(Vertex vIn, Material material, VertexOut out) {
+
+    }
+
+    @Override
     public final Vector3D frag(Interpolants interpolants, FloatBuffer zBuffer, Material material) {
 
         int x = interpolants.getxInt();
