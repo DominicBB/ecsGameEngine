@@ -53,7 +53,7 @@ public class IndexedMesh {
         RenderState.transform = transform;
 
         IShader shader = material.getShader();
-       /* for (int i = 0; i < transformedVertices.length; i++) {
+        /*for (int i = 0; i < transformedVertices.length; i++) {
             transformedVertices[i] = (shader.vert(vertices.get(i), material));
 
         }*/

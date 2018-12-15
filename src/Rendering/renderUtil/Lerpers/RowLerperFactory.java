@@ -9,81 +9,81 @@ public class RowLerperFactory extends BaseLerperFactory {
     private final FlatLerper fL = new FlatLerper();
 
     public Interpolants setLerper(Material material, Interpolants interpolants, Interpolants l1, Interpolants l2,
-                                  float diviser) {
+                                  float factor) {
 
 
-        calculateLerperValues(material, interpolants, l1, l2, diviser);
+        calculateLerperValues(material, interpolants, l1, l2, factor);
 
         return interpolants;
     }
 
     private void calculateLerperValues(Material material, Interpolants interpolants, Interpolants l1, Interpolants l2,
-                                       float diviser) {
+                                       float factor) {
         switch (material.getShader().getShaderType()) {
             case GOURUAD:
-                interpolants.setLerper(gouruadLerper(material, l1, l2, diviser));
+                interpolants.setLerper(gouruadLerper(material, l1, l2, factor));
                 break;
             case FLAT:
-                interpolants.setLerper(flatLerper(material, l1, l2, diviser));
+                interpolants.setLerper(flatLerper(material, l1, l2, factor));
                 break;
             case PHONG:
-                interpolants.setLerper(phongLerper(material, l1, l2, diviser));
+                interpolants.setLerper(phongLerper(material, l1, l2, factor));
                 break;
         }
     }
 
-    private GouruadLerper gouruadLerper(Material material, Interpolants l1, Interpolants l2, float diviser) {
+    private GouruadLerper gouruadLerper(Material material, Interpolants l1, Interpolants l2, float factor) {
 
-       // calcVec3Step(gL.p_proj_step, diviser, l1.getP_proj(), l2.getP_proj());
-        calcVec3Step(gL.sColorStep, diviser, l1.getSurfaceColor(), l2.getSurfaceColor());
-        gL.invWStep = calcFloatStep(diviser, l1.getInvW(), l2.getInvW());
+        gL.p_proj_step.z = calcFloatStep(factor, l1.p_proj.z, l2.p_proj.z);
+        calcVec3Step(gL.sColorStep, factor, l1.surfaceColor, l2.surfaceColor);
+        gL.invWStep = calcFloatStep(factor, l1.invW, l2.invW);
 
         if (material.hasTexture()) {
-            calcVec2Step(gL.texCoordStep, diviser, l1.getTexCoord(), l2.getTexCoord());
+            calcVec2Step(gL.texCoordStep, factor, l1.texCoord, l2.texCoord);
         }
 
         if (material.isSpecular()) {
             if (material.hasSpecularMap())
-                calcVec2Step(gL.specCoordStep, diviser, l1.getSpecCoord(), l2.getSpecCoord());
-            gL.specStep = calcFloatStep(diviser, l1.getSpecularity(), l2.getSpecularity());
+                calcVec2Step(gL.specCoordStep, factor, l1.specCoord, l2.specCoord);
+            gL.specStep = calcFloatStep(factor, l1.specularity, l2.specularity);
         }
 
         return gL;
     }
 
-    private PhongLerper phongLerper(Material material, Interpolants l1, Interpolants l2, float diviser) {
+    private PhongLerper phongLerper(Material material, Interpolants l1, Interpolants l2, float factor) {
 
         //if no normal map
-        calcVec3Step(pL.p_proj_step, diviser, l1.getP_proj(), l2.getP_proj());
-        calcVec3Step(pL.n_ws_step, diviser, l1.getN_ws(), l2.getN_ws());
-        calcVec3Step(pL.p_ws_step, diviser, l1.getP_ws(), l2.getP_ws());
-        pL.invZStep = calcFloatStep(diviser, l1.getInvW(), l2.getInvW());
+        calcVec3Step(pL.p_proj_step, factor, l1.p_proj, l2.p_proj);
+        calcVec3Step(pL.n_ws_step, factor, l1.n_ws, l2.n_ws);
+        calcVec3Step(pL.p_ws_step, factor, l1.p_ws, l2.p_ws);
+        pL.invWStep = calcFloatStep(factor, l1.invW, l2.invW);
 
         if (material.hasTexture()) {
-            calcVec2Step(pL.texCoordStep, diviser, l1.getTexCoord(), l2.getTexCoord());
+            calcVec2Step(pL.texCoordStep, factor, l1.texCoord, l2.texCoord);
         }
 
         if (material.isSpecular()) {
             if (material.hasSpecularMap())
-                calcVec2Step(pL.specCoordStep, diviser, l1.getSpecCoord(), l2.getSpecCoord());
-            pL.specStep = calcFloatStep(diviser, l1.getSpecularity(), l2.getSpecularity());
+                calcVec2Step(pL.specCoordStep, factor, l1.specCoord, l2.specCoord);
+            pL.specStep = calcFloatStep(factor, l1.specularity, l2.specularity);
 
         }
         return pL;
     }
 
-    private FlatLerper flatLerper(Material material, Interpolants l1, Interpolants l2, float diviser) {
-        calcVec3Step(fL.p_proj_step, diviser, l1.getP_proj(), l2.getP_proj());
-        fL.invZStep = calcFloatStep(diviser, l1.getInvW(), l2.getInvW());
+    private FlatLerper flatLerper(Material material, Interpolants l1, Interpolants l2, float factor) {
+        calcVec3Step(fL.p_proj_step, factor, l1.p_proj, l2.p_proj);
+        fL.invWStep = calcFloatStep(factor, l1.invW, l2.invW);
 
         if (material.hasTexture()) {
-            calcVec2Step(fL.texCoordStep, diviser, l1.getTexCoord(), l2.getTexCoord());
+            calcVec2Step(fL.texCoordStep, factor, l1.texCoord, l2.texCoord);
         }
 
         if (material.isSpecular()) {
             if (material.hasSpecularMap())
-                calcVec2Step(fL.specCoordStep, diviser, l1.getSpecCoord(), l2.getSpecCoord());
-            fL.specStep = calcFloatStep(diviser, l1.getSpecularity(), l2.getSpecularity());
+                calcVec2Step(fL.specCoordStep, factor, l1.specCoord, l2.specCoord);
+            fL.specStep = calcFloatStep(factor, l1.specularity, l2.specularity);
 
         }
         return fL;

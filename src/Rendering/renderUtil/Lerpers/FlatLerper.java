@@ -9,7 +9,7 @@ public class FlatLerper implements ILerper {
     public final Vector2D texCoordStep;
     public final Vector2D specCoordStep;
 
-    public float invZStep;
+    public float invWStep;
     public float specStep;
 
     public FlatLerper() {
@@ -18,17 +18,17 @@ public class FlatLerper implements ILerper {
         this.texCoordStep = Vector2D.newZeros();
         this.specCoordStep = Vector2D.newZeros();
         specStep = 0f;
-        invZStep = 0f;
+        invWStep = 0f;
     }
 
 
     @Override
     public void lerp(Interpolants lp) {
-        lp.getP_proj().add(p_proj_step);
-        lp.getTexCoord().add(texCoordStep);
-        lp.getSpecCoord().add(specCoordStep);
-        lp.setSpecularity(lp.getSpecularity() + specStep);
-        lp.setInvW(lp.getInvW() + invZStep);
+        lp.p_proj.add(p_proj_step);
+        lp.texCoord.add(texCoordStep);
+        lp.specCoord.add(specCoordStep);
+        lp.specularity += specStep;
+        lp.invW += invWStep;
     }
 
 

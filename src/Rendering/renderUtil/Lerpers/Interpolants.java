@@ -5,29 +5,29 @@ import util.Mathf.Mathf2D.Vector2D;
 import util.Mathf.Mathf3D.Vector3D;
 
 public class Interpolants {
-    Vector3D p_proj;
+    public Vector3D p_proj;
 
-    private int yInt = 0;
-    private int xInt = 0;
+    public int yInt = 0;
+    public int xInt = 0;
 
-    private Vector2D textCoord;
-    private Vector2D specCoord;
+    public Vector2D texCoord;
+    public Vector2D specCoord;
 
-    private float specularity;
-    private float invW;
+    public float specularity;
+    public float invW;
 
-    private Vector3D surfaceColor;
+    public Vector3D surfaceColor;
 
-    private Vector3D p_ws;
-    private Vector3D n_ws;
+    public Vector3D p_ws;
+    public Vector3D n_ws;
 
     private ILerper lerper;
 
-    public Interpolants(Vector3D p_proj, int yInt, Vector2D textCoord, Vector2D specCoord,
+    public Interpolants(Vector3D p_proj, int yInt, Vector2D texCoord, Vector2D specCoord,
                         float specularity, Vector3D surfaceColor, float invW) {
         this.p_proj = p_proj;
         this.yInt = yInt;
-        this.textCoord = textCoord;
+        this.texCoord = texCoord;
         this.specCoord = specCoord;
         this.specularity = specularity;
         this.surfaceColor = surfaceColor;
@@ -38,7 +38,7 @@ public class Interpolants {
         lerper.lerp(this);
     }
 
-    public Vector3D getP_proj() {
+    /*public Vector3D getP_proj() {
         return p_proj;
     }
 
@@ -63,11 +63,11 @@ public class Interpolants {
     }
 
     public Vector2D getTexCoord() {
-        return textCoord;
+        return texCoord;
     }
 
-    public void setTextCoord(Vector2D textCoord) {
-        this.textCoord = textCoord;
+    public void setTextCoord(Vector2D texCoord) {
+        this.texCoord = texCoord;
     }
 
     public Vector2D getSpecCoord() {
@@ -116,7 +116,7 @@ public class Interpolants {
 
     public void setP_ws(Vector3D p_ws) {
         this.p_ws = p_ws;
-    }
+    }*/
 
     public void setLerper(ILerper lerper) {
         this.lerper = lerper;
@@ -125,7 +125,7 @@ public class Interpolants {
     public void reset() {
         this.p_proj = Vector3D.ZERO;
         this.yInt = 0;
-        this.textCoord = Vector2D.ZERO;
+        this.texCoord = Vector2D.ZERO;
         this.specCoord = Vector2D.ZERO;
         this.specularity = 0f;
         this.surfaceColor = Vector3D.ONE;
@@ -136,7 +136,7 @@ public class Interpolants {
 
         this.p_proj = new Vector3D(p_proj.x, p_proj.y, p_proj.z, p_proj.w);
         this.yInt = yStart;
-        this.textCoord = new Vector2D(texCoord.x, texCoord.y);
+        this.texCoord = new Vector2D(texCoord.x, texCoord.y);
         this.specCoord = new Vector2D(specCoord.x, specCoord.y);
         this.specularity = spec;
         this.surfaceColor = new Vector3D(surfaceColor.x, surfaceColor.y, surfaceColor.z, surfaceColor.w);

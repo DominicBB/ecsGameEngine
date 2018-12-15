@@ -83,7 +83,6 @@ public abstract class ECSSystem extends BaseSystem implements Runnable {
     private void renderUpdate() {
         renderSystem.update();
         window.update(renderSystem.getRenderer().colorBuffer);
-
     }
 
     private void upkeepFps() {

@@ -21,30 +21,28 @@ public class TriangleRasterizer extends Rasterizer {
 
         constructEdges(v1, v2, v3, material);
         addEdges();
-        if (edges.size() < 2)
+
+        int size = edges.size();
+        if (size < 2)
             return;
 
-        if (edges.size() == 2) {
+        if (size == 2) {
             scan(edges.get(0), edges.get(1), material, renderer);
-        } else {
-
-            Edge e1 = edges.get(0);
-            Edge e2 = edges.get(1);
-            Edge e3 = edges.get(2);
-
-            if (e1HasGreatestYChange(e1, e2, e3)) {
-                // e1 has greatest y change
-                scan(e1, e2, e3, material, renderer);
-
-            } else if (e2HasGreatestYChange(e2, e3)) {
-                // e2 has greatest y change
-                scan(e2, e3, e1, material, renderer);
-
-            } else {
-                // e3 has greatest y change
-                scan(e3, e1, e2, material, renderer);
-            }
+            return;
         }
+
+        if (e1HasGreatestYChange(e1, e2, e3)) {
+            // e1 has greatest y change
+            scan(e1, e2, e3, material, renderer);
+            return;
+        }
+        if (e2HasGreatestYChange(e2, e3)) {
+            // e2 has greatest y change
+            scan(e2, e3, e1, material, renderer);
+            return;
+        }
+        // e3 has greatest y change
+        scan(e3, e1, e2, material, renderer);
     }
 
     private static void constructEdges(VertexOut v1, VertexOut v2, VertexOut v3, Material material) {
@@ -67,10 +65,12 @@ public class TriangleRasterizer extends Rasterizer {
 
     private static void scan(Edge leftEdge, Edge rightEdge, Material material, Renderer renderer) {
 
-        if (leftEdge.handiness == 0) {
-            scanSegment(leftEdge, rightEdge, leftEdge.yStart, leftEdge.deltaYceil, material, renderer);
-        } else {
-            scanSegment(rightEdge, leftEdge, rightEdge.yStart, rightEdge.deltaYceil, material, renderer);
+        switch (leftEdge.handiness) {
+            case 0:
+                scanSegment(leftEdge, rightEdge, leftEdge.yStart, leftEdge.deltaYInt, material, renderer);
+                return;
+            default:
+                scanSegment(rightEdge, leftEdge, rightEdge.yStart, rightEdge.deltaYInt, material, renderer);
         }
     }
 
@@ -82,27 +82,36 @@ public class TriangleRasterizer extends Rasterizer {
             topEdge = temp;
         }
 
-        if (tallestEdge.handiness == 0) {
-            scanSegment(tallestEdge, bottomEdge, bottomEdge.yStart, bottomEdge.deltaYceil, material, renderer);
-
-            scanSegment(tallestEdge, topEdge, topEdge.yStart, topEdge.deltaYceil, material, renderer);
-        } else {
-            scanSegment(bottomEdge, tallestEdge, bottomEdge.yStart, bottomEdge.deltaYceil, material, renderer);
-
-            scanSegment(topEdge, tallestEdge, topEdge.yStart, topEdge.deltaYceil, material, renderer);
+        switch (tallestEdge.handiness) {
+            case 0:
+                scanSegment(tallestEdge, bottomEdge, bottomEdge.yStart, bottomEdge.deltaYInt, material, renderer);
+                scanSegment(tallestEdge, topEdge, topEdge.yStart, topEdge.deltaYInt, material, renderer);
+                return;
+            default:
+                scanSegment(bottomEdge, tallestEdge, bottomEdge.yStart, bottomEdge.deltaYInt, material, renderer);
+                scanSegment(topEdge, tallestEdge, topEdge.yStart, topEdge.deltaYInt, material, renderer);
         }
     }
 
 
-    private static void scanSegment(Edge left, Edge right, int y, float yChange, Material material, Renderer renderer) {
+    private static void scanSegment(Edge left, Edge right, int y, int yChange, Material material, Renderer renderer) {
         int i = 1;
+
         while (i <= yChange) {
+            rasterizeRow(left, right, y, material, renderer);
+            left.interpolants.lerp();
+            right.interpolants.lerp();
+            ++y;
+            ++i;
+        }
+
+       /* do {
             rasterizeRow(left, right, y, material, renderer);
             left.interpolants.lerp();
             right.interpolants.lerp();
             y++;
             i++;
-        }
+        } while (i <= yChange);*/
     }
 
     private static boolean e2HasGreatestYChange(Edge e2, Edge e3) {

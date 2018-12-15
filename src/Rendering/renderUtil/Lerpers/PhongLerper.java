@@ -13,7 +13,7 @@ public class PhongLerper implements ILerper {
 
     public final Vector3D n_ws_step;
     public final Vector3D p_ws_step;
-    public float invZStep;
+    public float invWStep;
 
     public PhongLerper() {
         this.p_proj_step = Vector3D.newZeros();
@@ -21,7 +21,7 @@ public class PhongLerper implements ILerper {
         this.texCoordStep = Vector2D.newZeros();
         this.specCoordStep = Vector2D.newZeros();
         specStep = 0f;
-        invZStep = 0f;
+        invWStep = 0f;
 
         n_ws_step = Vector3D.newZeros();
         p_ws_step = Vector3D.newZeros();
@@ -30,12 +30,11 @@ public class PhongLerper implements ILerper {
 
     @Override
     public final void lerp(Interpolants lp) {
-        lp.getP_proj().add(p_proj_step);
-        lp.getTexCoord().add(texCoordStep);
-        lp.getSpecCoord().add(specCoordStep);
-        lp.setSpecularity(lp.getSpecularity() + specStep);
-        lp.setInvW(lp.getInvW() + invZStep);
-
+        lp.p_proj.add(p_proj_step);
+        lp.texCoord.add(texCoordStep);
+        lp.specCoord.add(specCoordStep);
+        lp.specularity += specStep;
+        lp.invW += invWStep;
     }
 
 }

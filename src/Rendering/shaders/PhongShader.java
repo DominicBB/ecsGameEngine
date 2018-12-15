@@ -34,8 +34,8 @@ public class PhongShader implements IShader {
     @Override
     public final Vector3D frag(Interpolants interpolants, FloatBuffer zBuffer, Material material) {
 
-        int x = interpolants.getxInt();
-        if (!ShaderUtil.zBufferTest(zBuffer, interpolants.getP_proj().z, x, interpolants.getyInt())) {
+        int x = interpolants.xInt;
+        if (!ShaderUtil.zBufferTest(zBuffer, interpolants.p_proj.z, x, interpolants.yInt)) {
             return null;
         }
 
@@ -43,11 +43,10 @@ public class PhongShader implements IShader {
 
         Vector3D color;
         if (material.hasTexture()) {
-
             color = surfaceColor.
                     componentMul(material.getTexture().texture.getPixelColor(
-                            (int) interpolants.getTexCoord().x,
-                            (int) interpolants.getTexCoord().y));
+                            (int) interpolants.texCoord.x,
+                            (int) interpolants.texCoord.y));
 
         } else {
             color = material.getColor().componentMul(surfaceColor);
@@ -58,24 +57,24 @@ public class PhongShader implements IShader {
     private Vector3D calculateLighting(Interpolants interpolants, Material material, int x) {
 
         if (material.isDiffuse()) {
-            interpolants.getSurfaceColor().add(calcDiffuse(interpolants, material, x));
+            interpolants.surfaceColor.add(calcDiffuse(interpolants, material, x));
         }
 
         if (material.isSpecular()) {
-            interpolants.getSurfaceColor().add(calcSpecular(interpolants, material));
+            interpolants.surfaceColor.add(calcSpecular(interpolants, material));
         }
 
         if (material.isAmbient()) {
-            interpolants.getSurfaceColor().add(ambient(RenderState.lightingState.ambientColor,
+            interpolants.surfaceColor.add(ambient(RenderState.lightingState.ambientColor,
                     material.getAmbientFactor()));
         }
-        return interpolants.getSurfaceColor();
+        return interpolants.surfaceColor;
     }
 
     private Vector3D calcDiffuse(Interpolants interpolants, Material material, int x) {
-        Vector3D n = interpolants.getN_ws();
+        Vector3D n = interpolants.n_ws;
         if (material.hasNormalMap()) {
-            n = material.getNormalMap().getPixelColor(x, interpolants.getyInt());
+            n = material.getNormalMap().getPixelColor(x, interpolants.yInt);
         }
 
         Vector3D diffuse = diffuse(RenderState.lightingState.lightColor,
@@ -90,11 +89,11 @@ public class PhongShader implements IShader {
     private Vector3D calcSpecular(Interpolants interpolants, Material material) {
         //Vector3D p_ws = renderer.screenSpaceToWorldSpace(interpolants.getP_proj());
 
-        float spec = calculateSpecular(interpolants.getN_ws(), interpolants.getP_ws(), material);
+        float spec = calculateSpecular(interpolants.n_ws, interpolants.p_ws, material);
         Vector3D specColor;
 
         if (material.hasSpecularMap()) {
-            specColor = perspectiveCorrectBitmap(interpolants.getSpecCoord(),material.getSpecularMap(), 0f);
+            specColor = perspectiveCorrectBitmap(interpolants.specCoord,material.getSpecularMap(), 0f);
 
         } else {
             specColor = material.getDefualtSpecularColor();

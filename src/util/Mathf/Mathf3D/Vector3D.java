@@ -102,11 +102,18 @@ public class Vector3D {
         );
     }
 
-    public void componentAdd(float x, float y, float z, float w) {
+    public void add(float x, float y, float z, float w) {
         this.x += x;
         this.y += y;
         this.z += z;
         this.w += w;
+    }
+
+    public static void componentMulNonAlloc(Vector3D out, Vector3D other) {
+        out.x *= other.x;
+        out.y *= other.y;
+        out.z *= other.z;
+        out.w *= other.w;
     }
 
     public double cosTheta(Vector3D other) {
@@ -232,7 +239,10 @@ public class Vector3D {
     }
 
     public Vector3D lerpWithW(Vector3D destination, float lerpAmt) {
-        Vector3D res = destination.minus(this).mul(lerpAmt).plus(this);
+        Vector3D res = destination.minus(this);
+        res.x = res.x * lerpAmt + x;
+        res.y = res.y * lerpAmt + y;
+        res.z = res.z * lerpAmt + z;
         res.w = Mathf.lerp(w, destination.w, lerpAmt);
         return res;
     }

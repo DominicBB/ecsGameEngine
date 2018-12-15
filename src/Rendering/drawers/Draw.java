@@ -56,10 +56,10 @@ public abstract class Draw {
         return new Line3D(v1, v2);
     }
 
-    public final static Edge yIncreasingEdge(VertexOut v1, VertexOut v2, Material material) {
+    public final static Edge yIncreasingEdge(VertexOut v1, VertexOut v2) {
         if (v1.p_proj.y > v2.p_proj.y) { //decreasing y line, so flip
-            return new Edge(v2, v1, 1, material);
+            return new Edge(v2, v1, 1);
         }
-        return new Edge(v1, v2, 0, material);
+        return new Edge(v1, v2, 0);
     }
 }

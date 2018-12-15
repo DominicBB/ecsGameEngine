@@ -18,6 +18,6 @@ public class EdgeFactory {
         }
 
         edge.reuse(v1, v2, handiness);
-        lerperFactory.setLerper(material, edge.interpolants, v1, v2, edge.deltaYceil);
+        lerperFactory.setLerper(material, edge.interpolants, v1, v2, 1f/ edge.deltaYceil);
     }
 }

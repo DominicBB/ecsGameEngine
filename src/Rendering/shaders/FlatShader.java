@@ -59,25 +59,26 @@ public class FlatShader implements IShader, IGeometryShader {
         return vertices;
     }
 
+    private final Vector3D fragColor = Vector3D.newZeros();
+
     @Override
     public final Vector3D frag(Interpolants lP, FloatBuffer zBuffer, Material material) {
-        float z = 1f / lP.getInvW();
-        if (!ShaderUtil.zBufferTest(zBuffer, z, lP.getxInt(), lP.getyInt()))
+        float w = 1f / lP.invW;
+        if (!ShaderUtil.zBufferTest(zBuffer, lP.p_proj.z, lP.xInt, lP.yInt))
             return null;
 
-
+        fragColor.set(lP.surfaceColor);
         if (material.isSpecular()) {
-            lP.getSurfaceColor().add(calcSpecularAtFrag(lP.getSpecCoord(), lP.getSpecularity(), z, material));
+            fragColor.add(calcSpecularAtFrag(lP.specCoord, lP.specularity, w, material));
         }
 
-        Vector3D color;
         if (material.hasTexture()) {
-            color = perspectiveCorrectBitmap(lP.getTexCoord(), material.getTexture().texture, z);
+            Vector3D.componentMulNonAlloc(fragColor, perspectiveCorrectBitmap(lP.texCoord, material.getTexture().texture, w));
         } else {
-            color = lP.getSurfaceColor().componentMul(material.getColor());
+            Vector3D.componentMulNonAlloc(fragColor, material.getColor());
         }
 
-        return color;
+        return fragColor;
     }
 
     @Override

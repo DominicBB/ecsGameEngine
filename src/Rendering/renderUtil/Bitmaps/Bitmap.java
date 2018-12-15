@@ -91,6 +91,15 @@ public class Bitmap {
         Arrays.fill(byteArray, shade);
     }
 
+    private static final byte black = (byte) 0;
+
+    /**
+     * set all elements in byteArray to shadeWhiteLight of grey
+     */
+    public void clearToBlack() {
+        Arrays.fill(byteArray, black);
+    }
+
     /**
      * converts byteArray into 3byte BGR buffer
      *

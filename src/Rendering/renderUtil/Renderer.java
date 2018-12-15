@@ -55,15 +55,18 @@ public class Renderer {
             material.getGeometryShader().geom(vertexOuts, material);
         }
 
+        //backfaceCull
+        if (backFaceCullPreClip(vertexOuts[0], vertexOuts[1], vertexOuts[2]))
+            return;
+
         //clip
         clippingSystem.clipTriangle(clippedVertices, vertexOuts[0], vertexOuts[1], vertexOuts[2]);
         if (clippedVertices.isEmpty()) return;
 
-        /*for(VertexOut vertexOut: clippedVertices){
-            moveToScreenSpace(vertexOut);
-        }*/
+
         VertexOut v2Out, v3Out;
         VertexOut v1Out = clippedVertices.get(0);
+
         v1Out = moveToScreenSpaceNew(v1Out);
 
         int end = clippedVertices.size() - 1;
@@ -75,12 +78,9 @@ public class Renderer {
             v2Out = moveToScreenSpaceNew(v2Out);
             v3Out = moveToScreenSpaceNew(v3Out);
 
-            //backface cull
-            if (backFaceCull(v1Out, v2Out, v3Out))
-                return;
-
             Draw.fillPolygon(v1Out, v2Out, v3Out,
                     this, material);
+
         }
     }
 
@@ -128,15 +128,19 @@ public class Renderer {
     }
 
     public void setFinalColor(int x, int y, Vector3D color) {
-        colorBuffer.setPixel(x, y, /*Colorf.WHITE */ Colorf.clamp(color));
+        colorBuffer.setPixel(x, y, Colorf.clamp(color));
     }
 
     private boolean backFaceCull(VertexOut v1, VertexOut v2, VertexOut v3) {
         return Triangle.z_normal(v1.p_proj, v2.p_proj, v3.p_proj) >= 0;//TODO: possibly '>0'. p_proj or p_ws
     }
 
-    private final float halfWidth = (Window.defaultWidth - 1.5f) * 0.5f;
-    private final float halfHeight = (Window.defaultHeight - 1.5f) * 0.5f;
+    private boolean backFaceCullPreClip(VertexOut v1, VertexOut v2, VertexOut v3) {
+        return Triangle.z_normal(v1.p_proj, v2.p_proj, v3.p_proj) >= 0;//TODO: possibly '>0'. p_proj or p_ws
+    }
+
+    private final float halfWidth = (Window.defaultWidth - 1f) * 0.5f;
+    private final float halfHeight = (Window.defaultHeight - 1f) * 0.5f;
 
     private void moveToScreenSpace(VertexOut v) {
         v.wDivide();

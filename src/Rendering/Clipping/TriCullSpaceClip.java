@@ -1,7 +1,6 @@
 package Rendering.Clipping;
 
 import Rendering.renderUtil.VertexOut;
-import util.Mathf.Mathf;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +33,6 @@ public class TriCullSpaceClip {
         clippedVs.add(v2);
         if (allInside)
             return;
-
-
 
         clipVerticesAgainstPlanes(0, clippedVs);//x
         if (clippedVs.isEmpty())
@@ -73,6 +70,7 @@ public class TriCullSpaceClip {
         VertexOut c = in.get(0);
         float currComponent = c.p_proj.getComponentValue(planeComponent) * planeF;
         clipVertex(previous, prevInside, c, prevComponent, currComponent, out);
+
         in.clear();
     }
 

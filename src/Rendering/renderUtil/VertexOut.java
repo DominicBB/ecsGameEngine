@@ -33,10 +33,10 @@ public class VertexOut {
     public void wDivide() {
         if (p_proj.w == 0)
             return;
-
-        p_proj.x = p_proj.x / p_proj.w;
-        p_proj.y = p_proj.y / p_proj.w;
-        p_proj.z = p_proj.z / p_proj.w;
+        float w = 1f / p_proj.w;
+        p_proj.x = p_proj.x * w;
+        p_proj.y = p_proj.y * w;
+        p_proj.z = p_proj.z * w;
     }
 
     public VertexOut wDivideNew() {
@@ -44,10 +44,11 @@ public class VertexOut {
         if (p_proj.w == 0)
             return this;
 
+        float w = 1f / p_proj.w;
         Vector3D vec = new Vector3D(
-                p_proj.x / p_proj.w,
-                p_proj.y / p_proj.w,
-                p_proj.z / p_proj.w,
+                p_proj.x * w,
+                p_proj.y * w,
+                p_proj.z * w,
                 p_proj.w);
 
         return new VertexOut(vec, texCoord, specCoord, spec, surfaceColor, n_ws, p_ws, invW);

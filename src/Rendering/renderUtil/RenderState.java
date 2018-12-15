@@ -12,7 +12,6 @@ public final class RenderState {
     public static Transform transform;
     public static Matrix4x4 world;
     public static Matrix4x4 mvp;
-    //    public static Matrix4x4 objmvp;
     public static Matrix4x4 projectionToWorld;
 
     public static Vector3D screenSpaceToWorldSpace(Vector3D vector3D) {

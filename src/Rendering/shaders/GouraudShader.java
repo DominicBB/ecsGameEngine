@@ -100,29 +100,27 @@ public class GouraudShader implements IShader {
     }
 
 
+    private final Vector3D fragColor = Vector3D.newZeros();
+
     @Override
     public final Vector3D frag(Interpolants lP, FloatBuffer zBuffer, Material material) {
-        float w = 1f / lP.getInvW();
-        //should use z here
-        if (!ShaderUtil.zBufferTest(zBuffer, w, lP.getxInt(), lP.getyInt()))
+        if (!ShaderUtil.zBufferTest(zBuffer, lP.p_proj.z, lP.xInt, lP.yInt))
             return null;
 
+        float w = 1f / lP.invW;
+
+        fragColor.set(lP.surfaceColor);
         if (material.isSpecular()) {
-            lP.getSurfaceColor().add(calcSpecularAtFrag(lP.getSpecCoord(), lP.getSpecularity(), w, material));
+            fragColor.add(calcSpecularAtFrag(lP.specCoord, lP.specularity, w, material));
         }
 
-        Vector3D color;
         if (material.hasTexture()) {
-//            scaleToBitmap(texCoord, material.getTexture().texture);
-            color = lP.getSurfaceColor().componentMul(perspectiveCorrectBitmap(lP.getTexCoord(), material.getTexture().texture, w));
-//            Vector2D texC = lP.getTexCoord().mul(w);
-//            scaleToBitmap(texC, material.getTexture().texture);
-//            color = lP.getSurfaceColor().componentMul(sampleTexture(texC, material));
+            Vector3D.componentMulNonAlloc(fragColor, perspectiveCorrectBitmap(lP.texCoord, material.getTexture().texture, w));
         } else {
-            color = lP.getSurfaceColor().componentMul(material.getColor());
+            Vector3D.componentMulNonAlloc(fragColor, material.getColor());
         }
 
-        return color;
+        return fragColor;
     }
 
 
