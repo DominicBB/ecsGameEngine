@@ -24,15 +24,12 @@ public class RenderSystem extends EntityGrabberSystem {
 
     public RenderSystem() {
         super(Arrays.asList(RenderableMesh.class, TransformComponent.class));
-        constructMoveToViewMatrix();
+
         RenderState.camera = EntityFactory.createCamera(new Camera(), new Transform());
-        /*RenderState.lightingState = new LightingState(1f, Vector3D.FORWARD, Vector3D.newOnes(),
-                new Vector3D(.1f, .1f, .1f));*/
         RenderState.createLightingState();
+
         renderer = new Renderer(Window.defaultWidth, Window.defaultHeight);
-
         initRenderers();
-
         SystemCommunicator.registerRenderSystem(this);
     }
 
@@ -41,11 +38,12 @@ public class RenderSystem extends EntityGrabberSystem {
         wireFrameRenderSystem = new WireFrameRenderSystem(this);
     }
 
+
     @Override
     public void update() {
         renderer.getzBuffer().resetPositiveInf();
-        renderer.colorBuffer.clear((byte) 0);//make screen black
-
+//        renderer.colorBuffer.clearToBlack();//make screen black
+        setBufferToBlack();
         RenderState.mvp = constructProjMatrix(RenderState.camera);
 //        RenderState.projectionToWorld = constructProjToWorld(RenderState.camera);
         for (int entityID : entityGrabber.getEntityIDsOfInterest()) {
@@ -65,16 +63,14 @@ public class RenderSystem extends EntityGrabberSystem {
         }
     }
 
-   /* private Matrix4x4 constructProjToWorld(Camera camera) {
-        Transform camTran = camera.transform;
-        Matrix4x4 projToView = moveToView.compose(Matrix4x4.newProjectionToView(camera.fFov_AR, camera.fFov,
-                camera.zNear, camera.zFar));
-        Matrix4x4 viewToWOrld = Matrix4x4.newViewToWorld(camTran.getForwardDir(), camTran.getRightDir(),
-                camTran.getUpDir(), camTran.getPosition());
-        return viewToWOrld.compose(projToView);
-    }*/
+    private final byte BLACK = (byte) 0;
+    private void setBufferToBlack() {
+        for (int i = 0; i < Window.displayImageContents.length; i++) {
+            Window.displayImageContents[i] = BLACK;
+        }
+    }
 
-    protected Matrix4x4 constructProjMatrix(Camera camera) {
+    private Matrix4x4 constructProjMatrix(Camera camera) {
         Transform camTran = camera.transform;
         Matrix4x4 projection = Matrix4x4.newProjection(camera.fFov_AR, camera.fFov, camera.zNear,
                 camera.zFar);
@@ -88,9 +84,16 @@ public class RenderSystem extends EntityGrabberSystem {
         return lookAt.compose(projection);
     }
 
-    protected void constructMoveToViewMatrix() {
+   /* private Matrix4x4 constructProjToWorld(Camera camera) {
+        Transform camTran = camera.transform;
+        Matrix4x4 projToView = moveToView.compose(Matrix4x4.newProjectionToView(camera.fFov_AR, camera.fFov,
+                camera.zNear, camera.zFar));
+        Matrix4x4 viewToWOrld = Matrix4x4.newViewToWorld(camTran.getForwardDir(), camTran.getRightDir(),
+                camTran.getUpDir(), camTran.getPosition());
+        return viewToWOrld.compose(projToView);
+    }*/
 
-    }
+
 
     public Renderer getRenderer() {
         return renderer;

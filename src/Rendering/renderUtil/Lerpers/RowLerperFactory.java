@@ -11,14 +11,6 @@ public class RowLerperFactory extends BaseLerperFactory {
     public Interpolants setLerper(Material material, Interpolants interpolants, Interpolants l1, Interpolants l2,
                                   float factor) {
 
-
-        calculateLerperValues(material, interpolants, l1, l2, factor);
-
-        return interpolants;
-    }
-
-    private void calculateLerperValues(Material material, Interpolants interpolants, Interpolants l1, Interpolants l2,
-                                       float factor) {
         switch (material.getShader().getShaderType()) {
             case GOURUAD:
                 interpolants.setLerper(gouruadLerper(material, l1, l2, factor));
@@ -30,7 +22,10 @@ public class RowLerperFactory extends BaseLerperFactory {
                 interpolants.setLerper(phongLerper(material, l1, l2, factor));
                 break;
         }
+
+        return interpolants;
     }
+
 
     private GouruadLerper gouruadLerper(Material material, Interpolants l1, Interpolants l2, float factor) {
 

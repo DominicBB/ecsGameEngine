@@ -90,7 +90,11 @@ final class ShaderUtil {
     }
 
     static Vector3D perspectiveCorrectBitmap(Vector2D coord, Bitmap bitmap, float z) {
-        return bitmap.getPixelColor((int) (coord.x * z), (int) (coord.y * z));
+        return bitmap.getPixel((int) (coord.x * z), (int) (coord.y * z));
+    }
+
+    static void perspectiveCorrectBitmapNonAlloc(Vector2D coord, Bitmap bitmap, float z, Vector3D out) {
+        bitmap.getPixelNonAlloc((int) (coord.x * z), (int) (coord.y * z), out);
     }
 
     static Vector2D scaleToBitmap(Vector2D in, Bitmap bitmap) {

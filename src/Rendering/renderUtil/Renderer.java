@@ -128,7 +128,20 @@ public class Renderer {
     }
 
     public void setFinalColor(int x, int y, Vector3D color) {
-        colorBuffer.setPixel(x, y, Colorf.clamp(color));
+        Colorf.clampNonAlloc(color);
+//        colorBuffer.setPixel(x, y, /*Colorf.clamp(color)*/ color);
+        setPixel(x, y, color);
+    }
+
+    private void setPixel(int x, int y, Vector3D color) {
+        int i = (y * Window.defaultWidth + x) * 3;
+
+//        Window.displayImageContents[i] = (byte) (((int) color.w) & 0xFF);
+        Window.displayImageContents[i] = (byte) (((int) color.z) & 0xFF);
+        Window.displayImageContents[i + 1] = (byte) (((int) color.y) & 0xFF);
+        Window.displayImageContents[i + 2] = (byte) (((int) color.x) & 0xFF);
+
+
     }
 
     private boolean backFaceCull(VertexOut v1, VertexOut v2, VertexOut v3) {

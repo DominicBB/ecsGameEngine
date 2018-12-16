@@ -9,10 +9,10 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class Bitmap {
-    protected int width;
-    protected int height;
+    protected final int width;
+    protected final int height;
 
-    protected byte[] byteArray;
+    protected final byte[] byteArray;
 
     public Bitmap(int width, int height) {
         this.width = width;
@@ -21,7 +21,7 @@ public class Bitmap {
     }
 
     /**
-     * loads an image from file, useful for texturePath mapping
+     * loads an image from file
      *
      * @param filename
      * @throws IOException
@@ -65,7 +65,7 @@ public class Bitmap {
     }
 
     /**
-     * Set ARGB of pixel
+     * Set ABGR of pixel
      *
      * @param x
      * @param y
@@ -88,7 +88,9 @@ public class Bitmap {
      * @param shade
      */
     public void clear(byte shade) {
-        Arrays.fill(byteArray, shade);
+        for (int i = 0; i < byteArray.length; i++) {
+            byteArray[i] = shade;
+        }
     }
 
     private static final byte black = (byte) 0;
@@ -97,7 +99,9 @@ public class Bitmap {
      * set all elements in byteArray to shadeWhiteLight of grey
      */
     public void clearToBlack() {
-        Arrays.fill(byteArray, black);
+        for (int i = 0; i < byteArray.length; i++) {
+            byteArray[i] = black;
+        }
     }
 
     /**
@@ -119,8 +123,13 @@ public class Bitmap {
         }
     }
 
-    //TODO: does this work
-    public Vector3D getPixelColor(int x, int y) {
+    public void copyToABGR(byte[] destination) {
+        for (int i = 0; i < byteArray.length; i++) {
+            destination[i] = byteArray[i];
+        }
+    }
+
+    public Vector3D getPixel(int x, int y) {
         int i = (y * width + x) << 2;
         return new Vector3D(
                 byteArray[i + 3] & 0xFF,
@@ -128,6 +137,14 @@ public class Bitmap {
                 byteArray[i + 1] & 0xFF,
                 byteArray[i] & 0xFF
         );
+    }
+
+    public void getPixelNonAlloc(int x, int y, Vector3D out) {
+        int i = (y * width + x) << 2;
+        out.x = byteArray[i + 3] & 0xFF;
+        out.y = byteArray[i + 2] & 0xFF;
+        out.z = byteArray[i + 1] & 0xFF;
+        out.w = byteArray[i] & 0xFF;
     }
 
     public int getHeight() {

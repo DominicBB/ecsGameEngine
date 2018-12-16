@@ -10,7 +10,9 @@ import Rendering.renderUtil.Renderer;
 
 import Rendering.renderUtil.VertexOut;
 
-public class TriangleRasterizer extends Rasterizer {
+import static Rendering.drawers.fill.Rasterizer.rasterizeRow;
+
+public class TriangleRasterizer {
     private static EdgeFactory edgeFactory = new EdgeFactory();
     private final static Edge e1 = Edge.newEmpty(), e2 = Edge.newEmpty(), e3 = Edge.newEmpty();
     private static List<Edge> edges = new ArrayList<>(3);
@@ -75,7 +77,6 @@ public class TriangleRasterizer extends Rasterizer {
     }
 
     private static void scan(Edge tallestEdge, Edge bottomEdge, Edge topEdge, Material material, Renderer renderer) {
-        //swap topEdge and bottomEdge if needed
         if (bottomEdge.yEnd > topEdge.yEnd) {
             Edge temp = bottomEdge;
             bottomEdge = topEdge;

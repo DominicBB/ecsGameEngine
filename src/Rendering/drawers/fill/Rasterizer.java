@@ -5,18 +5,22 @@ import Rendering.renderUtil.Edges.Edge;
 import Rendering.renderUtil.Lerpers.Interpolants;
 import Rendering.renderUtil.Lerpers.RowLerperFactory;
 import Rendering.renderUtil.Renderer;
+import util.Mathf.Mathf;
 import util.Mathf.Mathf3D.Vector3D;
 
-abstract class Rasterizer {
+class Rasterizer {
 
     private static final RowLerperFactory rowLerperFactory = new RowLerperFactory();
     private static final Interpolants ROW_INTERPOLANTS = Interpolants.newEmpty();
 
-    protected static void rasterizeRow(Edge left, Edge right, int y, Material material, Renderer renderer) {
+    static void rasterizeRow(Edge left, Edge right, int y, Material material, Renderer renderer) {
         setLerpValuesTo(left.interpolants, y);
 
-        int from = (int) Math.ceil(left.interpolants.p_proj.x);
-        int to = (int) Math.ceil(right.interpolants.p_proj.x);
+        int from =  Mathf.fastCeil(left.interpolants.p_proj.x);
+        int to =  Mathf.fastCeil(right.interpolants.p_proj.x);
+
+        /*int from = (int) Math.ceil(left.interpolants.p_proj.x);
+        int to = (int) Math.ceil(right.interpolants.p_proj.x);*/
 
         if (to - from == 0) {
             ROW_INTERPOLANTS.xInt = to;
@@ -44,5 +48,4 @@ abstract class Rasterizer {
         ROW_INTERPOLANTS.reset(lp.p_proj, y, lp.texCoord, lp.specCoord, lp.specularity,
                 lp.surfaceColor, lp.invW);
     }
-
 }

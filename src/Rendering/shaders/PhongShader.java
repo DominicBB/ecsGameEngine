@@ -44,7 +44,7 @@ public class PhongShader implements IShader {
         Vector3D color;
         if (material.hasTexture()) {
             color = surfaceColor.
-                    componentMul(material.getTexture().texture.getPixelColor(
+                    componentMul(material.getTexture().texture.getPixel(
                             (int) interpolants.texCoord.x,
                             (int) interpolants.texCoord.y));
 
@@ -74,7 +74,7 @@ public class PhongShader implements IShader {
     private Vector3D calcDiffuse(Interpolants interpolants, Material material, int x) {
         Vector3D n = interpolants.n_ws;
         if (material.hasNormalMap()) {
-            n = material.getNormalMap().getPixelColor(x, interpolants.yInt);
+            n = material.getNormalMap().getPixel(x, interpolants.yInt);
         }
 
         Vector3D diffuse = diffuse(RenderState.lightingState.lightColor,

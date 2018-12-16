@@ -10,6 +10,8 @@ import java.awt.*;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.awt.image.VolatileImage;
+import java.util.Arrays;
 
 /**
  * The display of the engine
@@ -17,11 +19,12 @@ import java.awt.image.DataBufferByte;
 public class Window extends JFrame {
     private Canvas drawing;
     private int fps;
-    public static final int defaultWidth = 800;
-    public static final int defaultHeight = 800;
+    public static final int defaultWidth = 1920;
+    public static final int defaultHeight = 1080;
 
+    private VolatileImage vdisplayImage;
     private BufferedImage displayImage;
-    private byte[] displayImageContents;
+    public static byte[] displayImageContents;
     private BufferStrategy bufferStrategy;
     private Graphics graphics;
 
@@ -32,7 +35,7 @@ public class Window extends JFrame {
     }
 
     public static float getAspectRatio() {
-        return (float) defaultHeight / (float) defaultWidth;
+        return (float) defaultWidth / (float) defaultHeight;
     }
 
     private void createWindow() {
@@ -42,7 +45,7 @@ public class Window extends JFrame {
         this.toFront();
         this.setFocusable(true);
         this.setFocusableWindowState(true);
-        this.setLocation(1000, 0);
+        this.setLocation(500, 0);
         setUpDrawingArea();
         setupInputSystem();
         this.add(drawing);
@@ -69,6 +72,8 @@ public class Window extends JFrame {
         drawing.setMinimumSize(frameDim);
         drawing.setVisible(true);
 
+        /*vdisplayImage =createVolatileImage(defaultWidth,defaultHeight);
+        getGraphicsConfiguration();*/
         displayImage = new BufferedImage(defaultWidth, defaultHeight, BufferedImage.TYPE_3BYTE_BGR);
         displayImageContents = ((DataBufferByte) displayImage.getRaster().getDataBuffer()).getData();
     }
@@ -79,7 +84,8 @@ public class Window extends JFrame {
 
     public void update(Bitmap colorBuffer) {
         this.requestFocus();
-        colorBuffer.copyTo3BGR(displayImageContents);
+//        colorBuffer.copyTo3BGR(displayImageContents);
+//        colorBuffer.copyTo(displayImageContents);
         graphics.drawImage(displayImage, 0, 0, null);
         bufferStrategy.show();
     }

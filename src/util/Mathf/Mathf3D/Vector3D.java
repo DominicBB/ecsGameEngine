@@ -40,9 +40,9 @@ public class Vector3D {
     }
 
     public void add(Vector3D toAdd) {
-        this.x = x + toAdd.x;
-        this.y = y + toAdd.y;
-        this.z = z + toAdd.z;
+        this.x += toAdd.x;
+        this.y += toAdd.y;
+        this.z += toAdd.z;
 //        this.w = w + toAdd.w;
     }
 
@@ -51,10 +51,10 @@ public class Vector3D {
     }
 
     public void scale(float scaler) {
-        this.x = x * scaler;
-        this.y = y * scaler;
-        this.z = z * scaler;
-        this.w = w * scaler;
+        this.x *= scaler;
+        this.y *= scaler;
+        this.z *= scaler;
+        this.w *= scaler;
     }
 
     public Vector3D divide(float divider) {
@@ -63,15 +63,15 @@ public class Vector3D {
 
 
     public Vector3D normal() {
-        float m = this.magnitude();
-        return new Vector3D(this.x / m, this.y / m, this.z / m);
+        float invM = 1f / this.magnitude();
+        return new Vector3D(this.x * invM, this.y * invM, this.z * invM);
     }
 
     public void normalise() {
-        float m = this.magnitude();
-        this.x = x / m;
-        this.y = y / m;
-        this.z = z / m;
+        float invM = 1f / this.magnitude();
+        this.x = x * invM;
+        this.y = y * invM;
+        this.z = z * invM;
     }
 
     public float magnitude() {
@@ -124,30 +124,30 @@ public class Vector3D {
 
     public Vector3D maxValues(Vector3D other) {
         Vector3D maxValues = Vector3D.newZeros();
-        maxValues.x = Math.max(x, other.x);
-        maxValues.y = Math.max(y, other.y);
-        maxValues.z = Math.max(z, other.z);
+        maxValues.x = Mathf.max(x, other.x);
+        maxValues.y = Mathf.max(y, other.y);
+        maxValues.z = Mathf.max(z, other.z);
         return maxValues;
     }
 
     public Vector3D minValues(Vector3D other) {
         Vector3D minValues = Vector3D.newZeros();
-        minValues.x = Math.min(x, other.x);
-        minValues.y = Math.min(y, other.y);
-        minValues.z = Math.min(z, other.z);
+        minValues.x = Mathf.min(x, other.x);
+        minValues.y = Mathf.min(y, other.y);
+        minValues.z = Mathf.min(z, other.z);
         return minValues;
     }
 
     public float minVal() {
         float min = x;
-        min = Math.min(y, min);
-        return Math.min(z, min);
+        min = Mathf.min(y, min);
+        return Mathf.min(z, min);
     }
 
     public float maxVal() {
         float max = x;
-        max = Math.max(y, max);
-        return Math.max(z, max);
+        max = Mathf.max(y, max);
+        return Mathf.max(z, max);
     }
 
     public String toString() {
