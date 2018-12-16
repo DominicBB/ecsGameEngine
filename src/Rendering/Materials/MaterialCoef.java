@@ -1,11 +1,11 @@
 package Rendering.Materials;
 
-import Rendering.renderUtil.Bitmaps.Bitmap;
+import Rendering.renderUtil.Bitmaps.BitmapABGR;
 
 public class MaterialCoef {
     private String name;
-    private Bitmap texture;
-    private Bitmap specularMap;
+    private BitmapABGR texture;
+    private BitmapABGR specularMap;
 
 
 
@@ -14,7 +14,7 @@ public class MaterialCoef {
     private float specularFactor = 1f;
     private float specularPower = 100f;
 
-    public MaterialCoef(String name, Bitmap specularMap, float ambientFactor,
+    public MaterialCoef(String name, BitmapABGR specularMap, float ambientFactor,
                         float diffuseFactor, float specularFactor, float specularPower) {
         this.name = name;
         this.specularMap = specularMap;

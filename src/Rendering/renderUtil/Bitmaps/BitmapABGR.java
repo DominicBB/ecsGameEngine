@@ -8,16 +8,25 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-public class Bitmap {
+public class BitmapABGR {
     protected final int width;
     protected final int height;
 
     protected final byte[] byteArray;
 
-    public Bitmap(int width, int height) {
+    public BitmapABGR(int width, int height) {
         this.width = width;
         this.height = height;
         this.byteArray = new byte[width * height * 4];
+    }
+
+    public BitmapABGR(int width, int height, byte[] byteArray) {
+        this.width = width;
+        this.height = height;
+        if (byteArray.length != width * height << 2)
+            this.byteArray = Arrays.copyOf(byteArray, width * height << 2);
+        else
+            this.byteArray = byteArray;
     }
 
     /**
@@ -26,7 +35,7 @@ public class Bitmap {
      * @param filename
      * @throws IOException
      */
-    public Bitmap(String filename) throws IOException {
+    public BitmapABGR(String filename) throws IOException {
         BufferedImage image = ImageIO.read(new File(filename));
 
         this.width = image.getWidth();

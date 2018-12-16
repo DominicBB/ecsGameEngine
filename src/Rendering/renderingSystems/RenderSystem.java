@@ -65,8 +65,8 @@ public class RenderSystem extends EntityGrabberSystem {
 
     private final byte BLACK = (byte) 0;
     private void setBufferToBlack() {
-        for (int i = 0; i < Window.displayImageContents.length; i++) {
-            Window.displayImageContents[i] = BLACK;
+        for (int i = 0; i < Window.buff1.length; i++) {
+            Window.buff1[i] = BLACK;
         }
     }
 

@@ -1,6 +1,6 @@
 package Rendering.Materials;
 
-import Rendering.renderUtil.Bitmaps.Bitmap;
+import Rendering.renderUtil.Bitmaps.BitmapABGR;
 import Rendering.renderUtil.Colorf;
 import Rendering.renderUtil.Bitmaps.Texture;
 import Rendering.shaders.interfaces.IGeometryShader;
@@ -15,8 +15,8 @@ public class Material {
     private IGeometryShader geometryShader;
 
     private Texture texture;
-    private Bitmap specularMap;
-    private Bitmap normalMap;
+    private BitmapABGR specularMap;
+    private BitmapABGR normalMap;
 
     private float ambientFactor = 1f;
     private float diffuseFactor = 1f;
@@ -95,11 +95,11 @@ public class Material {
         this.texture = texture;
     }
 
-    public Bitmap getSpecularMap() {
+    public BitmapABGR getSpecularMap() {
         return specularMap;
     }
 
-    public void setSpecularMap(Bitmap specularMap) {
+    public void setSpecularMap(BitmapABGR specularMap) {
         if (specularMap == null)
             hasSpecularMap = false;
         else
@@ -108,11 +108,11 @@ public class Material {
         this.specularMap = specularMap;
     }
 
-    public Bitmap getNormalMap() {
+    public BitmapABGR getNormalMap() {
         return normalMap;
     }
 
-    public void setNormalMap(Bitmap normalMap) {
+    public void setNormalMap(BitmapABGR normalMap) {
         if (normalMap == null)
             hasNormalMap = false;
         else
@@ -212,7 +212,7 @@ public class Material {
 
 
     public Material(String name, IShader shader, IGeometryShader geometryShader, Texture texture,
-                    Bitmap specularMap, Bitmap normalMap, float ambientFactor, float diffuseFactor,
+                    BitmapABGR specularMap, BitmapABGR normalMap, float ambientFactor, float diffuseFactor,
                     float specularFactor, float specularPower, Vector3D defualtSpecularColor, Vector3D color,
                     boolean isSpecular, boolean isDiffuse, boolean isAmbient) {
         this.name = name;

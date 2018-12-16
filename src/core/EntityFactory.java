@@ -1,8 +1,6 @@
 package core;
 
-import Rendering.Materials.Material;
-import Rendering.Materials.MaterialPresets;
-import Rendering.renderUtil.Bitmaps.Bitmap;
+import Rendering.renderUtil.Bitmaps.BitmapABGR;
 import Rendering.renderUtil.Bitmaps.Texture;
 import Rendering.renderUtil.Meshes.IndexedMesh;
 import components.*;
@@ -27,7 +25,7 @@ public class EntityFactory {
 
         if (textureFilePath != null) {
             try {
-                Bitmap texture = new Bitmap(textureFilePath);
+                BitmapABGR texture = new BitmapABGR(textureFilePath);
                 renderableMesh.material.setTexture(new Texture(texture));
             } catch (IOException e) {
                 e.printStackTrace();

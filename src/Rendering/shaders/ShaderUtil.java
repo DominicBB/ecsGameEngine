@@ -1,7 +1,7 @@
 package Rendering.shaders;
 
 import Rendering.Materials.Material;
-import Rendering.renderUtil.Bitmaps.Bitmap;
+import Rendering.renderUtil.Bitmaps.BitmapABGR;
 import Rendering.renderUtil.RenderState;
 import util.FloatBuffer;
 import util.Mathf.Mathf;
@@ -89,18 +89,18 @@ final class ShaderUtil {
         return false;
     }
 
-    static Vector3D perspectiveCorrectBitmap(Vector2D coord, Bitmap bitmap, float z) {
-        return bitmap.getPixel((int) (coord.x * z), (int) (coord.y * z));
+    static Vector3D perspectiveCorrectBitmap(Vector2D coord, BitmapABGR bitmapABGR, float z) {
+        return bitmapABGR.getPixel((int) (coord.x * z), (int) (coord.y * z));
     }
 
-    static void perspectiveCorrectBitmapNonAlloc(Vector2D coord, Bitmap bitmap, float z, Vector3D out) {
-        bitmap.getPixelNonAlloc((int) (coord.x * z), (int) (coord.y * z), out);
+    static void perspectiveCorrectBitmapNonAlloc(Vector2D coord, BitmapABGR bitmapABGR, float z, Vector3D out) {
+        bitmapABGR.getPixelNonAlloc((int) (coord.x * z), (int) (coord.y * z), out);
     }
 
-    static Vector2D scaleToBitmap(Vector2D in, Bitmap bitmap) {
+    static Vector2D scaleToBitmap(Vector2D in, BitmapABGR bitmapABGR) {
         return new Vector2D(
-                in.x * (bitmap.getWidth() - 1) /*+ 0.5f*/,
-                in.y * (bitmap.getHeight() - 1) /*+ 0.5f*/
+                in.x * (bitmapABGR.getWidth() - 1) /*+ 0.5f*/,
+                in.y * (bitmapABGR.getHeight() - 1) /*+ 0.5f*/
         );
     }
 }

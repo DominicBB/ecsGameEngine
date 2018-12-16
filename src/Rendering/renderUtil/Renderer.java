@@ -3,9 +3,8 @@ package Rendering.renderUtil;
 import Rendering.Clipping.ClippingSystem;
 import Rendering.Materials.Material;
 import Rendering.drawers.Draw;
-import Rendering.renderUtil.Bitmaps.Bitmap;
+import Rendering.renderUtil.Bitmaps.BitmapABGR;
 import Rendering.renderUtil.Bitmaps.ColorBuffer;
-import Rendering.shaders.interfaces.IShader;
 import core.Window;
 import util.Mathf.Mathf3D.Matrix4x4;
 import util.Mathf.Mathf3D.Triangle;
@@ -13,13 +12,12 @@ import util.FloatBuffer;
 import util.Mathf.Mathf3D.Vector3D;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class Renderer {
 
     //TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    public Bitmap colorBuffer;
+    public BitmapABGR colorBuffer;
     public FloatBuffer zBuffer;
 
     private ClippingSystem clippingSystem = new ClippingSystem();
@@ -136,10 +134,10 @@ public class Renderer {
     private void setPixel(int x, int y, Vector3D color) {
         int i = (y * Window.defaultWidth + x) * 3;
 
-//        Window.displayImageContents[i] = (byte) (((int) color.w) & 0xFF);
-        Window.displayImageContents[i] = (byte) (((int) color.z) & 0xFF);
-        Window.displayImageContents[i + 1] = (byte) (((int) color.y) & 0xFF);
-        Window.displayImageContents[i + 2] = (byte) (((int) color.x) & 0xFF);
+//        Window.buff1[i] = (byte) (((int) color.w) & 0xFF);
+        Window.buff1[i] = (byte) (((int) color.z) & 0xFF);
+        Window.buff1[i + 1] = (byte) (((int) color.y) & 0xFF);
+        Window.buff1[i + 2] = (byte) (((int) color.x) & 0xFF);
 
 
     }

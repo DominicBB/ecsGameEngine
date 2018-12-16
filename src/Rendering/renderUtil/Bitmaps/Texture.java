@@ -1,12 +1,12 @@
 package Rendering.renderUtil.Bitmaps;
 
 public class Texture {
-    public Bitmap texture;
+    public BitmapABGR texture;
 
     public Texture() {
     }
 
-    public Texture(Bitmap texture) {
+    public Texture(BitmapABGR texture) {
         this.texture = texture;
     }
 }
