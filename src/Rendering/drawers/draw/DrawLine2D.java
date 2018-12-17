@@ -1,12 +1,13 @@
 package Rendering.drawers.draw;
 
 import Rendering.drawers.Draw;
+import Rendering.renderUtil.RenderState;
 import Rendering.renderUtil.Renderer;
 import util.Mathf.Mathf3D.Vector3D;
 
 public class DrawLine2D extends Draw {
 
-    public static void drawLine2D(float x1, float y1, float x2, float y2, Vector3D c, Renderer renderer) {
+    public static void drawLine2D(float x1, float y1, float x2, float y2, Vector3D c) {
         // DDA implementation
         float dx, dy, step, x, y;
         int i;
@@ -25,27 +26,27 @@ public class DrawLine2D extends Draw {
         i = 1;
 
         while (i <= step) {
-            renderer.colorBuffer.setPixel((int) x, (int) y, c);
+            RenderState.colorBuffer.setPixel((int) x, (int) y, c);
             x = x + dx;
             y = y + dy;
             i = i + 1;
         }
     }
 
-    public static void drawLine2DBresenham(int x1, int y1, int x2, int y2, Vector3D c, Renderer renderer) {
+    public static void drawLine2DBresenham(int x1, int y1, int x2, int y2, Vector3D c) {
         if (Math.abs(y2 - y1) < Math.abs(x2 - x1)) {
             if (x1 > x2)
-                drawLineLow(x2, y2, x1, y1, c, renderer);
+                drawLineLow(x2, y2, x1, y1, c);
             else
-                drawLineLow(x1, y1, x2, y2, c, renderer);
+                drawLineLow(x1, y1, x2, y2, c);
         } else if (y1 > y2)
-            drawLineHigh(x2, y2, x1, y1, c, renderer);
+            drawLineHigh(x2, y2, x1, y1, c);
         else
-            drawLineHigh(x1, y1, x2, y2, c, renderer);
+            drawLineHigh(x1, y1, x2, y2, c);
     }
 
 
-    private static void drawLineLow(int x1, int y1, int x2, int y2, Vector3D c, Renderer renderer) {
+    private static void drawLineLow(int x1, int y1, int x2, int y2, Vector3D c) {
         int dx = x2 - x1;
         int dy = y2 - y1;
 
@@ -62,7 +63,7 @@ public class DrawLine2D extends Draw {
         int y = y1;
 
         for (int x = x1; x <= x2; x++) {
-            renderer.colorBuffer.setPixel(x, y, c);
+            RenderState.colorBuffer.setPixel(x, y, c);
             if (D > 0) {
                 y += yStep;
                 D -= dx2;
@@ -71,7 +72,7 @@ public class DrawLine2D extends Draw {
         }
     }
 
-    private static void drawLineHigh(int x1, int y1, int x2, int y2, Vector3D c, Renderer renderer) {
+    private static void drawLineHigh(int x1, int y1, int x2, int y2, Vector3D c) {
         int dx = x2 - x1;
         int dy = y2 - y1;
 
@@ -89,7 +90,7 @@ public class DrawLine2D extends Draw {
         int x = x1;
 
         for (int y = y1; y <= y2; y++) {
-            renderer.colorBuffer.setPixel(x, y, c);
+            RenderState.colorBuffer.setPixel(x, y, c);
             if (D > 0) {
                 x += xStep;
                 D -= dy2;

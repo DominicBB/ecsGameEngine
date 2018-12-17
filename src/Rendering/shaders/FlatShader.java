@@ -62,9 +62,9 @@ public class FlatShader implements IShader, IGeometryShader {
     private final Vector3D fragColor = Vector3D.newZeros();
 
     @Override
-    public final Vector3D frag(Interpolants lP, FloatBuffer zBuffer, Material material) {
+    public final Vector3D frag(Interpolants lP, Material material) {
         float w = 1f / lP.invW;
-        if (!ShaderUtil.zBufferTest(zBuffer, lP.p_proj.z, lP.xInt, lP.yInt))
+        if (!ShaderUtil.zBufferTest(RenderState.zBuffer, lP.p_proj.z, lP.xInt, lP.yInt))
             return null;
 
         fragColor.set(lP.surfaceColor);

@@ -10,12 +10,13 @@ import core.EntityFactory;
 import core.Window;
 import core.coreSystems.EntityGrabberSystem;
 import core.coreSystems.SystemCommunicator;
+import util.FloatBuffer;
 import util.Mathf.Mathf3D.Matrix4x4;
 import util.Mathf.Mathf3D.Transform;
 
 import java.util.Arrays;
 
-public class RenderSystem extends EntityGrabberSystem {
+public class RenderSystem extends EntityGrabberSystem{
 
     private MeshRenderSystem meshRenderSystem;
     private WireFrameRenderSystem wireFrameRenderSystem;
@@ -27,8 +28,8 @@ public class RenderSystem extends EntityGrabberSystem {
 
         RenderState.camera = EntityFactory.createCamera(new Camera(), new Transform());
         RenderState.createLightingState();
-
-        renderer = new Renderer(Window.defaultWidth, Window.defaultHeight);
+        RenderState.zBuffer =  new FloatBuffer(Window.defaultWidth, Window.defaultHeight);
+        renderer = new Renderer();
         initRenderers();
         SystemCommunicator.registerRenderSystem(this);
     }
@@ -41,9 +42,9 @@ public class RenderSystem extends EntityGrabberSystem {
 
     @Override
     public void update() {
-        renderer.getzBuffer().resetPositiveInf();
-//        renderer.colorBuffer.clearToBlack();//make screen black
-        setBufferToBlack();
+        RenderState.zBuffer.resetPositiveInf();
+        RenderState.colorBuffer.clearToBlack();
+
         RenderState.mvp = constructProjMatrix(RenderState.camera);
 //        RenderState.projectionToWorld = constructProjToWorld(RenderState.camera);
         for (int entityID : entityGrabber.getEntityIDsOfInterest()) {
@@ -63,12 +64,6 @@ public class RenderSystem extends EntityGrabberSystem {
         }
     }
 
-    private final byte BLACK = (byte) 0;
-    private void setBufferToBlack() {
-        for (int i = 0; i < Window.buff1.length; i++) {
-            Window.buff1[i] = BLACK;
-        }
-    }
 
     private Matrix4x4 constructProjMatrix(Camera camera) {
         Transform camTran = camera.transform;

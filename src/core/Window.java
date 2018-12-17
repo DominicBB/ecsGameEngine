@@ -2,6 +2,7 @@ package core;
 
 import Rendering.renderUtil.Bitmaps.BitmapABGR;
 import Rendering.renderUtil.Bitmaps.BitmapBGR;
+import Rendering.renderUtil.RenderState;
 import core.coreSystems.InputSystem;
 
 import javax.swing.*;
@@ -13,22 +14,23 @@ import java.awt.image.DataBufferByte;
 /**
  * The display of the engine
  */
-public class Window extends JFrame {
+public class Window extends JFrame implements Runnable {
     private final Canvas drawing;
     private int fps;
     public static final int defaultWidth = 1920;
     public static final int defaultHeight = 1080;
 
     //    private VolatileImage vdisplayImage;
-    private final BufferedImage displaying;
-    public static byte[] buff1;
+    private final BufferManager bufferManager;
 
     private final BufferStrategy bufferStrategy;
     private final Graphics graphics;
+    private final Thread thread;
 
     private final Dimension frameDim = new Dimension(defaultWidth, defaultHeight);
 
-    public Window() {
+    public Window(Thread thread) {
+        this.thread = new Thread(this);
         drawing = new Canvas();
         drawing.setMinimumSize(frameDim);
         drawing.setVisible(true);
@@ -40,9 +42,8 @@ public class Window extends JFrame {
         graphics = bufferStrategy.getDrawGraphics();
 
         //create buffers
-        displaying = new BufferedImage(defaultWidth, defaultHeight, BufferedImage.TYPE_3BYTE_BGR);
-        buff1 = ((DataBufferByte) displaying.getRaster().getDataBuffer()).getData();
-
+        bufferManager = new BufferManager(defaultWidth, defaultHeight);
+        RenderState.colorBuffer = bufferManager.getBackBuffer().bitmapBGR;
     }
 
     public static float getAspectRatio() {
@@ -72,8 +73,11 @@ public class Window extends JFrame {
         fps = frames;
     }
 
-    public void update(BitmapABGR colorBuffer) {
-        graphics.drawImage(displaying, 0, 0, null);
+    public void update() {
+        requestFocus();
+        bufferManager.swap();
+        RenderState.colorBuffer = bufferManager.getBackBuffer().bitmapBGR;
+        graphics.drawImage(bufferManager.getFrontBuffer().bufferedImage, 0, 0, null);
         bufferStrategy.show();
     }
 
@@ -82,4 +86,45 @@ public class Window extends JFrame {
         this.drawing.setMinimumSize(frameDimention);
     }
 
+    public void signal() {
+        rasterHasSignaled = true;
+        synchronized (this) {
+            notify();
+        }
+    }
+
+    private volatile boolean rasterHasSignaled;
+    private boolean isRunning;
+
+    @Override
+    public void run() {
+        requestFocus();
+        while (isRunning) {
+            try {
+                synchronized (this) {
+                    while (!rasterHasSignaled) {
+                        wait();
+                    }
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            rasterHasSignaled = false;
+            update();
+        }
+    }
+
+    public void start() {
+        isRunning = true;
+        thread.start();
+    }
+
+    public synchronized void stop() {
+        isRunning = false;
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }

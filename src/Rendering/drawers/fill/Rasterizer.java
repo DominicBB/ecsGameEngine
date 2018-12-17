@@ -16,15 +16,15 @@ class Rasterizer {
     static void rasterizeRow(Edge left, Edge right, int y, Material material, Renderer renderer) {
         setLerpValuesTo(left.interpolants, y);
 
-        int from =  Mathf.fastCeil(left.interpolants.p_proj.x);
-        int to =  Mathf.fastCeil(right.interpolants.p_proj.x);
+        int from = Mathf.fastCeil(left.interpolants.p_proj.x);
+        int to = Mathf.fastCeil(right.interpolants.p_proj.x);
 
         /*int from = (int) Math.ceil(left.interpolants.p_proj.x);
         int to = (int) Math.ceil(right.interpolants.p_proj.x);*/
 
         if (to - from == 0) {
             ROW_INTERPOLANTS.xInt = to;
-            Vector3D color = material.getShader().frag(ROW_INTERPOLANTS, renderer.getzBuffer(), material);
+            Vector3D color = material.getShader().frag(ROW_INTERPOLANTS, material);
             if (color != null)
                 renderer.onFragShaded(to, y, color, material);
             return;
@@ -36,7 +36,7 @@ class Rasterizer {
         for (int x = from; x < to; x++) {
 
             ROW_INTERPOLANTS.xInt = x;
-            Vector3D color = material.getShader().frag(ROW_INTERPOLANTS, renderer.getzBuffer(), material);
+            Vector3D color = material.getShader().frag(ROW_INTERPOLANTS, material);
             if (color != null)
                 renderer.onFragShaded(x, y, color, material);
 

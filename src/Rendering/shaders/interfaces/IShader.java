@@ -16,6 +16,6 @@ public interface IShader {
     void vertNonAlloc(Vertex vertex, Material material, VertexOut out);
 
 
-    Vector3D frag(Interpolants vertex, FloatBuffer zBuffer, Material material);
+    Vector3D frag(Interpolants vertex, Material material);
 
 }

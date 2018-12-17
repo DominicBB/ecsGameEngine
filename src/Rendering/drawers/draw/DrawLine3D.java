@@ -2,6 +2,7 @@ package Rendering.drawers.draw;
 
 import Rendering.Materials.Material;
 import Rendering.drawers.Draw;
+import Rendering.renderUtil.RenderState;
 import Rendering.renderUtil.Renderer;
 import Rendering.renderUtil.Vertex;
 import Rendering.renderUtil.VertexOut;
@@ -16,7 +17,7 @@ public class DrawLine3D extends Draw {
      * @param material
      * @param renderer
      */
-    public static void drawLine(VertexOut v1, VertexOut v2, Material material, Renderer renderer) {
+    public static void drawLine(VertexOut v1, VertexOut v2, Material material) {
         // DDA implementation, with z buff
         float dx, dy, dz, step, x, y, z;
         Vector3D dc;
@@ -47,7 +48,7 @@ public class DrawLine3D extends Draw {
 
             int yi = (int) y;
             int xi = (int) x;
-            renderer.colorBuffer.setPixel(xi, yi, material.getColor());
+            RenderState.colorBuffer.setPixel(xi, yi, material.getColor());
 
             x = x + dx;
             y = y + dy;
@@ -58,7 +59,7 @@ public class DrawLine3D extends Draw {
         }
     }
 
-    public static void drawLine(Vector3D v1, Vector3D v2, Vector3D color, Renderer renderer) {
+    public static void drawLine(Vector3D v1, Vector3D v2, Vector3D color) {
         // DDA implementation, with z buff
         float dx, dy, dz, step, x, y, z;
         int i;
@@ -92,7 +93,7 @@ public class DrawLine3D extends Draw {
 					zBuffer[yi][xi] = (int)z;
 
 				}*/
-                renderer.colorBuffer.setPixel(xi, yi, color);
+                RenderState.colorBuffer.setPixel(xi, yi, color);
 
             }
             x = x + dx;

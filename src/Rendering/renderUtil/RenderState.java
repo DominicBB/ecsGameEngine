@@ -1,6 +1,8 @@
 package Rendering.renderUtil;
 
+import Rendering.renderUtil.Bitmaps.BitmapBGR;
 import components.Camera;
+import util.FloatBuffer;
 import util.Mathf.Mathf3D.Matrix4x4;
 import util.Mathf.Mathf3D.Transform;
 import util.Mathf.Mathf3D.Vector3D;
@@ -12,9 +14,12 @@ public final class RenderState {
     public static Transform transform;
     public static Matrix4x4 world;
     public static Matrix4x4 mvp;
-    public static Matrix4x4 projectionToWorld;
+//    public static Matrix4x4 projectionToWorld;
 
-    public static Vector3D screenSpaceToWorldSpace(Vector3D vector3D) {
+    public static FloatBuffer zBuffer;
+    public static BitmapBGR colorBuffer;
+
+    /*public static Vector3D screenSpaceToWorldSpace(Vector3D vector3D) {
 
         Vector3D res = new Vector3D(
                 vector3D.x * vector3D.w,
@@ -24,7 +29,7 @@ public final class RenderState {
         );
 
         return projectionToWorld.multiply4x4(vector3D);
-    }
+    }*/
 
     public static void createLightingState() {
         lightingState = new LightingState(1f, Vector3D.RIGHT,
@@ -33,9 +38,10 @@ public final class RenderState {
 
     public static Vector3D worldSpaceToScreenSpace(Vector3D vector3D) {
         Vector3D proj = mvp.multiply4x4(vector3D);
-        proj.x = proj.x / proj.w;
-        proj.y = proj.y / proj.w;
-        proj.z = proj.z / proj.w;
+        float invW = 1f / proj.w;
+        proj.x = proj.x * invW;
+        proj.y = proj.y * invW;
+        proj.z = proj.z * invW;
         return proj;
     }
 

@@ -3,7 +3,7 @@ package Rendering.renderUtil.Bitmaps;
 import util.Mathf.Mathf3D.Vector3D;
 
 
-public class ColorBuffer extends BitmapABGR {
+class ColorBuffer extends BitmapABGR {
 
     public ColorBuffer(int width, int height) {
         super(width, height);

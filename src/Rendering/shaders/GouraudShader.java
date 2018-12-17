@@ -104,8 +104,8 @@ public class GouraudShader implements IShader {
     private final Vector3D fragTexColor = Vector3D.newZeros();
 
     @Override
-    public final Vector3D frag(Interpolants lP, FloatBuffer zBuffer, Material material) {
-        if (!ShaderUtil.zBufferTest(zBuffer, lP.p_proj.z, lP.xInt, lP.yInt))
+    public final Vector3D frag(Interpolants lP, Material material) {
+        if (!ShaderUtil.zBufferTest(RenderState.zBuffer, lP.p_proj.z, lP.xInt, lP.yInt))
             return null;
 
         float w = 1f / lP.invW;

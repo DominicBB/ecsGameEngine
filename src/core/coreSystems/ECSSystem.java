@@ -4,7 +4,6 @@ import Physics.physicsSystems.PhysicsSystem;
 import Rendering.renderingSystems.RenderSystem;
 import core.EntityFactory;
 import core.Window;
-import listners.EntityGrabber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +11,7 @@ import java.util.List;
 /**
  * Extend this class to start game
  */
-public abstract class ECSSystem extends BaseSystem implements Runnable {
+public abstract class ECSSystem implements Updateable, Runnable {
     protected EntitySystem entitySystem = EntitySystem.getInstance();
     protected ComponentSystem componentSystem = new ComponentSystem();
 
@@ -24,7 +23,7 @@ public abstract class ECSSystem extends BaseSystem implements Runnable {
 
     protected boolean isRunning;
     protected Thread thread;
-    private core.Window window;
+    private Window window;
 
 
     private double updatesPerSecond = 60.0;
@@ -34,7 +33,7 @@ public abstract class ECSSystem extends BaseSystem implements Runnable {
     public ECSSystem() {
         SystemCommunicator.setEcsSystem(this);
         SystemCommunicator.setComponentSystem(componentSystem);
-        this.window = new core.Window();
+        this.window = new Window(Thread.currentThread());
         EntityFactory.entitySystem = entitySystem;
         renderSystem = new RenderSystem();
     }
@@ -47,7 +46,7 @@ public abstract class ECSSystem extends BaseSystem implements Runnable {
         frameTimer = Time.getStartTime();
         framesCount = 0;
         boolean render;
-
+        window.start();
         while (isRunning) {
             render = false;
 //            Time.updateTimes();
@@ -67,7 +66,6 @@ public abstract class ECSSystem extends BaseSystem implements Runnable {
                 framesCount++;
             }
             upkeepFps();
-
         }
     }
 
@@ -82,7 +80,7 @@ public abstract class ECSSystem extends BaseSystem implements Runnable {
 
     private void renderUpdate() {
         renderSystem.update();
-        window.update(renderSystem.getRenderer().colorBuffer);
+        window.signal();//put image on screen
     }
 
     private void upkeepFps() {
@@ -106,7 +104,7 @@ public abstract class ECSSystem extends BaseSystem implements Runnable {
         thread.start();
     }
 
-    protected void stop() {
+    protected synchronized void stop() {
         isRunning = false;
         try {
             thread.join();

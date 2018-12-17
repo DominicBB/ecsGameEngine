@@ -11,7 +11,7 @@ import java.util.List;
  * Stores each of the required Components for each GameSystem. On every entity create or new component add,
  * updates each GameSystems entity references if there is a match
  */
-public class ComponentSystem extends BaseSystem {
+public class ComponentSystem implements Updateable {
     private List<EntityGrabber> entityGrabbers = new ArrayList<>();
 
     void onEntityCreate(int entityID, Bag<Component> components) {

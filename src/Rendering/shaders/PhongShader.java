@@ -32,10 +32,10 @@ public class PhongShader implements IShader {
     }
 
     @Override
-    public final Vector3D frag(Interpolants interpolants, FloatBuffer zBuffer, Material material) {
+    public final Vector3D frag(Interpolants interpolants, Material material) {
 
         int x = interpolants.xInt;
-        if (!ShaderUtil.zBufferTest(zBuffer, interpolants.p_proj.z, x, interpolants.yInt)) {
+        if (!ShaderUtil.zBufferTest(RenderState.zBuffer, interpolants.p_proj.z, x, interpolants.yInt)) {
             return null;
         }
 

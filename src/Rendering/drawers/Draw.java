@@ -23,10 +23,10 @@ public abstract class Draw {
 
     private static Vector3D white = new Vector3D(255, 255, 255);
 
-    public static void wireframePolygon(Polygon p, Renderer renderer) {
-        DrawLine3D.drawLine(p.vectors[0], p.vectors[1], white, white, renderer);
-        DrawLine3D.drawLine(p.vectors[1], p.vectors[2], white, white, renderer);
-        DrawLine3D.drawLine(p.vectors[2], p.vectors[0], white, white, renderer);
+    public static void wireframePolygon(Polygon p) {
+        DrawLine3D.drawLine(p.vectors[0], p.vectors[1], white, white);
+        DrawLine3D.drawLine(p.vectors[1], p.vectors[2], white, white);
+        DrawLine3D.drawLine(p.vectors[2], p.vectors[0], white, white);
     }
 
     /*public static void wireframePolygon(Triangle t, Renderer renderContext) {
@@ -35,14 +35,14 @@ public abstract class Draw {
         DrawLine3D.drawLine(t.vectors[2], t.vectors[0], t.reflectance, renderContext);
     }*/
 
-    public static void wireframePolygon(VertexOut v0, VertexOut v1, VertexOut v2, Renderer renderer, Material material) {
-        DrawLine3D.drawLine(v0, v1, material, renderer);
-        DrawLine3D.drawLine(v1, v2, material, renderer);
-        DrawLine3D.drawLine(v2, v1, material, renderer);
+    public static void wireframePolygon(VertexOut v0, VertexOut v1, VertexOut v2, Material material) {
+        DrawLine3D.drawLine(v0, v1, material);
+        DrawLine3D.drawLine(v1, v2, material);
+        DrawLine3D.drawLine(v2, v1, material);
     }
 
-    public static void drawLine(Vector3D v1, Vector3D v2, Vector3D c, Vector3D c2, Renderer renderer) {
-        DrawLine3D.drawLine(v1, v2, c, c2, renderer);
+    public static void drawLine(Vector3D v1, Vector3D v2, Vector3D c, Vector3D c2) {
+        DrawLine3D.drawLine(v1, v2, c, c2);
     }
 
     protected final static boolean isOutOfBounds(float x, float y) {

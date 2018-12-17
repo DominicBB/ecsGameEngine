@@ -12,7 +12,7 @@ import util.Bag;
 /**
  * Managers all the entities in the game
  */
-public class EntitySystem extends BaseSystem {
+public class EntitySystem implements Updateable {
     private static EntitySystem instance = new EntitySystem();
     private int IDCount = 0;
 

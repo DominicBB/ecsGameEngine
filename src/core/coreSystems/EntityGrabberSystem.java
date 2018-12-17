@@ -6,7 +6,7 @@ import listners.SingleEntityGrabber;
 
 import java.util.List;
 
-public abstract class EntityGrabberSystem extends BaseSystem {
+public abstract class EntityGrabberSystem implements Updateable {
 
     protected EntityGrabber entityGrabber;
 
