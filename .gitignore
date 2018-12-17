@@ -6,7 +6,7 @@
 .idea/usage.statistics.xml
 .idea/dictionaries
 .idea/shelf
-bin/*
+bin/
 
 .idea/contentModel.xml
 
@@ -54,4 +54,3 @@ fabric.properties
 .idea/httpRequests
 
 .idea/caches/build_file_checksums.ser
-bin/zzNotUsed/ComponentManager.class
