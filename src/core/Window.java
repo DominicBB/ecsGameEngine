@@ -74,9 +74,7 @@ public class Window extends JFrame implements Runnable {
     }
 
     public void update() {
-        requestFocus();
-        bufferManager.swap();
-        RenderState.colorBuffer = bufferManager.getBackBuffer().bitmapBGR;
+        //requestFocus();
         graphics.drawImage(bufferManager.getFrontBuffer().bufferedImage, 0, 0, null);
         bufferStrategy.show();
     }
@@ -88,9 +86,11 @@ public class Window extends JFrame implements Runnable {
 
     public void signal() {
         rasterHasSignaled = true;
+        bufferManager.swap();
         synchronized (this) {
             notify();
         }
+        RenderState.colorBuffer = bufferManager.getBackBuffer().bitmapBGR;
     }
 
     private volatile boolean rasterHasSignaled;
