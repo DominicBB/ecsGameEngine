@@ -16,8 +16,8 @@ import java.awt.image.DataBufferByte;
 public class Window extends JFrame {
     private final Canvas drawing;
     private int fps;
-    public static final int defaultWidth = 1920;
-    public static final int defaultHeight = 1080;
+    public static final int defaultWidth = 800;
+    public static final int defaultHeight = 800;
 
     //    private VolatileImage vdisplayImage;
     private final BufferedImage displaying;
@@ -32,13 +32,13 @@ public class Window extends JFrame {
         drawing = new Canvas();
         drawing.setMinimumSize(frameDim);
         drawing.setVisible(true);
-
         createWindow();
+        System.out.println(GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getWidth());
 
+        System.out.println(Toolkit.getDefaultToolkit().getScreenSize());
         drawing.createBufferStrategy(1);
         bufferStrategy = drawing.getBufferStrategy();
         graphics = bufferStrategy.getDrawGraphics();
-
         //create buffers
         displaying = new BufferedImage(defaultWidth, defaultHeight, BufferedImage.TYPE_3BYTE_BGR);
         buff1 = ((DataBufferByte) displaying.getRaster().getDataBuffer()).getData();
@@ -56,7 +56,7 @@ public class Window extends JFrame {
         this.toFront();
         this.setFocusable(true);
         this.setFocusableWindowState(true);
-        this.setLocation(500, 0);
+        this.setLocation(0, 0);
         setupInputSystem();
         this.add(drawing);
         this.pack();
