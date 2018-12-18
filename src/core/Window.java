@@ -1,15 +1,11 @@
 package core;
 
-import Rendering.renderUtil.Bitmaps.BitmapABGR;
-import Rendering.renderUtil.Bitmaps.BitmapBGR;
 import Rendering.renderUtil.RenderState;
 import core.coreSystems.InputSystem;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
 
 /**
  * The display of the engine
@@ -17,12 +13,10 @@ import java.awt.image.DataBufferByte;
 public class Window extends JFrame implements Runnable {
     private final Canvas drawing;
     private int fps;
-    public static final int defaultWidth = 1920;
-    public static final int defaultHeight = 1080;
+    public static final int defaultWidth = 800;
+    public static final int defaultHeight = 800;
 
-    //    private VolatileImage vdisplayImage;
     private final BufferManager bufferManager;
-
     private final BufferStrategy bufferStrategy;
     private final Graphics graphics;
     private final Thread thread;
@@ -70,11 +64,11 @@ public class Window extends JFrame implements Runnable {
     }
 
     public void setFPS(int frames) {
+//        requestFocus();
         fps = frames;
     }
 
     public void update() {
-        //requestFocus();
         graphics.drawImage(bufferManager.getFrontBuffer().bufferedImage, 0, 0, null);
         bufferStrategy.show();
     }
@@ -84,33 +78,51 @@ public class Window extends JFrame implements Runnable {
         this.drawing.setMinimumSize(frameDimention);
     }
 
+    private long notyfingTime = 0l;
+    private long notifyCount = 0l;
+
     public void signal() {
         rasterHasSignaled = true;
         bufferManager.swap();
         synchronized (this) {
-            notify();
+            notifyAll();
         }
         RenderState.colorBuffer = bufferManager.getBackBuffer().bitmapBGR;
     }
 
-    private volatile boolean rasterHasSignaled;
+    private boolean rasterHasSignaled;
     private boolean isRunning;
+
+    private long waitingTime = 0L;
+    private long waitCount = 0L;
+    private long lastTime = 0L;
 
     @Override
     public void run() {
-        requestFocus();
+        long timeStamp = 0L;
         while (isRunning) {
             try {
-                synchronized (this) {
-                    while (!rasterHasSignaled) {
+                while (!rasterHasSignaled) {
+                    timeStamp = System.currentTimeMillis();
+                    ++waitCount;
+                    synchronized (this) {
                         wait();
                     }
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            waitingTime += (System.currentTimeMillis() - timeStamp);
+            avgWaitTimePerSec();
             rasterHasSignaled = false;
             update();
+        }
+    }
+
+    private void avgWaitTimePerSec() {
+        if ((System.currentTimeMillis() - lastTime) > 1000) {
+            lastTime = System.currentTimeMillis();
+            System.out.println("WAITING AVG: " + waitingTime / waitCount);
         }
     }
 

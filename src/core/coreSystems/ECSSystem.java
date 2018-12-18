@@ -61,7 +61,7 @@ public abstract class ECSSystem implements Updateable, Runnable {
                 render = true;
             }
 
-            if (render) {
+            if (/*render*/true) {
                 renderUpdate();
                 framesCount++;
             }
