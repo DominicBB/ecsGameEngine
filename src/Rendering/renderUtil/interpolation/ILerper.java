@@ -1,4 +1,4 @@
-package Rendering.renderUtil.Lerpers;
+package Rendering.renderUtil.interpolation;
 
 public interface ILerper {
     void lerp(Interpolants interpolants);

@@ -1,4 +1,4 @@
-package Rendering.renderUtil.Lerpers;
+package Rendering.renderUtil.interpolation;
 
 import util.Mathf.Mathf2D.Vector2D;
 import util.Mathf.Mathf3D.Vector3D;

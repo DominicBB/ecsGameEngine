@@ -2,17 +2,11 @@ package Rendering.renderingSystems;
 
 
 import Rendering.Clipping.ClippingSystem;
-import Rendering.drawers.Draw;
-import Rendering.renderUtil.RenderState;
-import Rendering.renderUtil.Renderer;
-import Rendering.renderUtil.Vertex;
+import Rendering.Renderers.RendererWireFrame;
 import components.*;
 import core.coreSystems.EntityGrabberSystem;
-import util.Mathf.Mathf3D.Matrix4x4;
-import util.Mathf.Mathf3D.Vector3D;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class WireFrameRenderSystem extends EntityGrabberSystem {
 
@@ -24,7 +18,7 @@ public class WireFrameRenderSystem extends EntityGrabberSystem {
     }
 
 
-    public void render(RenderableMesh renderableMesh, TransformComponent transformComponent, Renderer renderer) {
+    public void render(RenderableMesh renderableMesh, TransformComponent transformComponent, RendererWireFrame renderer) {
 
 //            wireframeMesh(transformComponent, renderableMesh, mvp);
         switch (ClippingSystem.decideClippingMode(renderableMesh.aaBoundingBox)) {

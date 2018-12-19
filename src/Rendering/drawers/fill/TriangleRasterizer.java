@@ -6,7 +6,7 @@ import java.util.List;
 import Rendering.Materials.Material;
 import Rendering.renderUtil.Edges.Edge;
 import Rendering.renderUtil.Edges.EdgeFactory;
-import Rendering.renderUtil.Renderer;
+import Rendering.Renderers.Renderer;
 
 import Rendering.renderUtil.VertexOut;
 

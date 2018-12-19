@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Rendering.Materials.Material;
-import Rendering.renderUtil.RenderState;
-import Rendering.renderUtil.Renderer;
-import Rendering.renderUtil.Vertex;
-import Rendering.renderUtil.VertexOut;
+import Rendering.Renderers.Renderer;
+import Rendering.Renderers.RendererWireFrame;
+import Rendering.renderUtil.*;
 import Rendering.shaders.interfaces.IShader;
 import util.Mathf.Mathf2D.Vector2D;
 import util.Mathf.Mathf3D.Bounds.AABoundingBox;
@@ -84,7 +83,7 @@ public class IndexedMesh {
         }*/
     }
 
-    public final void drawWireframe(Renderer renderer, Material material,
+    public final void drawWireframe(RendererWireFrame renderer, Material material,
                                     Transform transform) {
         Matrix4x4 transMatrix = transform.compose();
         RenderState.mvp = (transMatrix).compose(RenderState.mvp);

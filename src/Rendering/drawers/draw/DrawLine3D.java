@@ -3,8 +3,6 @@ package Rendering.drawers.draw;
 import Rendering.Materials.Material;
 import Rendering.drawers.Draw;
 import Rendering.renderUtil.RenderState;
-import Rendering.renderUtil.Renderer;
-import Rendering.renderUtil.Vertex;
 import Rendering.renderUtil.VertexOut;
 import util.Mathf.Mathf3D.Vector3D;
 

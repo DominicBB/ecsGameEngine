@@ -2,7 +2,6 @@ package Rendering.drawers.draw;
 
 import Rendering.drawers.Draw;
 import Rendering.renderUtil.RenderState;
-import Rendering.renderUtil.Renderer;
 import util.Mathf.Mathf2D.Vector2D;
 import util.Mathf.Mathf3D.Vector3D;
 

@@ -1,4 +1,4 @@
-package Rendering.renderUtil.Lerpers;
+package Rendering.renderUtil.interpolation;
 
 import Rendering.Materials.Material;
 

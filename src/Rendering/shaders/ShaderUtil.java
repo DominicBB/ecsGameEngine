@@ -81,6 +81,7 @@ final class ShaderUtil {
     }
 
 
+
     static boolean zBufferTest(FloatBuffer zBuffer, float zVal, int x, int y) {
         if (zBuffer.getFloat(x, y) > zVal) {
             zBuffer.setFloat(x, y, zVal);

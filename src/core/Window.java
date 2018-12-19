@@ -13,8 +13,8 @@ import java.awt.image.BufferStrategy;
 public class Window extends JFrame implements Runnable {
     private final Canvas drawing;
     private int fps;
-    public static final int defaultWidth = 800;
-    public static final int defaultHeight = 800;
+    public static final int defaultWidth = 1920;
+    public static final int defaultHeight = 1080;
 
     private final BufferManager bufferManager;
     private final BufferStrategy bufferStrategy;
@@ -64,7 +64,7 @@ public class Window extends JFrame implements Runnable {
     }
 
     public void setFPS(int frames) {
-//        requestFocus();
+        requestFocus();
         fps = frames;
     }
 
@@ -78,8 +78,8 @@ public class Window extends JFrame implements Runnable {
         this.drawing.setMinimumSize(frameDimention);
     }
 
-    private long notyfingTime = 0l;
-    private long notifyCount = 0l;
+   /* private long notyfingTime = 0l;
+    private long notifyCount = 0l;*/
 
     public void signal() {
         rasterHasSignaled = true;
@@ -93,18 +93,18 @@ public class Window extends JFrame implements Runnable {
     private boolean rasterHasSignaled;
     private boolean isRunning;
 
-    private long waitingTime = 0L;
+   /* private long waitingTime = 0L;
     private long waitCount = 0L;
-    private long lastTime = 0L;
+    private long lastTime = 0L;*/
 
     @Override
     public void run() {
-        long timeStamp = 0L;
+//        long timeStamp = 0L;
         while (isRunning) {
             try {
                 while (!rasterHasSignaled) {
-                    timeStamp = System.currentTimeMillis();
-                    ++waitCount;
+                    /*timeStamp = System.currentTimeMillis();
+                    ++waitCount;*/
                     synchronized (this) {
                         wait();
                     }
@@ -112,19 +112,19 @@ public class Window extends JFrame implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            waitingTime += (System.currentTimeMillis() - timeStamp);
-            avgWaitTimePerSec();
+           /* waitingTime += (System.currentTimeMillis() - timeStamp);
+            avgWaitTimePerSec();*/
             rasterHasSignaled = false;
             update();
         }
     }
 
-    private void avgWaitTimePerSec() {
+   /* private void avgWaitTimePerSec() {
         if ((System.currentTimeMillis() - lastTime) > 1000) {
             lastTime = System.currentTimeMillis();
             System.out.println("WAITING AVG: " + waitingTime / waitCount);
         }
-    }
+    }*/
 
     public void start() {
         isRunning = true;

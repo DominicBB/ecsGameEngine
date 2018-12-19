@@ -1,12 +1,11 @@
 package Rendering.shaders;
 
 import Rendering.Materials.Material;
-import Rendering.renderUtil.Lerpers.Interpolants;
+import Rendering.renderUtil.interpolation.Interpolants;
 import Rendering.renderUtil.RenderState;
 import Rendering.renderUtil.Vertex;
 import Rendering.renderUtil.VertexOut;
 import Rendering.shaders.interfaces.IShader;
-import util.FloatBuffer;
 import util.Mathf.Mathf3D.Vector3D;
 
 import static Rendering.shaders.ShaderUtil.*;

@@ -1,6 +1,7 @@
 package Rendering.drawers;
 
 import Rendering.Materials.Material;
+import Rendering.Renderers.Renderer;
 import Rendering.drawers.draw.DrawLine3D;
 import Rendering.drawers.fill.TriangleRasterizer;
 import Rendering.renderUtil.*;
@@ -8,7 +9,6 @@ import Rendering.renderUtil.Edges.Edge;
 import core.Window;
 import util.Mathf.Mathf3D.Line3D;
 import util.Mathf.Mathf3D.Polygon;
-import util.Mathf.Mathf3D.Triangle;
 import util.Mathf.Mathf3D.Vector3D;
 
 public abstract class Draw {

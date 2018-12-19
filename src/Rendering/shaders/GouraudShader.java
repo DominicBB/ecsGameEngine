@@ -1,12 +1,11 @@
 package Rendering.shaders;
 
 import Rendering.Materials.Material;
-import Rendering.renderUtil.Lerpers.Interpolants;
+import Rendering.renderUtil.interpolation.Interpolants;
 import Rendering.renderUtil.RenderState;
 import Rendering.renderUtil.Vertex;
 import Rendering.renderUtil.VertexOut;
 import Rendering.shaders.interfaces.IShader;
-import util.FloatBuffer;
 import util.Mathf.Mathf2D.Vector2D;
 import util.Mathf.Mathf3D.Vector3D;
 
@@ -28,8 +27,8 @@ public class GouraudShader implements IShader {
         }
 
         if (material.isDiffuse()) {
-
-            Vector3D diffuse = diffuse(RenderState.lightingState.lightColor,
+            Vector3D diffuse = diffuse(
+                    RenderState.lightingState.lightColor,
                     RenderState.lightingState.lightDir,
                     out.n_ws,
                     RenderState.lightingState.attenuation,

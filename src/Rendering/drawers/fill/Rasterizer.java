@@ -2,9 +2,9 @@ package Rendering.drawers.fill;
 
 import Rendering.Materials.Material;
 import Rendering.renderUtil.Edges.Edge;
-import Rendering.renderUtil.Lerpers.Interpolants;
-import Rendering.renderUtil.Lerpers.RowLerperFactory;
-import Rendering.renderUtil.Renderer;
+import Rendering.renderUtil.interpolation.Interpolants;
+import Rendering.renderUtil.interpolation.RowLerperFactory;
+import Rendering.Renderers.Renderer;
 import util.Mathf.Mathf;
 import util.Mathf.Mathf3D.Vector3D;
 

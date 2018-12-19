@@ -1,7 +1,6 @@
 package Rendering.renderUtil.Edges;
 
-import Rendering.Materials.Material;
-import Rendering.renderUtil.Lerpers.Interpolants;
+import Rendering.renderUtil.interpolation.Interpolants;
 import Rendering.renderUtil.VertexOut;
 import util.Mathf.Mathf2D.Vector2D;
 import util.Mathf.Mathf3D.Vector3D;

@@ -1,18 +1,22 @@
-package Rendering.renderUtil;
+package Rendering.Renderers;
 
 import Rendering.Clipping.ClippingSystem;
 import Rendering.Materials.Material;
 import Rendering.drawers.Draw;
+import Rendering.renderUtil.Colorf;
+import Rendering.renderUtil.RenderState;
+import Rendering.renderUtil.VertexOut;
 import core.Window;
 import util.Mathf.Mathf3D.Triangle;
 import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vector3DInt;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Renderer {
 
-    private ClippingSystem clippingSystem = new ClippingSystem();
+    static ClippingSystem clippingSystem = new ClippingSystem();
     private final List<VertexOut> clippedVertices = new ArrayList<>();
     private final VertexOut[] vertexOuts = new VertexOut[3];
 
@@ -59,72 +63,40 @@ public class Renderer {
         }
     }
 
-    public void wireFrameTriangle(Vertex v1, Vertex v2, Vertex v3, Material material) {
-
-
-        VertexOut v1Out = new VertexOut(RenderState.mvp.multiply4x4(v1.vec),
-                v1.texCoord, v1.specCoord, 1f, Vector3D.newOnes(), v1.normal, v1.vec, 1f);
-        VertexOut v2Out = new VertexOut(RenderState.mvp.multiply4x4(v2.vec),
-                v2.texCoord, v2.specCoord, 1f, Vector3D.newOnes(), v2.normal, v2.vec, 1f);
-        VertexOut v3Out = new VertexOut(RenderState.mvp.multiply4x4(v3.vec),
-                v3.texCoord, v3.specCoord, 1f, Vector3D.newOnes(), v3.normal, v3.vec, 1f);
-
-        //clip
-        clippingSystem.clipTriangle(clippedVertices, v1Out, v2Out, v3Out);
-        if (clippedVertices.isEmpty()) return;
-
-        /*for(VertexOut vertexOut: clippedVertices){
-            moveToScreenSpace(vertexOut);
-        }*/
-        v1Out = clippedVertices.get(0);
-        v1Out = moveToScreenSpaceNew(v1Out);
-
-        int end = clippedVertices.size() - 1;
-        for (int i = 1; i < end; i++) {
-            v2Out = clippedVertices.get(i);
-            v3Out = clippedVertices.get(i + 1);
-
-            //perspective divide
-            v2Out = moveToScreenSpaceNew(v2Out);
-            v3Out = moveToScreenSpaceNew(v3Out);
-
-            //backface cull
-            if (backFaceCull(v1Out, v2Out, v3Out))
-                return;
-
-            Draw.wireframePolygon(v1Out, v2Out, v3Out, material);
-        }
-    }
-
     public void onFragShaded(int x, int y, Vector3D color, Material material) {
         //check for blending etc.
         setFinalColor(x, y, color);
     }
 
+    private Vector3DInt finalColor = new Vector3DInt(0, 0, 0, 0);
+
     private void setFinalColor(int x, int y, Vector3D color) {
-        Colorf.clampNonAlloc(color);
-        RenderState.colorBuffer.setPixel(x, y, color);
+//        Colorf.clampNonAlloc(color);
+        Colorf.clampMaxNonAlloc(color);
+//        Colorf.clampMaxNonAllocBit(color, finalColor);
+//        RenderState.colorBuffer.setPixel(x, y, finalColor);
+        RenderState.colorBuffer.setPixelPreClamp(x, y, color);
     }
 
 
-    private boolean backFaceCull(VertexOut v1, VertexOut v2, VertexOut v3) {
+    static boolean backFaceCull(VertexOut v1, VertexOut v2, VertexOut v3) {
         return Triangle.z_normal(v1.p_proj, v2.p_proj, v3.p_proj) >= 0;//TODO: possibly '>0'. p_proj or p_ws
     }
 
-    private boolean backFaceCullPreClip(VertexOut v1, VertexOut v2, VertexOut v3) {
+    static boolean backFaceCullPreClip(VertexOut v1, VertexOut v2, VertexOut v3) {
         return Triangle.z_normal(v1.p_proj, v2.p_proj, v3.p_proj) >= 0;//TODO: possibly '>0'. p_proj or p_ws
     }
 
-    private final float halfWidth = (Window.defaultWidth - 1f) * 0.5f;
-    private final float halfHeight = (Window.defaultHeight - 1f) * 0.5f;
+    static final float halfWidth = (Window.defaultWidth - 1f) * 0.5f;
+    static final float halfHeight = (Window.defaultHeight - 1f) * 0.5f;
 
-    private void moveToScreenSpace(VertexOut v) {
+    static void moveToScreenSpace(VertexOut v) {
         v.wDivide();
         v.p_proj.x = (v.p_proj.x + 1) * halfWidth;
         v.p_proj.y = (v.p_proj.y + 1) * halfHeight;
     }
 
-    private VertexOut moveToScreenSpaceNew(VertexOut v) {
+    static VertexOut moveToScreenSpaceNew(VertexOut v) {
         VertexOut nV = v.wDivideNew();
         nV.p_proj.x = (nV.p_proj.x + 1) * halfWidth;
         nV.p_proj.y = (nV.p_proj.y + 1) * halfHeight;

@@ -1,7 +1,8 @@
 package Rendering.renderingSystems;
 
 import Rendering.renderUtil.RenderState;
-import Rendering.renderUtil.Renderer;
+import Rendering.Renderers.Renderer;
+import Rendering.Renderers.RendererWireFrame;
 import components.Camera;
 import components.Component;
 import components.RenderableMesh;
@@ -22,6 +23,7 @@ public class RenderSystem extends EntityGrabberSystem{
     private WireFrameRenderSystem wireFrameRenderSystem;
 
     final Renderer renderer;
+    final RendererWireFrame rendererWireFrame;
 
     public RenderSystem() {
         super(Arrays.asList(RenderableMesh.class, TransformComponent.class));
@@ -30,6 +32,7 @@ public class RenderSystem extends EntityGrabberSystem{
         RenderState.createLightingState();
         RenderState.zBuffer =  new FloatBuffer(Window.defaultWidth, Window.defaultHeight);
         renderer = new Renderer();
+        rendererWireFrame = new RendererWireFrame();
         initRenderers();
         SystemCommunicator.registerRenderSystem(this);
     }
@@ -58,7 +61,7 @@ public class RenderSystem extends EntityGrabberSystem{
                     meshRenderSystem.render(renderableMesh, transformComponent, renderer);
                     break;
                 case WIREFRAME:
-                    wireFrameRenderSystem.render(renderableMesh, transformComponent, renderer);
+                    wireFrameRenderSystem.render(renderableMesh, transformComponent, rendererWireFrame);
                     break;
             }
         }

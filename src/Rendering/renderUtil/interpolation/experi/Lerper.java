@@ -1,6 +1,6 @@
-package Rendering.renderUtil.Lerpers.experi;
+package Rendering.renderUtil.interpolation.experi;
 
-import Rendering.renderUtil.Lerpers.Interpolants;
+import Rendering.renderUtil.interpolation.Interpolants;
 import util.Mathf.Mathf2D.Vector2D;
 import util.Mathf.Mathf3D.Vector3D;
 

@@ -1,7 +1,7 @@
 package Rendering.renderingSystems;
 
 import Rendering.Clipping.ClippingSystem;
-import Rendering.renderUtil.Renderer;
+import Rendering.Renderers.Renderer;
 import components.*;
 import core.coreSystems.EntityGrabberSystem;
 

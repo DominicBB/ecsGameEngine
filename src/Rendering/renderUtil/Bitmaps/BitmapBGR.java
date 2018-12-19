@@ -1,6 +1,7 @@
 package Rendering.renderUtil.Bitmaps;
 
 import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vector3DInt;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -71,6 +72,36 @@ public class BitmapBGR {
                 (byte) (((int) color.x) & 0xFF),
                 (byte) (((int) color.y) & 0xFF),
                 (byte) (((int) color.z) & 0xFF)
+        );
+    }
+
+    /**
+     * Set BGR of pixel
+     *
+     * @param x
+     * @param y
+     * @param color
+     */
+    public void setPixelPreClamp(int x, int y, Vector3D color) {
+        setPixel(x, y,
+                (byte) color.x,
+                (byte) color.y,
+                (byte) color.z
+        );
+    }
+
+    /**
+     * Set BGR of pixel
+     *
+     * @param x
+     * @param y
+     * @param color
+     */
+    public void setPixel(int x, int y, Vector3DInt color) {
+        setPixel(x, y,
+                (byte) color.x,
+                (byte) color.y,
+                (byte) color.z
         );
     }
 

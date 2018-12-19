@@ -32,55 +32,71 @@ public class Mathf {
         value.w = clamp(minComponents.w, value.w, maxComponents.w);
     }
 
-    public static Vector2D clamp(Vector2D minComponents, Vector2D value, Vector2D maxComponents) {
-        return new Vector2D(
-                clamp(minComponents.x, value.x, maxComponents.x),
-                clamp(minComponents.y, value.y, maxComponents.y),
-                clamp(minComponents.w, value.w, maxComponents.w)
-        );
+    public static void clampMinNonAlloc(Vector3D minComponents, Vector3D value) {
+        value.x = (value.x >= minComponents.x) ? value.x : minComponents.x;
+        value.y = (value.y >= minComponents.y) ? value.y : minComponents.y;
+        value.z = (value.z >= minComponents.z) ? value.z : minComponents.z;
+        value.w = (value.w >= minComponents.w) ? value.w : minComponents.w;
     }
 
-    public static boolean approximately(float f1, float f2) {
-        return (abs(f1 - f2) < epsilon);
+    public static void clampMaxNonAlloc(Vector3D value, Vector3D maxComponents) {
+        value.x = (value.x <= maxComponents.x) ? value.x : maxComponents.x;
+        value.y = (value.y <= maxComponents.y) ? value.y : maxComponents.y;
+        value.z = (value.z <= maxComponents.z) ? value.z : maxComponents.z;
+        value.w = (value.w <= maxComponents.w) ? value.w : maxComponents.w;
     }
 
-    public static float abs(float f) {
-        return (f < 0f) ? -f : f;
-    }
 
-    public static float max(float f0, float f1) {
-        return (f0 >= f1) ? f0 : f1;
-    }
 
-    public static float min(float f0, float f1) {
-        return (f0 <= f1) ? f0 : f1;
-    }
+        public static Vector2D clamp (Vector2D minComponents, Vector2D value, Vector2D maxComponents){
+            return new Vector2D(
+                    clamp(minComponents.x, value.x, maxComponents.x),
+                    clamp(minComponents.y, value.y, maxComponents.y),
+                    clamp(minComponents.w, value.w, maxComponents.w)
+            );
+        }
 
-    public static float lerp(float from, float to, float lerpAmt) {
-        return from + ((to - from) * lerpAmt);
-    }
+        public static boolean approximately ( float f1, float f2){
+            return (abs(f1 - f2) < epsilon);
+        }
 
-    public static float toRadians(float angleDeg) {
-        return angleDeg / 180.0f * PI;
-    }
+        public static float abs ( float f){
+            return (f < 0f) ? -f : f;
+        }
 
-    public static float unsafeMax(float f0, float f1) {
-        return (f0 >= f1) ? f0 : f1;
-    }
+        public static float max ( float f0, float f1){
+            return (f0 >= f1) ? f0 : f1;
+        }
 
-    private static final int    BIG_ENOUGH_INT   = 16 * 1024;
-    private static final double BIG_ENOUGH_FLOOR = BIG_ENOUGH_INT;
-    private static final double BIG_ENOUGH_ROUND = BIG_ENOUGH_INT + 0.5;
+        public static float min ( float f0, float f1){
+            return (f0 <= f1) ? f0 : f1;
+        }
 
-    public static int fastFloor(float x) {
-        return (int) (x + BIG_ENOUGH_FLOOR) - BIG_ENOUGH_INT;
-    }
+        public static float lerp ( float from, float to, float lerpAmt){
+            return from + ((to - from) * lerpAmt);
+        }
 
-    public static int fastRound(float x) {
-        return (int) (x + BIG_ENOUGH_ROUND) - BIG_ENOUGH_INT;
-    }
+        public static float toRadians ( float angleDeg){
+            return angleDeg / 180.0f * PI;
+        }
 
-    public static int fastCeil(float x) {
-        return BIG_ENOUGH_INT - (int)(BIG_ENOUGH_FLOOR-x); // credit: roquen
+        public static float unsafeMax ( float f0, float f1){
+            return (f0 >= f1) ? f0 : f1;
+        }
+
+        private static final int BIG_ENOUGH_INT = 16 * 1024;
+        private static final double BIG_ENOUGH_FLOOR = BIG_ENOUGH_INT;
+        private static final double BIG_ENOUGH_ROUND = BIG_ENOUGH_INT + 0.5;
+
+        public static int fastFloor ( float x){
+            return (int) (x + BIG_ENOUGH_FLOOR) - BIG_ENOUGH_INT;
+        }
+
+        public static int fastRound ( float x){
+            return (int) (x + BIG_ENOUGH_ROUND) - BIG_ENOUGH_INT;
+        }
+
+        public static int fastCeil ( float x){
+            return BIG_ENOUGH_INT - (int) (BIG_ENOUGH_FLOOR - x); // credit: roquen
+        }
     }
-}

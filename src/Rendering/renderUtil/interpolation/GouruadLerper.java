@@ -1,4 +1,4 @@
-package Rendering.renderUtil.Lerpers;
+package Rendering.renderUtil.interpolation;
 
 import util.Mathf.Mathf2D.Vector2D;
 import util.Mathf.Mathf3D.Vector3D;
@@ -27,7 +27,9 @@ public class GouruadLerper implements ILerper {
     public final void lerp(Interpolants lp) {
         lp.p_proj.add(p_proj_step);
         lp.texCoord.add(texCoordStep);
+//        if (lp.invW > 2f)
         lp.specCoord.add(specCoordStep);
+
         lp.specularity += specStep;
         lp.surfaceColor.add(sColorStep);
         lp.invW += invWStep;
