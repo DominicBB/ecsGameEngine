@@ -2,6 +2,7 @@ package Rendering.renderUtil;
 
 import Rendering.renderUtil.Bitmaps.BitmapBGR;
 import components.Camera;
+import core.Window;
 import util.FloatBuffer;
 import util.Mathf.Mathf3D.Matrix4x4;
 import util.Mathf.Mathf3D.Transform;
@@ -18,6 +19,9 @@ public final class RenderState {
 
     public static FloatBuffer zBuffer;
     public static BitmapBGR colorBuffer;
+
+    public static final float halfWidth = (Window.defaultWidth - 1f) * 0.5f;
+    public static final float halfHeight = (Window.defaultHeight - 1f) * 0.5f;
 
     /*public static Vector3D screenSpaceToWorldSpace(Vector3D vector3D) {
 
@@ -36,12 +40,15 @@ public final class RenderState {
                 Vector3D.newOnes(), new Vector3D(.1f, .1f, .1f));
     }
 
-    public static Vector3D worldSpaceToScreenSpace(Vector3D vector3D) {
+    public static Vector3D modelSpaceToScreenSpace(Vector3D vector3D) {
         Vector3D proj = mvp.multiply4x4(vector3D);
         float invW = 1f / proj.w;
         proj.x = proj.x * invW;
         proj.y = proj.y * invW;
         proj.z = proj.z * invW;
+
+        proj.x = (proj.x + 1) * halfWidth;
+        proj.y = (proj.y + 1) * halfHeight;
         return proj;
     }
 

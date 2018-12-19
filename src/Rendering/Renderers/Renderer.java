@@ -14,6 +14,9 @@ import util.Mathf.Mathf3D.Vector3DInt;
 import java.util.ArrayList;
 import java.util.List;
 
+import static Rendering.renderUtil.RenderState.halfHeight;
+import static Rendering.renderUtil.RenderState.halfWidth;
+
 public class Renderer {
 
     static ClippingSystem clippingSystem = new ClippingSystem();
@@ -87,8 +90,7 @@ public class Renderer {
         return Triangle.z_normal(v1.p_proj, v2.p_proj, v3.p_proj) >= 0;//TODO: possibly '>0'. p_proj or p_ws
     }
 
-    static final float halfWidth = (Window.defaultWidth - 1f) * 0.5f;
-    static final float halfHeight = (Window.defaultHeight - 1f) * 0.5f;
+
 
     static void moveToScreenSpace(VertexOut v) {
         v.wDivide();

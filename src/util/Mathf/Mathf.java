@@ -46,57 +46,71 @@ public class Mathf {
         value.w = (value.w <= maxComponents.w) ? value.w : maxComponents.w;
     }
 
-
-
-        public static Vector2D clamp (Vector2D minComponents, Vector2D value, Vector2D maxComponents){
-            return new Vector2D(
-                    clamp(minComponents.x, value.x, maxComponents.x),
-                    clamp(minComponents.y, value.y, maxComponents.y),
-                    clamp(minComponents.w, value.w, maxComponents.w)
-            );
-        }
-
-        public static boolean approximately ( float f1, float f2){
-            return (abs(f1 - f2) < epsilon);
-        }
-
-        public static float abs ( float f){
-            return (f < 0f) ? -f : f;
-        }
-
-        public static float max ( float f0, float f1){
-            return (f0 >= f1) ? f0 : f1;
-        }
-
-        public static float min ( float f0, float f1){
-            return (f0 <= f1) ? f0 : f1;
-        }
-
-        public static float lerp ( float from, float to, float lerpAmt){
-            return from + ((to - from) * lerpAmt);
-        }
-
-        public static float toRadians ( float angleDeg){
-            return angleDeg / 180.0f * PI;
-        }
-
-        public static float unsafeMax ( float f0, float f1){
-            return (f0 >= f1) ? f0 : f1;
-        }
-
-        private static final int BIG_ENOUGH_INT = 16 * 1024;
-        private static final double BIG_ENOUGH_FLOOR = BIG_ENOUGH_INT;
-        private static final double BIG_ENOUGH_ROUND = BIG_ENOUGH_INT + 0.5;
-
-        public static int fastFloor ( float x){
-            return (int) (x + BIG_ENOUGH_FLOOR) - BIG_ENOUGH_INT;
-        }
-
-        public static int fastRound ( float x){
-            return (int) (x + BIG_ENOUGH_ROUND) - BIG_ENOUGH_INT;
-        }
-
-        public static int fastCeil ( float x){
-            return BIG_ENOUGH_INT - (int) (BIG_ENOUGH_FLOOR - x); // credit: roquen
-        }
+    public static Vector2D clamp(Vector2D minComponents, Vector2D value, Vector2D maxComponents) {
+        return new Vector2D(
+                clamp(minComponents.x, value.x, maxComponents.x),
+                clamp(minComponents.y, value.y, maxComponents.y),
+                clamp(minComponents.w, value.w, maxComponents.w)
+        );
     }
+
+
+
+    public static boolean approximately(float f1, float f2) {
+        return (abs(f1 - f2) < epsilon);
+    }
+
+    public static float abs(float f) {
+        return (f < 0f) ? -f : f;
+    }
+
+    public static float max(float f0, float f1) {
+        return (f0 >= f1) ? f0 : f1;
+    }
+
+    public static float min(float f0, float f1) {
+        return (f0 <= f1) ? f0 : f1;
+    }
+
+    public static void min(Vector3D min, Vector3D other){
+        min.x = min(other.x ,min.x);
+        min.y = min(other.y ,min.y);
+        min.z = min(other.z ,min.z);
+        min.w = min(other.w ,min.w);
+    }
+
+    public static void max(Vector3D max, Vector3D other){
+        max.x = max(other.x ,max.x);
+        max.y = max(other.y ,max.y);
+        max.z = max(other.z ,max.z);
+        max.w = max(other.w ,max.w);
+    }
+
+    public static float lerp(float from, float to, float lerpAmt) {
+        return from + ((to - from) * lerpAmt);
+    }
+
+    public static float toRadians(float angleDeg) {
+        return angleDeg / 180.0f * PI;
+    }
+
+    public static float unsafeMax(float f0, float f1) {
+        return (f0 >= f1) ? f0 : f1;
+    }
+
+    private static final int BIG_ENOUGH_INT = 16 * 1024;
+    private static final double BIG_ENOUGH_FLOOR = BIG_ENOUGH_INT;
+    private static final double BIG_ENOUGH_ROUND = BIG_ENOUGH_INT + 0.5;
+
+    public static int fastFloor(float x) {
+        return (int) (x + BIG_ENOUGH_FLOOR) - BIG_ENOUGH_INT;
+    }
+
+    public static int fastRound(float x) {
+        return (int) (x + BIG_ENOUGH_ROUND) - BIG_ENOUGH_INT;
+    }
+
+    public static int fastCeil(float x) {
+        return BIG_ENOUGH_INT - (int) (BIG_ENOUGH_FLOOR - x); // credit: roquen
+    }
+}

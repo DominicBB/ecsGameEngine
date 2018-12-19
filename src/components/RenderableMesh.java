@@ -2,7 +2,7 @@ package components;
 
 import Rendering.Materials.Material;
 import Rendering.renderUtil.Meshes.IndexedMesh;
-import Rendering.renderUtil.RenderMode;
+import Rendering.Materials.RenderMode;
 import util.Mathf.Mathf3D.Bounds.AABoundingBox;
 
 public class RenderableMesh extends Component {
