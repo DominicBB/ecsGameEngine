@@ -53,6 +53,11 @@ public class PhongShader implements IShader {
         return color;
     }
 
+    @Override
+    public boolean fragNonAlloc(Interpolants vertex, Material material, Vector3D outColor, Vector3D util) {
+        return false;
+    }
+
     private Vector3D calculateLighting(Interpolants interpolants, Material material, int x) {
 
         if (material.isDiffuse()) {

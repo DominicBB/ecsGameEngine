@@ -1,19 +1,15 @@
 package Rendering.renderingSystems;
 
 
-import Rendering.Clipping.ClippingSystem;
 import Rendering.Renderers.RendererWireFrame;
-import components.*;
-import core.coreSystems.EntityGrabberSystem;
+import components.RenderableMesh;
+import components.TransformComponent;
 
-import java.util.Arrays;
-
-public class WireFrameRenderSystem extends EntityGrabberSystem {
+public class WireFrameRenderSystem {
 
     private final RenderSystem renderSystem;
 
     public WireFrameRenderSystem(RenderSystem renderSystem) {
-        super(Arrays.asList(RenderableMesh.class, TransformComponent.class));
         this.renderSystem = renderSystem;
     }
 
@@ -21,23 +17,7 @@ public class WireFrameRenderSystem extends EntityGrabberSystem {
     public void render(RenderableMesh renderableMesh, TransformComponent transformComponent, RendererWireFrame renderer) {
 
 //            wireframeMesh(transformComponent, renderableMesh, mvp);
-        switch (ClippingSystem.decideClippingMode(renderableMesh.aaBoundingBox)) {
-            case ALLOUTSIDE:
-                return;
-            case CLIPPING:
-                ClippingSystem.needsClipping = true;
-                break;
-            case ALLINSIDE:
-                ClippingSystem.needsClipping = false;
-                break;
-        }
-
         renderableMesh.indexedMesh.drawWireframe(renderer, renderableMesh.material, transformComponent.transform);
-    }
-
-    @Override
-    public void update() {
-
     }
 
     /*private void wireframeMesh(TransformComponent transform, RenderableMesh renderableMesh, Matrix4x4 mvp) {

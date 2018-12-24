@@ -1,40 +1,40 @@
 package Rendering.renderingSystems;
 
-import Rendering.Clipping.ClippingSystem;
-import Rendering.Renderers.Renderer;
+import Rendering.renderUtil.Meshes.IndexedMesh;
+import Rendering.renderUtil.RenderLocks;
+import Rendering.renderUtil.threading.tasks.BatchTriangleTask;
+import Rendering.renderUtil.threading.threadManagers.SingleThreadManager;
 import components.*;
 import core.coreSystems.EntityGrabberSystem;
 
 import java.util.Arrays;
 
-public class MeshRenderSystem extends EntityGrabberSystem {
+public class MeshRenderSystem{
     private RenderSystem renderSystem;
+    private SingleThreadManager singleThreadManager = new SingleThreadManager();
+    private BatchTriangleTask batchTriangleTask2 = new BatchTriangleTask();
+    private BatchTriangleTask batchTriangleTask1 = new BatchTriangleTask();
 
     public MeshRenderSystem(RenderSystem renderSystem) {
-        super(Arrays.asList(RenderableMesh.class, TransformComponent.class));
         this.renderSystem = renderSystem;
+        singleThreadManager.giveTask(batchTriangleTask1);
+        RenderLocks.regesterThread(singleThreadManager.thread);
     }
 
-    @Override
-    public void update() {
-        //not used
+    public final void render(RenderableMesh renderableMesh, TransformComponent transformComponent) {
+        IndexedMesh indexedMesh = renderableMesh.indexedMesh;
+        setBatches(indexedMesh);
+        singleThreadManager.go();//run task on worker thread
+        batchTriangleTask2.doTask();//run task on main thread
+        singleThreadManager.waitForThreadToFinish();
+        RenderLocks.reset();
     }
 
-    public final void render(RenderableMesh renderableMesh, TransformComponent transformComponent, Renderer renderer) {
-
-        //decide frustum clipping
-        switch (ClippingSystem.decideClippingMode(renderableMesh.aaBoundingBox)) {
-            case ALLOUTSIDE:
-                return;
-            case CLIPPING:
-                ClippingSystem.needsClipping = true;
-                break;
-            case ALLINSIDE:
-                ClippingSystem.needsClipping = false;
-                break;
-        }
-        renderableMesh.indexedMesh.draw(renderer, renderableMesh.material, transformComponent.transform);
-
+    private void setBatches(IndexedMesh indexedMesh) {
+        batchTriangleTask1.setBatch(indexedMesh.transformedVertices, indexedMesh.triIndices,
+                0, indexedMesh.triIndices.size());
+        batchTriangleTask2.setBatch(indexedMesh.transformedVertices, indexedMesh.triIndices,
+                3, indexedMesh.triIndices.size());
     }
 
     public void setRenderSystem(RenderSystem renderSystem) {

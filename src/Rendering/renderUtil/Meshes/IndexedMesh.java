@@ -2,6 +2,7 @@ package Rendering.renderUtil.Meshes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import Rendering.Materials.Material;
 import Rendering.Renderers.Renderer;
@@ -17,15 +18,17 @@ import util.Mathf.Mathf3D.Transform;
 import util.Mathf.Mathf3D.Vector3D;
 
 public class IndexedMesh {
-    public List<Vertex> vertices;
-    public List<Integer> triIndices;
+    public final List<Vertex> vertices;
+    public final VertexOut[] transformedVertices;
+    public final List<Integer> triIndices;
+    public final int halfTriIndices;
     public AABoundingBox aaBoundingBox;
 
+
     //    public List<VertexOut> transformedVertices;
-    private final VertexOut[] transformedVertices;
 
     public IndexedMesh(List<Vertex> vertices) {
-        this(vertices, new ArrayList<Integer>(), AABoundingBox.zeros());
+        this(vertices, new ArrayList<>(), AABoundingBox.zeros());
     }
 
     public IndexedMesh(List<Vertex> vertices, List<Integer> triIndices, AABoundingBox aaBoundingBox) {
@@ -34,6 +37,7 @@ public class IndexedMesh {
         this.aaBoundingBox = computeAABB();
 //        this.transformedVertices = new ArrayList<>(vertices.size());
         this.transformedVertices = new VertexOut[vertices.size()];
+        this.halfTriIndices = (triIndices.size() / 2) -1;
         initTV();
     }
 
@@ -45,45 +49,11 @@ public class IndexedMesh {
         }
     }
 
-
-    public final void draw(Renderer renderer, Material material,
-                           Transform transform) {
-        Matrix4x4 transMatrix = transform.compose();
-        RenderState.mvp = (transMatrix).compose(RenderState.mvp);
-
-        RenderState.world = transMatrix;
-        RenderState.transform = transform;
-
-
-
-        IShader shader = material.getShader();
+    public void vertexShadeAllVertices() {
+        IShader shader = RenderState.material.getShader();
         for (int i = 0; i < transformedVertices.length; i++) {
-            shader.vertNonAlloc(vertices.get(i), material, transformedVertices[i]);
+            shader.vertNonAlloc(vertices.get(i), RenderState.material, transformedVertices[i]);
         }
-
-        final int end = triIndices.size();
-        for (int i = 0; i < end; i += 3) {
-
-            renderer.drawTriangle(
-                    transformedVertices[(triIndices.get(i))],
-                    transformedVertices[(triIndices.get(i + 1))],
-                    transformedVertices[(triIndices.get(i + 2))],
-                    material);
-        }
-
-        Gizmos.drawBoundingVolme(new AABoundingBox(RenderState.modelSpaceToScreenSpace(aaBoundingBox.getCenter()),
-                aaBoundingBox.getSize()), Colorf.RED);
-//        transformedVertices = new ArrayList<>(vertices.size());
-//        transformedVertices.clear();
-
-        /*for (int i = 0; i < end; i += 3) {
-
-            renderer.drawTriangle(
-                    vertices.get(triIndices.get(i)),
-                    vertices.get(triIndices.get(i + 1)),
-                    vertices.get(triIndices.get(i + 2)),
-                    material);
-        }*/
     }
 
     public final void drawWireframe(RendererWireFrame renderer, Material material,

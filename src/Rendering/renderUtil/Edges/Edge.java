@@ -2,6 +2,7 @@ package Rendering.renderUtil.Edges;
 
 import Rendering.renderUtil.interpolation.Interpolants;
 import Rendering.renderUtil.VertexOut;
+import util.Mathf.Mathf;
 import util.Mathf.Mathf2D.Vector2D;
 import util.Mathf.Mathf3D.Vector3D;
 
@@ -12,34 +13,25 @@ public class Edge {
     public int yStart;
     public int yEnd;
 
-    public float deltaY;
-    public float deltaYceil;
     public int deltaYInt;
+    public boolean isOnLeft;
 
-    public int handiness;
-
-    public Edge(VertexOut v1, VertexOut v2, int handiness) {
-        this.handiness = handiness;
-        setUp(v1, v2);
+    public Edge(VertexOut v1, VertexOut v2, boolean isOnLeft) {
+        this.isOnLeft = isOnLeft;
+        setYBounds(v1, v2);
         this.interpolants = new Interpolants(v1.p_proj, yStart, v1.texCoord, v1.specCoord, v1.spec, v1.surfaceColor, v1.invW);
     }
 
-    private void setUp(VertexOut v1, VertexOut v2) {
-        float ceily1 = (float) Math.ceil(v1.p_proj.y);
-        float ceily2 = (float) Math.ceil(v2.p_proj.y);
-
-        deltaY = v2.p_proj.y - v1.p_proj.y;
-        deltaYceil = ceily2 - ceily1;
-        deltaYInt = (int) deltaYceil;
-
-        yStart = (int) ceily1;
-        yEnd = (int) ceily2;
+    private void setYBounds(VertexOut v1, VertexOut v2) {
+        yStart = Mathf.fastCeil(v1.p_proj.y);
+        yEnd = Mathf.fastCeil(v2.p_proj.y);
+        deltaYInt = yEnd - yStart;
     }
 
-    public final void reuse(VertexOut v1, VertexOut v2, int handiness) {
-        this.handiness = handiness;
+    public final void reuse(VertexOut v1, VertexOut v2, boolean isOnLeft) {
+        this.isOnLeft = isOnLeft;
+        setYBounds(v1, v2);
         this.interpolants.reset(v1.p_proj, yStart, v1.texCoord, v1.specCoord, v1.spec, v1.surfaceColor, v1.invW);
-        setUp(v1, v2);
     }
 
     private Edge() {

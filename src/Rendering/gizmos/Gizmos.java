@@ -23,10 +23,10 @@ public class Gizmos {
         DrawCircle.drawCircle(new Vector2D(center.x, center.y), centerRadius, color);
 //        DrawCircle.fillCircle(new Vector2D(center.x, center.y), centerRadius, color);
 
-       /* int yEnd = Mathf.fastCeil(aaBB.getMaxExtents().y);
-        int xEnd = Mathf.fastCeil(aaBB.getMaxExtents().x);
-        for (int y = Mathf.fastCeil(aaBB.getMinExtents().y); y < yEnd; y++) {
-            for (int x = Mathf.fastCeil(aaBB.getMinExtents().x); x < xEnd; x++) {
+       /* int yEnd = Mathf.fastCeil(aaBB.getBottomRight().y);
+        int xEnd = Mathf.fastCeil(aaBB.getBottomRight().x);
+        for (int y = Mathf.fastCeil(aaBB.getTopLeft().y); y < yEnd; y++) {
+            for (int x = Mathf.fastCeil(aaBB.getTopLeft().x); x < xEnd; x++) {
 
             }
         }*/

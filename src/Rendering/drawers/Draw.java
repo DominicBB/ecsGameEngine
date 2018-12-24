@@ -3,9 +3,7 @@ package Rendering.drawers;
 import Rendering.Materials.Material;
 import Rendering.Renderers.Renderer;
 import Rendering.drawers.draw.DrawLine3D;
-import Rendering.drawers.fill.TriangleRasterizer;
-import Rendering.renderUtil.*;
-import Rendering.renderUtil.Edges.Edge;
+import Rendering.renderUtil.VertexOut;
 import core.Window;
 import util.Mathf.Mathf3D.Line3D;
 import util.Mathf.Mathf3D.Polygon;
@@ -17,9 +15,9 @@ public abstract class Draw {
 
     }
 
-    public static void fillPolygon(VertexOut v1, VertexOut v2, VertexOut v3, Renderer renderer, Material material) {
-        TriangleRasterizer.fillTriangle(v1, v2, v3, renderer, material);
-    }
+   /* public static void fillPolygon(VertexOut v1, VertexOut v2, VertexOut v3, Material material) {
+        TriangleRasterizer.fillTriangle(v1, v2, v3, material);
+    }*/
 
     private static Vector3D white = new Vector3D(255, 255, 255);
 
@@ -56,10 +54,4 @@ public abstract class Draw {
         return new Line3D(v1, v2);
     }
 
-    public final static Edge yIncreasingEdge(VertexOut v1, VertexOut v2) {
-        if (v1.p_proj.y > v2.p_proj.y) { //decreasing y line, so flip
-            return new Edge(v2, v1, 1);
-        }
-        return new Edge(v1, v2, 0);
-    }
 }

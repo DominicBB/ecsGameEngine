@@ -15,8 +15,9 @@ import java.util.List;
 
 public class ClippingSystem {
 
-    final List<Plane> fustrumClipPlanes = createFustrumClipPlanes();
     public static boolean needsClipping;
+
+    private TriCullSpaceClip triCullSpaceClip = new TriCullSpaceClip();
 
     public static ClippingMode decideClippingMode(AABoundingBox aabb) {
         return ClippingMode.CLIPPING;/* needsClipping(aabb);*/
@@ -31,7 +32,7 @@ public class ClippingSystem {
         int clipCount = 0;
         Vector3D minExtents = projectedBox.getMinExtents();
         Vector3D maxExtents = projectedBox.getMaxExtents();
-        if (minExtents.z < RenderState.camera.zNear) {
+        if (minExtents.z < minExtents.w) {
             if (maxExtents.z <= RenderState.camera.zNear)
                 return ClippingMode.ALLOUTSIDE;
             ++clipCount;
@@ -55,7 +56,7 @@ public class ClippingSystem {
     public void clipTriangle(List<VertexOut> result, VertexOut v1, VertexOut v2, VertexOut v3) {
         /*if (!needsClipping)
             return new ArrayList<>(Arrays.asList(v1, v2, v3));*/
-        TriCullSpaceClip.clipNonAlloc(result, v1, v2, v3);
+        triCullSpaceClip.clipNonAlloc(result, v1, v2, v3);
     }
 
     private List<Plane> createFustrumClipPlanes() {

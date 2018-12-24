@@ -68,9 +68,15 @@ public class Window extends JFrame implements Runnable {
         fps = frames;
     }
 
-    public void update() {
+    private long timeStamp;
+
+    private void update() {
+//        timeStamp = System.currentTimeMillis();
         graphics.drawImage(bufferManager.getFrontBuffer().bufferedImage, 0, 0, null);
         bufferStrategy.show();
+
+//        Toolkit.getDefaultToolkit().sync();
+//        System.out.println("Done drawing to monitor: " + (System.currentTimeMillis() - timeStamp));
     }
 
     public void setFrameDimention(Dimension frameDimention) {
@@ -93,7 +99,7 @@ public class Window extends JFrame implements Runnable {
     private boolean rasterHasSignaled;
     private boolean isRunning;
 
-   /* private long waitingTime = 0L;
+    /*private long waitingTime = 0L;
     private long waitCount = 0L;
     private long lastTime = 0L;*/
 
@@ -108,18 +114,19 @@ public class Window extends JFrame implements Runnable {
                     synchronized (this) {
                         wait();
                     }
+//                    Thread.onSpinWait();
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-           /* waitingTime += (System.currentTimeMillis() - timeStamp);
+            /*waitingTime += (System.currentTimeMillis() - timeStamp);
             avgWaitTimePerSec();*/
             rasterHasSignaled = false;
             update();
         }
     }
 
-   /* private void avgWaitTimePerSec() {
+    /*private void avgWaitTimePerSec() {
         if ((System.currentTimeMillis() - lastTime) > 1000) {
             lastTime = System.currentTimeMillis();
             System.out.println("WAITING AVG: " + waitingTime / waitCount);

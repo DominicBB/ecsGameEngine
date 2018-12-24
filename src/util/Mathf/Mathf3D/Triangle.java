@@ -105,7 +105,7 @@ public class Triangle extends Polygon {
     }
 
     public static VertexOut[] orderCW(VertexOut[] vertices) {
-        float z_n = z_normal(vertices[0].p_proj, vertices[1].p_proj, vertices[2].p_proj);
+        float z_n = z_crossProd(vertices[0].p_proj, vertices[1].p_proj, vertices[2].p_proj);
         if (z_n < 0) {
             return vertices;
         }
@@ -121,7 +121,7 @@ public class Triangle extends Polygon {
         return vertices;
     }
 
-    public static float z_normal(Vector3D v1, Vector3D v2, Vector3D v3) {
+    public static float z_crossProd(Vector3D v1, Vector3D v2, Vector3D v3) {
         float e1X = v2.x - v1.x;
         float e1Y = v2.y - v1.y;
 

@@ -9,7 +9,7 @@ import java.util.List;
 public class SingleEntityGrabber extends EntityGrabber {
     public SingleEntityGrabber(List<Class<? extends Component>> requiredComponents, EntityGrabberSystem entityGrabberSystem) {
         super(requiredComponents, entityGrabberSystem);
-        //SystemCommunicator.onEntityListnerCreate(this);
+        //SystemCommunicator.onEntityGrabberCreate(this);
     }
 
     @Override

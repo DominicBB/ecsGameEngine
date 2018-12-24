@@ -1,5 +1,6 @@
 package Rendering.Renderers;
 
+import Rendering.Clipping.ClippingSystem;
 import Rendering.Materials.Material;
 import Rendering.drawers.Draw;
 import Rendering.renderUtil.RenderState;
@@ -14,6 +15,7 @@ import static Rendering.Renderers.Renderer.backFaceCull;
 import static Rendering.Renderers.Renderer.moveToScreenSpaceNew;
 
 public class RendererWireFrame {
+    private final ClippingSystem clippingSystem = new ClippingSystem();
     private final List<VertexOut> clippedVertices = new ArrayList<>();
     private final VertexOut[] vertexOuts = new VertexOut[3];
 
@@ -28,7 +30,7 @@ public class RendererWireFrame {
                 v3.texCoord, v3.specCoord, 1f, Vector3D.newOnes(), v3.normal, v3.vec, 1f);
 
         //clip
-        Renderer.clippingSystem.clipTriangle(clippedVertices, v1Out, v2Out, v3Out);
+        clippingSystem.clipTriangle(clippedVertices, v1Out, v2Out, v3Out);
         if (clippedVertices.isEmpty()) return;
 
         /*for(VertexOut vertexOut: clippedVertices){

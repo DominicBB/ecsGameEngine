@@ -1,5 +1,6 @@
 package Rendering.renderUtil;
 
+import Rendering.Materials.Material;
 import Rendering.renderUtil.Bitmaps.BitmapBGR;
 import components.Camera;
 import core.Window;
@@ -19,6 +20,8 @@ public final class RenderState {
 
     public static FloatBuffer zBuffer;
     public static BitmapBGR colorBuffer;
+
+    public static Material material;
 
     public static final float halfWidth = (Window.defaultWidth - 1f) * 0.5f;
     public static final float halfHeight = (Window.defaultHeight - 1f) * 0.5f;

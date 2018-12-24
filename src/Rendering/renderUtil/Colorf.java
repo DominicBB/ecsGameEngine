@@ -4,6 +4,8 @@ import util.Mathf.Mathf;
 import util.Mathf.Mathf3D.Vector3D;
 import util.Mathf.Mathf3D.Vector3DInt;
 
+import java.util.function.Function;
+
 public class Colorf {
     public static final Vector3D minColor = new Vector3D(0f, 0f, 0f, 255f);
     public static final Vector3D maxColor = new Vector3D(255f, 255f, 255f, 255f);
@@ -18,7 +20,6 @@ public class Colorf {
 //    private static final IntMapper getCOR2 = c -> 0xFF;
     private static final IntMapper[] ORSFInt = new IntMapper[]{getC, get255, get255};
     //TESTING STUFF END
-
 
     public static Vector3D clamp(Vector3D color) {
         return Mathf.clamp(minColor, color, maxColor);

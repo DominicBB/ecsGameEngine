@@ -81,6 +81,11 @@ public class FlatShader implements IShader, IGeometryShader {
     }
 
     @Override
+    public boolean fragNonAlloc(Interpolants vertex, Material material, Vector3D outColor, Vector3D util) {
+        return false;
+    }
+
+    @Override
     public final int getVerticesPerPrimitive() {
         return verticiesPerPrimitive;
     }

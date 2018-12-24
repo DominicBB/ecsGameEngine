@@ -1,125 +1,204 @@
 package Rendering.drawers.fill;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import Rendering.Materials.Material;
 import Rendering.renderUtil.Edges.Edge;
 import Rendering.renderUtil.Edges.EdgeFactory;
-import Rendering.Renderers.Renderer;
-
+import Rendering.renderUtil.RenderLocks;
 import Rendering.renderUtil.VertexOut;
+import util.FloatWrapper;
+import util.Mathf.Mathf;
+import util.Mathf.Mathf3D.Triangle;
+import util.Mathf.Mathf3D.Vector3D;
 
-import static Rendering.drawers.fill.Rasterizer.rasterizeRow;
+import java.util.List;
+
 
 public class TriangleRasterizer {
-    private static EdgeFactory edgeFactory = new EdgeFactory();
-    private final static Edge e1 = Edge.newEmpty(), e2 = Edge.newEmpty(), e3 = Edge.newEmpty();
-    private static List<Edge> edges = new ArrayList<>(3);
+    private final EdgeFactory edgeFactory = new EdgeFactory();
+    private final Edge e1 = Edge.newEmpty(), e2 = Edge.newEmpty(), e3 = Edge.newEmpty();
+    private final VertexOut[] edgeVertices = new VertexOut[6];
+    private final Rasterizer rasterizer = new Rasterizer();
+    private final FloatWrapper xMax = new FloatWrapper(0f), xMin = new FloatWrapper(0f);
+
+    private List<Edge> edgesTODO;
+    private List<Edge> edgesTODODouble;
+    public void fillTriangle(VertexOut v1, VertexOut v2, VertexOut v3) {
+        int eIndex = 0;
+        VertexOut maxY = v1, midY = v2, minY = v3, temp;
+        if (maxY.p_proj.y < midY.p_proj.y) {
+            temp = maxY;
+            maxY = midY;
+            midY = temp;
+        }
+
+        if (midY.p_proj.y < minY.p_proj.y) {
+            temp = midY;
+            midY = minY;
+            minY = temp;
+        }
+
+        if (maxY.p_proj.y < midY.p_proj.y) {
+            temp = maxY;
+            maxY = midY;
+            midY = temp;
+        }
+
+        float ceil1 = (float) Mathf.fastCeil(maxY.p_proj.y);
+        float ceil2 = (float) Mathf.fastCeil(midY.p_proj.y);
+        float ceil3 = (float) Mathf.fastCeil(minY.p_proj.y);
+        float dy1 = ceil1 - ceil3;
+        float dy2 = ceil2 - ceil3;
+        float dy3 = ceil1 - ceil2;
+
+        int horizontalLineCount = 0;
+        if (dy1 == 0.0f)
+            ++horizontalLineCount;
+        else {
+            edgeVertices[eIndex++] = minY;
+            edgeVertices[eIndex++] = maxY;
+        }
+        if (dy2 == 0.0f)
+            ++horizontalLineCount;
+        else {
+            edgeVertices[eIndex++] = minY;
+            edgeVertices[eIndex++] = midY;
+        }
+        if (dy3 == 0.0f)
+            ++horizontalLineCount;
+        else {
+            edgeVertices[eIndex++] = midY;
+            edgeVertices[eIndex] = maxY;
+        }
 
 
-    public static void fillTriangle(VertexOut v1, VertexOut v2, VertexOut v3, Renderer renderer, Material material) {
-        edges.clear();
-
-        constructEdges(v1, v2, v3, material);
-        addEdges();
-
-        int size = edges.size();
-        if (size < 2)
+        if (horizontalLineCount >= 2) {
+            RenderLocks.setAABR(0f, 0f, 0f, 0f);
             return;
+        }
 
-        if (size == 2) {
-            scan(edges.get(0), edges.get(1), material, renderer);
+        calcMinMaxX(xMin, xMax, maxY.p_proj, midY.p_proj, minY.p_proj);
+
+        if (horizontalLineCount == 1) {
+            setUpForOneHorizontal();
             return;
         }
+        setUpAllThree(maxY, midY, minY, dy1, dy2, dy3);
 
-        if (e1HasGreatestYChange(e1, e2, e3)) {
-            // e1 has greatest y change
-            scan(e1, e2, e3, material, renderer);
-            return;
-        }
-        if (e2HasGreatestYChange(e2, e3)) {
-            // e2 has greatest y change
-            scan(e2, e3, e1, material, renderer);
-            return;
-        }
-        // e3 has greatest y change
-        scan(e3, e1, e2, material, renderer);
     }
 
-    private static void constructEdges(VertexOut v1, VertexOut v2, VertexOut v3, Material material) {
-        edgeFactory.reuseEdge(e1, v1, v2, material);
-        edgeFactory.reuseEdge(e2, v2, v3, material);
-        edgeFactory.reuseEdge(e3, v3, v1, material);
+    public void scan(Edge leftEdge, Edge rightEdge) {
+
+        if (leftEdge.isOnLeft)
+            scanSegment(leftEdge, rightEdge, leftEdge.yStart, leftEdge.deltaYInt);
+        else
+            scanSegment(rightEdge, leftEdge, rightEdge.yStart, rightEdge.deltaYInt);
+
     }
 
-    private static void addEdges() {
-        if (e1.deltaYInt != 0) {
-            edges.add(e1);
-        }
-        if (e2.deltaYInt != 0) {
-            edges.add(e2);
-        }
-        if (e3.deltaYInt != 0) {
-            edges.add(e3);
-        }
-    }
-
-    private static void scan(Edge leftEdge, Edge rightEdge, Material material, Renderer renderer) {
-
-        switch (leftEdge.handiness) {
-            case 0:
-                scanSegment(leftEdge, rightEdge, leftEdge.yStart, leftEdge.deltaYInt, material, renderer);
-                return;
-            default:
-                scanSegment(rightEdge, leftEdge, rightEdge.yStart, rightEdge.deltaYInt, material, renderer);
-        }
-    }
-
-    private static void scan(Edge tallestEdge, Edge bottomEdge, Edge topEdge, Material material, Renderer renderer) {
-        if (bottomEdge.yEnd > topEdge.yEnd) {
-            Edge temp = bottomEdge;
-            bottomEdge = topEdge;
-            topEdge = temp;
+    public void scan(Edge tallestEdge, Edge bottomEdge, Edge topEdge) {
+        if (tallestEdge.isOnLeft) {
+            scanSegment(tallestEdge, bottomEdge, bottomEdge.yStart, bottomEdge.deltaYInt);
+            scanSegment(tallestEdge, topEdge, topEdge.yStart, topEdge.deltaYInt);
+        } else {
+            scanSegment(bottomEdge, tallestEdge, bottomEdge.yStart, bottomEdge.deltaYInt);
+            scanSegment(topEdge, tallestEdge, topEdge.yStart, topEdge.deltaYInt);
         }
 
-        switch (tallestEdge.handiness) {
-            case 0:
-                scanSegment(tallestEdge, bottomEdge, bottomEdge.yStart, bottomEdge.deltaYInt, material, renderer);
-                scanSegment(tallestEdge, topEdge, topEdge.yStart, topEdge.deltaYInt, material, renderer);
-                return;
-            default:
-                scanSegment(bottomEdge, tallestEdge, bottomEdge.yStart, bottomEdge.deltaYInt, material, renderer);
-                scanSegment(topEdge, tallestEdge, topEdge.yStart, topEdge.deltaYInt, material, renderer);
-        }
     }
 
 
-    private static void scanSegment(Edge left, Edge right, int y, int yChange, Material material, Renderer renderer) {
+    private void scanSegment(Edge left, Edge right, int y, int yChange) {
         int i = 1;
-
         while (i <= yChange) {
-            rasterizeRow(left, right, y, material, renderer);
+            rasterizer.rasterizeRow(left, right, y);
             left.interpolants.lerp();
             right.interpolants.lerp();
             ++y;
             ++i;
         }
-
-       /* do {
-            rasterizeRow(left, right, y, material, renderer);
-            left.interpolants.lerp();
-            right.interpolants.lerp();
-            y++;
-            i++;
-        } while (i <= yChange);*/
     }
 
-    private static boolean e2HasGreatestYChange(Edge e2, Edge e3) {
-        return (e2.deltaY > e3.deltaY);
+    private void storeEdges(VertexOut maxY, VertexOut midY, VertexOut minY, float dy1, float dy2, float dy3,
+                            boolean isOnLeft) {
+        edgesTODO.add(edgeFactory.createEdge(minY, maxY, dy1, isOnLeft));
+        edgesTODO.add(edgeFactory.createEdge(minY, midY, dy2, !isOnLeft));
+        edgesTODO.add(edgeFactory.createEdge(midY, maxY, dy3, !isOnLeft));
     }
 
-    private static boolean e1HasGreatestYChange(Edge e1, Edge e2, Edge e3) {
-        return (e1.deltaY > e2.deltaY && e1.deltaY > e3.deltaY);
+    private void reuseEdges(VertexOut maxY, VertexOut midY, VertexOut minY, float dy1, float dy2, float dy3,
+                            boolean isOnLeft) {
+
+        edgeFactory.reuseEdge(e1, minY, maxY, dy1, isOnLeft);
+        edgeFactory.reuseEdge(e2, minY, midY, dy2, !isOnLeft);
+        edgeFactory.reuseEdge(e3, midY, maxY, dy3, !isOnLeft);
+    }
+
+    private void setUpAllThree(VertexOut maxY, VertexOut midY, VertexOut minY, float dy1, float dy2, float dy3) {
+        boolean isOnLeft = Triangle.z_crossProd(minY.p_proj, maxY.p_proj, midY.p_proj) < 0f;
+        RenderLocks.setAABR(maxY.p_proj.y, minY.p_proj.y, xMax.value, xMin.value);
+
+        if (RenderLocks.BRintersect()) {
+            storeEdges(maxY, midY, minY, dy1, dy2, dy3, isOnLeft);
+            return;
+        }
+        reuseEdges(maxY, midY, minY, dy1, dy2, dy3, isOnLeft);
+        scan(e1, e2, e3);
+    }
+
+    private void setUpForOneHorizontal() {
+        VertexOut v1 = edgeVertices[0], v2 = edgeVertices[1], v3 = edgeVertices[2], v4 = edgeVertices[3];
+
+        float dy1 = v2.p_proj.y - v1.p_proj.y;
+        float dy2 = v4.p_proj.y - v3.p_proj.y;
+        float yMax, yMin;
+        if (v2.p_proj.y > v4.p_proj.y) {
+            yMax = v2.p_proj.y;
+            yMin = v4.p_proj.y;
+        } else {
+            yMin = v2.p_proj.y;
+            yMax = v4.p_proj.y;
+        }
+
+        boolean isOnLeft = v1.p_proj.x < v3.p_proj.x;
+        isOnLeft |= v2.p_proj.x < v4.p_proj.x;
+
+        RenderLocks.setAABR(yMax, yMin, xMax.value, xMin.value);
+        if (RenderLocks.BRintersect()) {
+            edgesTODODouble.add(edgeFactory.createEdge(v1, v2, dy1, isOnLeft));
+            edgesTODODouble.add(edgeFactory.createEdge(v3, v4, dy2, !isOnLeft));
+            return;
+        }
+        edgeFactory.reuseEdge(e1, v1, v2, dy1, isOnLeft);
+        edgeFactory.reuseEdge(e2, v3,v4, dy2, !isOnLeft);
+        scan(e1, e2);
+    }
+
+    private void calcMinMaxX(FloatWrapper minX, FloatWrapper maxX, Vector3D v1, Vector3D v2, Vector3D v3) {
+        Vector3D max = v1, mid = v2, min = v3, temp;
+        if (max.x < mid.x) {
+            temp = v2;
+            max = mid;
+            mid = temp;
+        }
+
+        if (mid.y < min.y) {
+            temp = mid;
+            mid = min;
+            min = temp;
+        }
+
+        if (max.y < mid.y) {
+            max = mid;
+        }
+
+        minX.value = min.x;
+        maxX.value = max.x-1;
+    }
+
+    public void setEdgesTODO(List<Edge> edgesTODO) {
+        this.edgesTODO = edgesTODO;
+    }
+
+    public void setEdgesTODODouble(List<Edge> edgesTODODouble) {
+        this.edgesTODODouble = edgesTODODouble;
     }
 }

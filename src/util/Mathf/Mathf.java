@@ -61,7 +61,7 @@ public class Mathf {
     }
 
     public static float abs(float f) {
-        return (f < 0f) ? -f : f;
+        return (f < 0.0f) ? -f : f;
     }
 
     public static float max(float f0, float f1) {
@@ -110,7 +110,7 @@ public class Mathf {
         return (int) (x + BIG_ENOUGH_ROUND) - BIG_ENOUGH_INT;
     }
 
-    public static int fastCeil(float x) {
-        return BIG_ENOUGH_INT - (int) (BIG_ENOUGH_FLOOR - x); // credit: roquen
+    public static int fastCeil(float f) {
+        return BIG_ENOUGH_INT - (int) (BIG_ENOUGH_FLOOR - f); // credit: roquen
     }
 }

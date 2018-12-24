@@ -1,23 +1,23 @@
 package Rendering.renderUtil.Edges;
 
-import Rendering.Materials.Material;
-import Rendering.renderUtil.interpolation.LerperFactory;
+import Rendering.renderUtil.RenderState;
 import Rendering.renderUtil.VertexOut;
+import Rendering.renderUtil.interpolation.LerperFactory;
 
 public class EdgeFactory {
 
     private LerperFactory lerperFactory = new LerperFactory();
 
-    public void reuseEdge(Edge edge, VertexOut v1, VertexOut v2, Material material) {
-        int handiness = 0;
-        if (v1.p_proj.y > v2.p_proj.y) {
-            handiness = 1;
-            VertexOut temp = v1;
-            v1 = v2;
-            v2 = temp;
-        }
-
-        edge.reuse(v1, v2, handiness);
-        lerperFactory.setLerper(material, edge.interpolants, v1, v2, 1f/ edge.deltaYceil);
+    public void reuseEdge(Edge edge, VertexOut v1, VertexOut v2, float dy, boolean isOnLeft) {
+        edge.reuse(v1, v2, isOnLeft);
+        lerperFactory.setLerper(RenderState.material, edge.interpolants, v1, v2, 1f / dy);
     }
+
+    public Edge createEdge(VertexOut v1, VertexOut v2, float dy, boolean isOnLeft) {
+        Edge edge = new Edge(v1, v2, isOnLeft);
+        lerperFactory.createLerper(edge.interpolants, v1, v2, 1f / dy);
+        return edge;
+    }
+
+
 }

@@ -1,6 +1,8 @@
 package Rendering.renderUtil.interpolation;
 
 import Rendering.Materials.Material;
+import Rendering.renderUtil.RenderState;
+import Rendering.renderUtil.Vertex;
 import Rendering.renderUtil.VertexOut;
 
 public class LerperFactory extends BaseLerperFactory {
@@ -27,26 +29,42 @@ public class LerperFactory extends BaseLerperFactory {
     }
 
 
-    public Interpolants setLerper(Material material, Interpolants interpolants, VertexOut v1, VertexOut v2,
-                                  float factor) {
-        switch (material.getShader().getShaderType()) {
+    public void createLerper(Interpolants interpolants, VertexOut v1, VertexOut v2, float factor) {
+        switch (RenderState.material.getShader().getShaderType()) {
             case GOURUAD:
-                interpolants.setLerper(gouruadLerper(material, v1, v2, factor));
+                GouruadLerper gL = new GouruadLerper();
+                interpolants.setLerper(gouruadLerper(RenderState.material, gL, v1, v2, factor));
                 break;
             case FLAT:
-                interpolants.setLerper(flatLerper(material, v1, v2, factor));
+                FlatLerper fL = new FlatLerper();
+                interpolants.setLerper(flatLerper(RenderState.material, fL, v1, v2, factor));
                 break;
             case PHONG:
-                interpolants.setLerper(phongLerper(material, v1, v2, factor));
+                PhongLerper pL = new PhongLerper();
+                interpolants.setLerper(phongLerper(RenderState.material, pL, v1, v2, factor));
                 break;
         }
-        return interpolants;
     }
 
-    private GouruadLerper gouruadLerper(Material material, VertexOut v1, VertexOut v2, float factor) {
-        GouruadLerper gL = gouruadLerpers[nextGouruadIndex()];
-        ++gouruadCount;
+    public void setLerper(Material material, Interpolants interpolants, VertexOut v1, VertexOut v2,
+                          float factor) {
+        switch (material.getShader().getShaderType()) {
+            case GOURUAD:
+                interpolants.setLerper(gouruadLerper(material, gouruadLerpers[nextGouruadIndex()], v1, v2, factor));
+                ++gouruadCount;
+                break;
+            case FLAT:
+                interpolants.setLerper(flatLerper(material, flatLerpers[nextFlatIndex()], v1, v2, factor));
+                ++flatCount;
+                break;
+            case PHONG:
+                interpolants.setLerper(phongLerper(material, phongLerpers[nextPhongIndex()], v1, v2, factor));
+                ++phongCount;
+                break;
+        }
+    }
 
+    private GouruadLerper gouruadLerper(Material material, GouruadLerper gL, VertexOut v1, VertexOut v2, float factor) {
         calcVec3Step(gL.p_proj_step, factor, v1.p_proj, v2.p_proj);
         calcVec3Step(gL.sColorStep, factor, v1.surfaceColor, v2.surfaceColor);
         gL.invWStep = calcFloatStep(factor, v1.invW, v2.invW);
@@ -63,10 +81,7 @@ public class LerperFactory extends BaseLerperFactory {
         return gL;
     }
 
-    private PhongLerper phongLerper(Material material, VertexOut v1, VertexOut v2, float factor) {
-        PhongLerper pL = phongLerpers[nextPhongIndex()];
-        ++phongCount;
-
+    private PhongLerper phongLerper(Material material, PhongLerper pL, VertexOut v1, VertexOut v2, float factor) {
         //TODO:if no normal map
         calcVec3Step(pL.p_proj_step, factor, v1.p_proj, v2.p_proj);
         calcVec3Step(pL.n_ws_step, factor, v1.n_ws, v2.n_ws);
@@ -85,10 +100,7 @@ public class LerperFactory extends BaseLerperFactory {
         return pL;
     }
 
-    private FlatLerper flatLerper(Material material, VertexOut v1, VertexOut v2, float factor) {
-        FlatLerper fL = flatLerpers[nextFlatIndex()];
-        ++flatCount;
-
+    private FlatLerper flatLerper(Material material, FlatLerper fL, VertexOut v1, VertexOut v2, float factor) {
         calcVec3Step(fL.p_proj_step, factor, v1.p_proj, v2.p_proj);
         fL.invWStep = calcFloatStep(factor, v1.invW, v2.invW);
 

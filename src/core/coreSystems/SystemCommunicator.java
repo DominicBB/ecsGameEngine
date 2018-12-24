@@ -44,7 +44,7 @@ public class SystemCommunicator {
     }
 
     public static void onEntityListnerCreate(EntityGrabber entityGrabber) {
-        SystemCommunicator.entitySystem.onEntityListnerCreate(entityGrabber);
+        SystemCommunicator.entitySystem.onEntityGrabberCreate(entityGrabber);
     }
 
 

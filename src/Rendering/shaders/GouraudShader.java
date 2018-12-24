@@ -99,31 +99,37 @@ public class GouraudShader implements IShader {
     }
 
 
-    private final Vector3D fragColor = Vector3D.newZeros();
-    private final Vector3D fragTexColor = Vector3D.newZeros();
 
     @Override
     public final Vector3D frag(Interpolants lP, Material material) {
+        Vector3D outColor = Vector3D.newZeros();
+        if (fragNonAlloc(lP, material, outColor, Vector3D.newZeros()))
+            return outColor;
+        return null;
+    }
+
+    @Override
+    public final boolean fragNonAlloc(Interpolants lP, Material material, Vector3D outColor, Vector3D util) {
         if (!ShaderUtil.zBufferTest(RenderState.zBuffer, lP.p_proj.z, lP.xInt, lP.yInt))
-            return null;
+            return false;
 
         float w = 1f / lP.invW;
-        fragColor.set(lP.surfaceColor);
+        outColor.set(lP.surfaceColor);
 
         if (material.hasSpecularMap()) {
-            fragColor.add(calcSpecularAtFrag(lP.specCoord, lP.specularity, w, material));
+            outColor.add(calcSpecularAtFrag(lP.specCoord, lP.specularity, w, material));
         }
 
         if (material.hasTexture()) {
-            perspectiveCorrectBitmapNonAlloc(lP.texCoord, material.getTexture().texture, w, fragTexColor);
-            Vector3D.componentMulNonAlloc(fragColor, fragTexColor);
-            return fragColor;
+            perspectiveCorrectBitmapNonAlloc(lP.texCoord, material.getTexture().texture, w, util);
+            Vector3D.componentMulNonAlloc(outColor, util);
+            return true;
         }
-        Vector3D.componentMulNonAlloc(fragColor, material.getColor());
-        
+        Vector3D.componentMulNonAlloc(outColor, material.getColor());
+
        /* perspectiveCorrectBitmapNonAlloc(lP.texCoord, material.getTexture().texture, w, fragTexColor);
         Vector3D.componentMulNonAlloc(fragColor, fragTexColor);*/
-        return fragColor;
+        return true;
     }
 
 

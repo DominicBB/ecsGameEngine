@@ -27,12 +27,37 @@ public class GouruadLerper implements ILerper {
     public final void lerp(Interpolants lp) {
         lp.p_proj.add(p_proj_step);
         lp.texCoord.add(texCoordStep);
-//        if (lp.invW > 2f)
+
         lp.specCoord.add(specCoordStep);
 
         lp.specularity += specStep;
         lp.surfaceColor.add(sColorStep);
         lp.invW += invWStep;
+
+
+        //UNRAVELED
+       /* float x, y, z, w;
+        x = lp.p_proj.x + p_proj_step.x;
+        y = lp.p_proj.y + p_proj_step.y;
+        z = lp.p_proj.z + p_proj_step.z;
+        w = lp.p_proj.w + p_proj_step.w;
+        lp.p_proj.set(x, y, z, w);
+
+        x = lp.texCoord.x + texCoordStep.x;
+        y = lp.texCoord.y + texCoordStep.y;
+        lp.specularity += specStep;
+        lp.invW += invWStep;
+        lp.texCoord.set(x, y);
+
+
+        x = lp.surfaceColor.x + sColorStep.x;
+        y = lp.surfaceColor.y + sColorStep.y;
+        z = lp.surfaceColor.z + sColorStep.z;
+        w = lp.surfaceColor.w + sColorStep.w;
+        lp.surfaceColor.set(x, y, z, w);*/
+
+
+
     }
 
 }

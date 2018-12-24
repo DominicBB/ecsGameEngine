@@ -2,11 +2,11 @@ package Rendering.Renderers;
 
 import Rendering.Clipping.ClippingSystem;
 import Rendering.Materials.Material;
-import Rendering.drawers.Draw;
+import Rendering.drawers.fill.TriangleRasterizer;
 import Rendering.renderUtil.Colorf;
+import Rendering.renderUtil.Edges.Edge;
 import Rendering.renderUtil.RenderState;
 import Rendering.renderUtil.VertexOut;
-import core.Window;
 import util.Mathf.Mathf3D.Triangle;
 import util.Mathf.Mathf3D.Vector3D;
 import util.Mathf.Mathf3D.Vector3DInt;
@@ -19,11 +19,12 @@ import static Rendering.renderUtil.RenderState.halfWidth;
 
 public class Renderer {
 
-    static ClippingSystem clippingSystem = new ClippingSystem();
+    private final ClippingSystem clippingSystem = new ClippingSystem();
     private final List<VertexOut> clippedVertices = new ArrayList<>();
     private final VertexOut[] vertexOuts = new VertexOut[3];
+    public final TriangleRasterizer triangleRasterizer = new TriangleRasterizer();
 
-    public void drawTriangle(VertexOut v1, VertexOut v2, VertexOut v3, Material material) {
+    public void drawTriangle(VertexOut v1, VertexOut v2, VertexOut v3) {
 
         /*IShader shader = material.getShader();
         vertexOuts[0] = shader.vert(v1, material);
@@ -34,8 +35,8 @@ public class Renderer {
         vertexOuts[2] = v3;
 
         //check for geometry shader
-        if (material.hasGeometryShader()) {
-            material.getGeometryShader().geom(vertexOuts, material);
+        if (RenderState.material.hasGeometryShader()) {
+            RenderState.material.getGeometryShader().geom(vertexOuts, RenderState.material);
         }
 
         //backfaceCull
@@ -61,35 +62,35 @@ public class Renderer {
             v2Out = moveToScreenSpaceNew(v2Out);
             v3Out = moveToScreenSpaceNew(v3Out);
 
-            Draw.fillPolygon(v1Out, v2Out, v3Out,
-                    this, material);
+            triangleRasterizer.fillTriangle(v1Out, v2Out, v3Out);
         }
     }
 
-    public void onFragShaded(int x, int y, Vector3D color, Material material) {
+    public static void onFragShaded(int x, int y, Vector3D color, Material material) {
         //check for blending etc.
         setFinalColor(x, y, color);
     }
 
     private Vector3DInt finalColor = new Vector3DInt(0, 0, 0, 0);
 
-    private void setFinalColor(int x, int y, Vector3D color) {
+    private static void setFinalColor(int x, int y, Vector3D color) {
 //        Colorf.clampNonAlloc(color);
         Colorf.clampMaxNonAlloc(color);
 //        Colorf.clampMaxNonAllocBit(color, finalColor);
 //        RenderState.colorBuffer.setPixel(x, y, finalColor);
         RenderState.colorBuffer.setPixelPreClamp(x, y, color);
+
     }
 
 
     static boolean backFaceCull(VertexOut v1, VertexOut v2, VertexOut v3) {
-        return Triangle.z_normal(v1.p_proj, v2.p_proj, v3.p_proj) >= 0;//TODO: possibly '>0'. p_proj or p_ws
+        return Triangle.z_crossProd(v1.p_proj, v2.p_proj, v3.p_proj) >= 0;//TODO: possibly '>0'. p_proj or p_ws
     }
 
     static boolean backFaceCullPreClip(VertexOut v1, VertexOut v2, VertexOut v3) {
-        return Triangle.z_normal(v1.p_proj, v2.p_proj, v3.p_proj) >= 0;//TODO: possibly '>0'. p_proj or p_ws
+        return Triangle.z_crossProd(v1.p_proj, v2.p_proj, v3.p_proj) >= 0;//TODO: possibly '>0'. p_proj or p_ws
+//        return Triangle.z_crossProd(v1.p_ws, v2.p_ws, v3.p_ws) <= 0;//TODO: possibly '>0'. p_proj or p_ws
     }
-
 
 
     static void moveToScreenSpace(VertexOut v) {
@@ -104,5 +105,6 @@ public class Renderer {
         nV.p_proj.y = (nV.p_proj.y + 1) * halfHeight;
         return nV;
     }
+
 
 }

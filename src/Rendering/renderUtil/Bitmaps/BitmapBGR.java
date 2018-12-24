@@ -119,6 +119,7 @@ public class BitmapBGR {
         byteArray[i] = b;
         byteArray[i + 1] = g;
         byteArray[i + 2] = r;
+
     }
 
     /**
@@ -127,7 +128,7 @@ public class BitmapBGR {
      * @param shade
      */
     public void clear(byte shade) {
-        for (int i = 0; i < byteArray.length; i++) {
+        for (int i = 0, len = byteArray.length; i < len; i++) {
             byteArray[i] = shade;
         }
     }
@@ -138,9 +139,7 @@ public class BitmapBGR {
      * set all elements in byteArray to shadeWhiteLight of grey
      */
     public void clearToBlack() {
-        for (int i = 0; i < byteArray.length; i++) {
-            byteArray[i] = black;
-        }
+        clear(black);
     }
 
     /**

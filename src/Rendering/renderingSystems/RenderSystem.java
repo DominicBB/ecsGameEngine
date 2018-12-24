@@ -1,5 +1,6 @@
 package Rendering.renderingSystems;
 
+import Rendering.Clipping.ClippingSystem;
 import Rendering.renderUtil.RenderState;
 import Rendering.Renderers.Renderer;
 import Rendering.Renderers.RendererWireFrame;
@@ -12,29 +13,31 @@ import core.Window;
 import core.coreSystems.EntityGrabberSystem;
 import core.coreSystems.SystemCommunicator;
 import util.FloatBuffer;
+import util.Mathf.Mathf3D.Bounds.AABoundingBox;
 import util.Mathf.Mathf3D.Matrix4x4;
 import util.Mathf.Mathf3D.Transform;
 
 import java.util.Arrays;
 
-public class RenderSystem extends EntityGrabberSystem{
+public class RenderSystem extends EntityGrabberSystem {
 
     private MeshRenderSystem meshRenderSystem;
     private WireFrameRenderSystem wireFrameRenderSystem;
 
-    final Renderer renderer;
     final RendererWireFrame rendererWireFrame;
 
     public RenderSystem() {
         super(Arrays.asList(RenderableMesh.class, TransformComponent.class));
-
-        RenderState.camera = EntityFactory.createCamera(new Camera(), new Transform());
-        RenderState.createLightingState();
-        RenderState.zBuffer =  new FloatBuffer(Window.defaultWidth, Window.defaultHeight);
-        renderer = new Renderer();
+        initRenderState();
         rendererWireFrame = new RendererWireFrame();
         initRenderers();
         SystemCommunicator.registerRenderSystem(this);
+    }
+
+    private void initRenderState(){
+        RenderState.camera = EntityFactory.createCamera(new Camera(), new Transform());
+        RenderState.createLightingState();
+        RenderState.zBuffer = new FloatBuffer(Window.defaultWidth, Window.defaultHeight);
     }
 
     private void initRenderers() {
@@ -43,12 +46,15 @@ public class RenderSystem extends EntityGrabberSystem{
     }
 
 
+    private long timeStamp;
+
     @Override
     public void update() {
+//        timeStamp = System.currentTimeMillis();
         RenderState.zBuffer.resetPositiveInf();
         RenderState.colorBuffer.clearToBlack();
 
-        RenderState.mvp = constructProjMatrix(RenderState.camera);
+        Matrix4x4 projMatrix = constructProjMatrix(RenderState.camera);
 //        RenderState.projectionToWorld = constructProjToWorld(RenderState.camera);
         for (int entityID : entityGrabber.getEntityIDsOfInterest()) {
             //grab components
@@ -56,17 +62,47 @@ public class RenderSystem extends EntityGrabberSystem{
             RenderableMesh renderableMesh = (RenderableMesh) relevantComponents[0];
             TransformComponent transformComponent = (TransformComponent) relevantComponents[1];
 
-            switch (renderableMesh.renderMode) {
-                case MESH:
-                    meshRenderSystem.render(renderableMesh, transformComponent, renderer);
-                    break;
-                case WIREFRAME:
-                    wireFrameRenderSystem.render(renderableMesh, transformComponent, rendererWireFrame);
-                    break;
-            }
+            setRenderState(renderableMesh, transformComponent, projMatrix);
+            decideClipping(renderableMesh.aaBoundingBox);
+            renderableMesh.indexedMesh.vertexShadeAllVertices();
+            sendToRenderSystem(renderableMesh, transformComponent);
+        }
+//        System.out.println("Done raster: " + (System.currentTimeMillis() - timeStamp));
+
+    }
+
+    private void setRenderState(RenderableMesh renderableMesh, TransformComponent transformComponent, Matrix4x4 projMatrix) {
+        Matrix4x4 worldTransform = transformComponent.transform.compose();
+        RenderState.mvp = worldTransform.compose(projMatrix);
+
+        RenderState.world = worldTransform;
+        RenderState.transform = transformComponent.transform;
+        RenderState.material = renderableMesh.material;
+    }
+
+    private void decideClipping(AABoundingBox aaBoundingBox) {
+        switch (ClippingSystem.decideClippingMode(aaBoundingBox)) {
+            case ALLOUTSIDE:
+                return;
+            case CLIPPING:
+                ClippingSystem.needsClipping = true;
+                break;
+            case ALLINSIDE:
+                ClippingSystem.needsClipping = false;
+                break;
         }
     }
 
+    private void sendToRenderSystem(RenderableMesh renderableMesh, TransformComponent transformComponent) {
+        switch (renderableMesh.renderMode) {
+            case MESH:
+                meshRenderSystem.render(renderableMesh, transformComponent);
+                break;
+            case WIREFRAME:
+                wireFrameRenderSystem.render(renderableMesh, transformComponent, rendererWireFrame);
+                break;
+        }
+    }
 
     private Matrix4x4 constructProjMatrix(Camera camera) {
         Transform camTran = camera.transform;
@@ -90,14 +126,6 @@ public class RenderSystem extends EntityGrabberSystem{
                 camTran.getUpDir(), camTran.getPosition());
         return viewToWOrld.compose(projToView);
     }*/
-
-
-
-    public Renderer getRenderer() {
-        return renderer;
-    }
-
-
 }
 
 

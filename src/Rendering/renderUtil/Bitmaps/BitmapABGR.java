@@ -44,10 +44,9 @@ public class BitmapABGR {
 
         int[] pixels = new int[this.width * this.height];
         image.getRGB(0, 0, this.width, this.height, pixels, 0, width);
-        int pixel;//RBG int
+        int pixel;//ARGB int
         int index;
-
-        for (int i = 0; i < this.width * this.height; i++) {
+        for (int i = 0, len = this.width * this.height; i < len; i++) {
             pixel = pixels[i];
             index = i << 2;
             byteArray[index] = (byte) ((pixel >> 24) & 0xFF); // A
@@ -97,7 +96,7 @@ public class BitmapABGR {
      * @param shade
      */
     public void clear(byte shade) {
-        for (int i = 0; i < byteArray.length; i++) {
+        for (int i = 0, len = byteArray.length; i < len; i++) {
             byteArray[i] = shade;
         }
     }
@@ -108,9 +107,7 @@ public class BitmapABGR {
      * set all elements in byteArray to shadeWhiteLight of grey
      */
     public void clearToBlack() {
-        for (int i = 0; i < byteArray.length; i++) {
-            byteArray[i] = black;
-        }
+        clear(black);
     }
 
     /**

@@ -7,20 +7,20 @@ import java.util.List;
 
 public class TriCullSpaceClip {
 
-    private static final List<VertexOut> tempL = new ArrayList<>();
-    private static final List<VertexOut> outsidePoints = new ArrayList<>();
+    private final List<VertexOut> tempL = new ArrayList<>();
+    private final List<VertexOut> outsidePoints = new ArrayList<>();
 
-    public static void clipNonAlloc(List<VertexOut> clippedVs, VertexOut v0, VertexOut v1, VertexOut v2) {
+    public void clipNonAlloc(List<VertexOut> clippedVs, VertexOut v0, VertexOut v1, VertexOut v2) {
         clip(clippedVs, v0, v1, v2);
     }
 
-    public static List<VertexOut> clip(VertexOut v0, VertexOut v1, VertexOut v2) {
+    public List<VertexOut> clip(VertexOut v0, VertexOut v1, VertexOut v2) {
         List<VertexOut> vertexOuts = new ArrayList<>();
         clip(vertexOuts, v0, v1, v2);
         return vertexOuts;
     }
 
-    private static void clip(List<VertexOut> clippedVs, VertexOut v0, VertexOut v1, VertexOut v2) {
+    private void clip(List<VertexOut> clippedVs, VertexOut v0, VertexOut v1, VertexOut v2) {
         clippedVs.clear();
         clear();
         boolean allInside = allInside(v0, v1, v2);
@@ -46,7 +46,7 @@ public class TriCullSpaceClip {
 
     }
 
-    private static void clipVerticesAgainstPlanes(int planeComponent, List<VertexOut> clippedVs) {
+    private void clipVerticesAgainstPlanes(int planeComponent, List<VertexOut> clippedVs) {
         clipAgainstPlane(planeComponent, 1f, clippedVs, tempL);
         if (tempL.isEmpty())
             return;
@@ -97,11 +97,11 @@ public class TriCullSpaceClip {
         return previous.lerp(current, lerpAmt);
     }
 
-    private static boolean allInside(VertexOut v0, VertexOut v1, VertexOut v2) {
+    private boolean allInside(VertexOut v0, VertexOut v1, VertexOut v2) {
         return allInside(v0) & allInside(v1) & allInside(v2);
     }
 
-    private static boolean allInside(VertexOut v) {
+    private boolean allInside(VertexOut v) {
         float absW = Math.abs(v.p_proj.w);
         boolean allInside = Math.abs(v.p_proj.x) <= absW &&
                 Math.abs(v.p_proj.y) <= absW &&
@@ -115,7 +115,7 @@ public class TriCullSpaceClip {
         return true;
     }
 
-    private static void clear() {
+    private void clear() {
         tempL.clear();
         outsidePoints.clear();
     }
