@@ -14,15 +14,17 @@ public class BatchTriangleTask implements ITask {
 
     private int startIndex;
     private int endIndex;
+    private int skipAmt;
 
     public Renderer renderer = new Renderer();
 
 
-    public void setBatch(VertexOut[] vertices, List<Integer> triIndices, int startIndex, int endIndex) {
+    public void setBatch(VertexOut[] vertices, List<Integer> triIndices, int startIndex, int endIndex, int skipAmt) {
         this.vertices = vertices;
         this.triIndices = triIndices;
         this.startIndex = startIndex;
         this.endIndex = endIndex;
+        this.skipAmt = skipAmt;
     }
 
     @Override
@@ -31,7 +33,7 @@ public class BatchTriangleTask implements ITask {
         List<Edge> edgesDouble = RenderLocks.getTODODoubleEdge();
         renderer.triangleRasterizer.setEdgesTODO(edges);
         renderer.triangleRasterizer.setEdgesTODODouble(edgesDouble);
-        for (int i = startIndex; i < endIndex; i += 6) {
+        for (int i = startIndex; i < endIndex; i += skipAmt) {
             renderer.drawTriangle(
                     vertices[triIndices.get(i)],
                     vertices[triIndices.get(i + 1)],

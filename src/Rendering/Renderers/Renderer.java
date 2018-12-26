@@ -39,9 +39,9 @@ public class Renderer {
             RenderState.material.getGeometryShader().geom(vertexOuts, RenderState.material);
         }
 
-        //backfaceCull
+        /*//backfaceCull, THIS PRODUCES ARTIFACTS
         if (backFaceCullPreClip(vertexOuts[0], vertexOuts[1], vertexOuts[2]))
-            return;
+            return;*/
 
         //clip
         clippingSystem.clipTriangle(clippedVertices, vertexOuts[0], vertexOuts[1], vertexOuts[2]);
@@ -62,6 +62,10 @@ public class Renderer {
             v2Out = moveToScreenSpaceNew(v2Out);
             v3Out = moveToScreenSpaceNew(v3Out);
 
+            //backfaceCull, HAVE TO BACKFACE CULL HERE
+            if (backFaceCullPreClip(v1Out, v2Out, v3Out))
+                return;
+
             triangleRasterizer.fillTriangle(v1Out, v2Out, v3Out);
         }
     }
@@ -71,14 +75,14 @@ public class Renderer {
         setFinalColor(x, y, color);
     }
 
-    private Vector3DInt finalColor = new Vector3DInt(0, 0, 0, 0);
+    private static Vector3DInt finalColor = new Vector3DInt(0, 0, 0, 0);
 
     private static void setFinalColor(int x, int y, Vector3D color) {
 //        Colorf.clampNonAlloc(color);
         Colorf.clampMaxNonAlloc(color);
 //        Colorf.clampMaxNonAllocBit(color, finalColor);
 //        RenderState.colorBuffer.setPixel(x, y, finalColor);
-        RenderState.colorBuffer.setPixelPreClamp(x, y, color);
+        RenderState.colorBuffer.setPixel(x, y, color);
 
     }
 

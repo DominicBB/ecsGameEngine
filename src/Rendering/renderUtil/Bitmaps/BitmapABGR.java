@@ -115,7 +115,7 @@ public class BitmapABGR {
      *
      * @param destination
      */
-    public void copyTo3BGR(byte[] destination) {
+    public void copyToBGR(byte[] destination) {
         int length = width * height;
         int indexByteAr;
         int indexDest;

@@ -34,14 +34,16 @@ public class TriCullSpaceClip {
         if (allInside)
             return;
 
+        clipVerticesAgainstPlanes(2, clippedVs);//z
+        if (clippedVs.isEmpty())
+            return;
+
         clipVerticesAgainstPlanes(0, clippedVs);//x
         if (clippedVs.isEmpty())
             return;
         clipVerticesAgainstPlanes(1, clippedVs);//y
-        if (clippedVs.isEmpty())
-            return;
-        clipVerticesAgainstPlanes(2, clippedVs);//z
-
+        /*if (clippedVs.isEmpty())
+            return;*/
 
 
     }

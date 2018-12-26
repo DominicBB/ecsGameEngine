@@ -9,8 +9,9 @@ import core.coreSystems.EntityGrabberSystem;
 
 import java.util.Arrays;
 
-public class MeshRenderSystem{
+public class MeshRenderSystem {
     private RenderSystem renderSystem;
+    private int numThreads;
     private SingleThreadManager singleThreadManager = new SingleThreadManager();
     private BatchTriangleTask batchTriangleTask2 = new BatchTriangleTask();
     private BatchTriangleTask batchTriangleTask1 = new BatchTriangleTask();
@@ -18,6 +19,7 @@ public class MeshRenderSystem{
     public MeshRenderSystem(RenderSystem renderSystem) {
         this.renderSystem = renderSystem;
         singleThreadManager.giveTask(batchTriangleTask1);
+        numThreads = 2;
         RenderLocks.regesterThread(singleThreadManager.thread);
     }
 
@@ -32,9 +34,9 @@ public class MeshRenderSystem{
 
     private void setBatches(IndexedMesh indexedMesh) {
         batchTriangleTask1.setBatch(indexedMesh.transformedVertices, indexedMesh.triIndices,
-                0, indexedMesh.triIndices.size());
+                0, indexedMesh.triIndices.size(), 3 * numThreads);
         batchTriangleTask2.setBatch(indexedMesh.transformedVertices, indexedMesh.triIndices,
-                3, indexedMesh.triIndices.size());
+                3, indexedMesh.triIndices.size(), 3 * numThreads);
     }
 
     public void setRenderSystem(RenderSystem renderSystem) {

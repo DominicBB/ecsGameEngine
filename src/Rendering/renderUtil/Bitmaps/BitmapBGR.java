@@ -47,7 +47,7 @@ public class BitmapBGR {
         int[] pixels = new int[this.width * this.height];
         image.getRGB(0, 0, this.width, this.height, pixels, 0, width);
 
-        int pixel;//RBG int
+        int pixel;//RGB int
         int index;
         int end = this.width * this.height;
 
@@ -61,7 +61,7 @@ public class BitmapBGR {
     }
 
     /**
-     * Set BGR of pixel
+     * Set RGB of pixel
      *
      * @param x
      * @param y
@@ -75,23 +75,9 @@ public class BitmapBGR {
         );
     }
 
-    /**
-     * Set BGR of pixel
-     *
-     * @param x
-     * @param y
-     * @param color
-     */
-    public void setPixelPreClamp(int x, int y, Vector3D color) {
-        setPixel(x, y,
-                (byte) color.x,
-                (byte) color.y,
-                (byte) color.z
-        );
-    }
 
     /**
-     * Set BGR of pixel
+     * Set RGB of pixel
      *
      * @param x
      * @param y
@@ -106,7 +92,7 @@ public class BitmapBGR {
     }
 
     /**
-     * Set BGR of pixel
+     * Set RGB of pixel
      *
      * @param x
      * @param y
@@ -149,9 +135,7 @@ public class BitmapBGR {
      */
     public void copyTo(byte[] destination) {
         int length = width * height * 3;
-        for (int i = 0; i < length; i++) {
-            destination[i] = byteArray[i];
-        }
+        System.arraycopy(byteArray, 0, destination, 0, length);
     }
 
 

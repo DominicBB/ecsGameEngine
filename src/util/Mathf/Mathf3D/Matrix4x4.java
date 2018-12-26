@@ -284,7 +284,7 @@ public class Matrix4x4 {
         StringBuilder ans = new StringBuilder();
         for (int row = 0; row < 4; row++) {
             for (int col = 0; col < 4; col++) {
-                ans.append(values[row][col]).append(' ');
+                ans.append(values[row][col]+" ");
             }
             ans.append('\n');
         }

@@ -50,12 +50,9 @@ public abstract class ECSSystem implements Updateable, Runnable {
         window.start();
         while (isRunning) {
             render = false;
-//            Time.updateTimes();
             Time.updateNumUpdatesToDo(nsPerUpdate);
             while (Time.numUpdatesTodo >= 1) {
                 Time.updateTimes();//TODO
-//                System.out.println(Time.getDeltaTime()+" DELTA");
-//                System.out.println(Time.numUpdatesTodo+" numUpdates");
                 physicsUpdate();
                 doUpdates();
                 Time.numUpdatesTodo--;

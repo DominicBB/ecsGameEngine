@@ -102,12 +102,12 @@ public class Mathf {
     private static final double BIG_ENOUGH_FLOOR = BIG_ENOUGH_INT;
     private static final double BIG_ENOUGH_ROUND = BIG_ENOUGH_INT + 0.5;
 
-    public static int fastFloor(float x) {
-        return (int) (x + BIG_ENOUGH_FLOOR) - BIG_ENOUGH_INT;
+    public static int fastFloor(float f) {
+        return (int) (f + BIG_ENOUGH_FLOOR) - BIG_ENOUGH_INT;
     }
 
-    public static int fastRound(float x) {
-        return (int) (x + BIG_ENOUGH_ROUND) - BIG_ENOUGH_INT;
+    public static int fastRound(float f) {
+        return (int) (f + BIG_ENOUGH_ROUND) - BIG_ENOUGH_INT;
     }
 
     public static int fastCeil(float f) {

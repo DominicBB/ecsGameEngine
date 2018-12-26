@@ -109,9 +109,6 @@ public class RenderSystem extends EntityGrabberSystem {
         Matrix4x4 projection = Matrix4x4.newProjection(camera.fFov_AR, camera.fFov, camera.zNear,
                 camera.zFar);
 
-        /*Matrix4x4 projection = Matrix4x4.InitPerspective(camera.fFov, camera.fFov_AR, camera.zNear,
-                camera.zFar);*/
-
         Matrix4x4 lookAt = Matrix4x4.newLookAt(camTran.getForwardDir(), camTran.getRightDir(),
                 camTran.getUpDir(), camTran.getPosition());
 //        return projection.compose(lookAt);

@@ -246,4 +246,13 @@ public class Vector3D {
         res.w = Mathf.lerp(w, destination.w, lerpAmt);
         return res;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Vector3D) {
+            Vector3D v = (Vector3D) obj;
+            return (x == v.x && y == v.y && z == v.z);
+        }
+        return false;
+    }
 }

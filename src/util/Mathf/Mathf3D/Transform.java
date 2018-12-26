@@ -52,6 +52,11 @@ public class Transform {
         scale.z = z;
     }
 
+    /**
+     *
+     * @param angle in radians
+     * @param axis of rotation
+     */
     public void rotate(float angle, Vector3D axis) {
         Quaternion newRot = new Quaternion(angle, axis);
         rotate(newRot);
