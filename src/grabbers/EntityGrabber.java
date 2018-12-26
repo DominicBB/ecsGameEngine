@@ -1,4 +1,4 @@
-package listners;
+package grabbers;
 
 import components.Component;
 import core.coreSystems.EntityGrabberSystem;

@@ -2,14 +2,11 @@ package Rendering.Clipping;
 
 import Rendering.renderUtil.RenderState;
 import Rendering.renderUtil.VertexOut;
-import components.Camera;
-import core.Window;
+import core.display.Window;
 import util.Mathf.Mathf3D.Bounds.AABoundingBox;
-import util.Mathf.Mathf3D.Matrix4x4;
 import util.Mathf.Mathf3D.Plane;
 import util.Mathf.Mathf3D.Vector3D;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

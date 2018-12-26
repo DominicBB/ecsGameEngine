@@ -1,4 +1,4 @@
-package core;
+package core.display;
 
 import Rendering.renderUtil.RenderState;
 import core.coreSystems.InputSystem;

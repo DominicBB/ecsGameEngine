@@ -4,7 +4,7 @@ import Rendering.Materials.Material;
 import Rendering.Renderers.Renderer;
 import Rendering.drawers.draw.DrawLine3D;
 import Rendering.renderUtil.VertexOut;
-import core.Window;
+import core.display.Window;
 import util.Mathf.Mathf3D.Line3D;
 import util.Mathf.Mathf3D.Polygon;
 import util.Mathf.Mathf3D.Vector3D;

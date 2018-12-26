@@ -1,8 +1,7 @@
-package listners;
+package grabbers;
 
 import components.Component;
 import core.coreSystems.EntityGrabberSystem;
-import core.coreSystems.SystemCommunicator;
 
 import java.util.List;
 

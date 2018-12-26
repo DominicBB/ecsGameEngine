@@ -1,6 +1,5 @@
 package Rendering.drawers.fill;
 
-import Rendering.Materials.Material;
 import Rendering.Renderers.Renderer;
 import Rendering.renderUtil.Edges.Edge;
 import Rendering.renderUtil.RenderState;

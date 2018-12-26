@@ -16,6 +16,7 @@ public class MultiThreadManager implements IThreadManager {
         this.workers = new Worker[numThreads];
         this.threads = new Thread[numThreads];
         this.numThreads = numThreads;
+        init();
     }
 
     private void init() {
@@ -62,6 +63,10 @@ public class MultiThreadManager implements IThreadManager {
                 e.printStackTrace();
             }
         }
+    }
+
+    public Thread getThread(int i){
+        return threads[i];
     }
 
     private int nextWorkerIndex() {

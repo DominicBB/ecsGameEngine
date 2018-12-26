@@ -1,10 +1,10 @@
 package core.coreSystems;
 
 import Physics.physicsSystems.PhysicsSystem;
-import Rendering.renderUtil.RenderLocks;
+import Rendering.renderUtil.threading.threadSaftey.RenderLocksMulti;
 import Rendering.renderingSystems.RenderSystem;
 import core.EntityFactory;
-import core.Window;
+import core.display.Window;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,7 +100,7 @@ public abstract class ECSSystem implements Updateable, Runnable {
         thread = new Thread(this);
         isRunning = true;
         thread.start();
-        RenderLocks.regesterThread(thread);
+        RenderLocksMulti.regesterThread(thread);
        /* try {
             Thread.currentThread().join();
         } catch (InterruptedException e) {

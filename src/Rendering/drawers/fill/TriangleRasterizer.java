@@ -2,8 +2,8 @@ package Rendering.drawers.fill;
 
 import Rendering.renderUtil.Edges.Edge;
 import Rendering.renderUtil.Edges.EdgeFactory;
-import Rendering.renderUtil.RenderLocks;
 import Rendering.renderUtil.VertexOut;
+import Rendering.renderUtil.threading.threadSaftey.RenderLocksMulti;
 import util.FloatWrapper;
 import util.Mathf.Mathf;
 import util.Mathf.Mathf3D.Triangle;
@@ -71,7 +71,7 @@ public class TriangleRasterizer {
 
 
         if (horizontalLineCount >= 2) {
-            RenderLocks.setAABR(0f, 0f, 0f, 0f);
+            RenderLocksMulti.setAABR(0f, 0f, 0f, 0f);
             return;
         }
 
@@ -134,9 +134,9 @@ public class TriangleRasterizer {
 
     private void setUpAllThree(VertexOut maxY, VertexOut midY, VertexOut minY, float dy1, float dy2, float dy3) {
         boolean isOnLeft = Triangle.z_crossProd(minY.p_proj, maxY.p_proj, midY.p_proj) < 0f;
-        RenderLocks.setAABR(maxY.p_proj.y, minY.p_proj.y, xMax.value, xMin.value);
+        RenderLocksMulti.setAABR(maxY.p_proj.y, minY.p_proj.y, xMax.value, xMin.value);
 
-        if (RenderLocks.BRintersect()) {
+        if (RenderLocksMulti.BRintersect()) {
             storeEdges(maxY, midY, minY, dy1, dy2, dy3, isOnLeft);
             return;
         }
@@ -161,8 +161,8 @@ public class TriangleRasterizer {
         boolean isOnLeft = v1.p_proj.x < v3.p_proj.x;
         isOnLeft |= v2.p_proj.x < v4.p_proj.x;
 
-        RenderLocks.setAABR(yMax, yMin, xMax.value, xMin.value);
-        if (RenderLocks.BRintersect()) {
+        RenderLocksMulti.setAABR(yMax, yMin, xMax.value, xMin.value);
+        if (RenderLocksMulti.BRintersect()) {
             edgesTODODouble.add(edgeFactory.createEdge(v1, v2, dy1, isOnLeft));
             edgesTODODouble.add(edgeFactory.createEdge(v3, v4, dy2, !isOnLeft));
             return;

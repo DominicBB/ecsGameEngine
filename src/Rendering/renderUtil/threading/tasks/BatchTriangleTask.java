@@ -3,8 +3,8 @@ package Rendering.renderUtil.threading.tasks;
 import Rendering.Renderers.Renderer;
 import Rendering.drawers.fill.TriangleRasterizer;
 import Rendering.renderUtil.Edges.Edge;
-import Rendering.renderUtil.RenderLocks;
 import Rendering.renderUtil.VertexOut;
+import Rendering.renderUtil.threading.threadSaftey.RenderLocksMulti;
 
 import java.util.List;
 
@@ -29,8 +29,8 @@ public class BatchTriangleTask implements ITask {
 
     @Override
     public void doTask() {
-        List<Edge> edges = RenderLocks.getTODO();
-        List<Edge> edgesDouble = RenderLocks.getTODODoubleEdge();
+        List<Edge> edges = RenderLocksMulti.getTODO();
+        List<Edge> edgesDouble = RenderLocksMulti.getTODODoubleEdge();
         renderer.triangleRasterizer.setEdgesTODO(edges);
         renderer.triangleRasterizer.setEdgesTODODouble(edgesDouble);
         for (int i = startIndex; i < endIndex; i += skipAmt) {

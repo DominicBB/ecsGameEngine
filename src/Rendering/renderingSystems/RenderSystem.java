@@ -2,14 +2,13 @@ package Rendering.renderingSystems;
 
 import Rendering.Clipping.ClippingSystem;
 import Rendering.renderUtil.RenderState;
-import Rendering.Renderers.Renderer;
 import Rendering.Renderers.RendererWireFrame;
 import components.Camera;
 import components.Component;
 import components.RenderableMesh;
 import components.TransformComponent;
 import core.EntityFactory;
-import core.Window;
+import core.display.Window;
 import core.coreSystems.EntityGrabberSystem;
 import core.coreSystems.SystemCommunicator;
 import util.FloatBuffer;

@@ -1,8 +1,8 @@
 package core.coreSystems;
 
 import components.Component;
-import listners.EntityGrabber;
-import listners.SingleEntityGrabber;
+import grabbers.EntityGrabber;
+import grabbers.SingleEntityGrabber;
 
 import java.util.List;
 

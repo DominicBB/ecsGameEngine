@@ -3,7 +3,7 @@ package Rendering.renderUtil;
 import Rendering.Materials.Material;
 import Rendering.renderUtil.Bitmaps.BitmapBGR;
 import components.Camera;
-import core.Window;
+import core.display.Window;
 import util.FloatBuffer;
 import util.Mathf.Mathf3D.Matrix4x4;
 import util.Mathf.Mathf3D.Transform;

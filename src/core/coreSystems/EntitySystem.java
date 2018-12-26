@@ -6,7 +6,7 @@ import java.util.Queue;
 
 import components.Component;
 import core.Entity;
-import listners.EntityGrabber;
+import grabbers.EntityGrabber;
 import util.Bag;
 /**
  * Managers all the entities in the game

@@ -1,7 +1,7 @@
 package core.coreSystems;
 
 import components.Component;
-import listners.EntityGrabber;
+import grabbers.EntityGrabber;
 import util.Bag;
 
 import java.util.ArrayList;

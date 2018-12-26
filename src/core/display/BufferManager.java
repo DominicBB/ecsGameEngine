@@ -1,4 +1,4 @@
-package core;
+package core.display;
 
 public class BufferManager {
     private Buffer frontBuffer;
