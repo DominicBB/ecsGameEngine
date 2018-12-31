@@ -16,13 +16,13 @@ class Rasterizer {
     private final Vector3D fragUtil = Vector3D.newZeros();
 
     void rasterizeRow(Edge left, Edge right, int y) {
-        setLerpValuesTo(left.interpolants, y);
+        setRowInterpolants(left.interpolants, y);
 
         int from = Mathf.fastCeil(left.interpolants.p_proj.x);
         int to = Mathf.fastCeil(right.interpolants.p_proj.x);
+        ROW_INTERPOLANTS.xInt = from;
 
         if (to - from == 0) {
-            ROW_INTERPOLANTS.xInt = from;
             fragShade(y);
             return;
         }
@@ -31,8 +31,8 @@ class Rasterizer {
         rowLerperFactory.setLerper(RenderState.material, ROW_INTERPOLANTS, left.interpolants, right.interpolants, invdX);
 
         for (int x = from; x < to; x++) {
-            ROW_INTERPOLANTS.xInt = x;
             fragShade(y);
+            ++ROW_INTERPOLANTS.xInt;
             ROW_INTERPOLANTS.lerp();
         }
     }
@@ -42,7 +42,7 @@ class Rasterizer {
             Renderer.onFragShaded(ROW_INTERPOLANTS.xInt, y, fragColor, RenderState.material);
     }
 
-    private void setLerpValuesTo(Interpolants lp, int y) {
+    private void setRowInterpolants(Interpolants lp, int y) {
         ROW_INTERPOLANTS.reset(lp.p_proj, y, lp.texCoord, lp.specCoord, lp.specularity,
                 lp.surfaceColor, lp.invW);
     }

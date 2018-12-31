@@ -28,7 +28,7 @@ public class GouruadLerper implements ILerper {
         lp.p_proj.add(p_proj_step);
         lp.texCoord.add(texCoordStep);
 
-        lp.specCoord.add(specCoordStep);
+//        lp.specCoord.add(specCoordStep);
 
         lp.specularity += specStep;
         lp.surfaceColor.add(sColorStep);

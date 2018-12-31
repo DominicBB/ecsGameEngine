@@ -1,14 +1,10 @@
 package Rendering.renderUtil.Meshes;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import Rendering.Materials.Material;
-import Rendering.Renderers.Renderer;
 import Rendering.Renderers.RendererWireFrame;
-import Rendering.gizmos.Gizmos;
-import Rendering.renderUtil.*;
+import Rendering.renderUtil.RenderState;
+import Rendering.renderUtil.Vertex;
+import Rendering.renderUtil.VertexOut;
 import Rendering.shaders.interfaces.IShader;
 import util.Mathf.Mathf;
 import util.Mathf.Mathf2D.Vector2D;
@@ -17,10 +13,13 @@ import util.Mathf.Mathf3D.Matrix4x4;
 import util.Mathf.Mathf3D.Transform;
 import util.Mathf.Mathf3D.Vector3D;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class IndexedMesh {
     public final List<Vertex> vertices;
     public final VertexOut[] transformedVertices;
-    public final List<Integer> triIndices;
+    public final int[] triIndices;
     public final int halfTriIndices;
     public AABoundingBox aaBoundingBox;
 
@@ -33,11 +32,11 @@ public class IndexedMesh {
 
     public IndexedMesh(List<Vertex> vertices, List<Integer> triIndices, AABoundingBox aaBoundingBox) {
         this.vertices = vertices;
-        this.triIndices = triIndices;
+        this.triIndices = triIndices.stream().mapToInt(Integer::intValue).toArray();
         this.aaBoundingBox = computeAABB();
 //        this.transformedVertices = new ArrayList<>(vertices.size());
         this.transformedVertices = new VertexOut[vertices.size()];
-        this.halfTriIndices = (triIndices.size() / 2) -1;
+        this.halfTriIndices = (triIndices.size() / 2) - 1;
         initTV();
     }
 
@@ -63,13 +62,13 @@ public class IndexedMesh {
         RenderState.world = transMatrix;
         RenderState.transform = transform;
 
-        final int end = triIndices.size();
+        final int end = triIndices.length;
         for (int i = 0; i < end; i += 3) {
 
             renderer.wireFrameTriangle(
-                    vertices.get(triIndices.get(i)),
-                    vertices.get(triIndices.get(i + 1)),
-                    vertices.get(triIndices.get(i + 2)),
+                    vertices.get(triIndices[i]),
+                    vertices.get(triIndices[i + 1]),
+                    vertices.get(triIndices[i + 2]),
                     material);
         }
     }

@@ -3,9 +3,10 @@ package Rendering.drawers.fill;
 import Rendering.renderUtil.Edges.Edge;
 import Rendering.renderUtil.Edges.EdgeFactory;
 import Rendering.renderUtil.VertexOut;
-import Rendering.renderUtil.threading.threadSaftey.RenderLocksMulti;
+import Rendering.renderUtil.threading.threadSaftey.RenderLocks;
 import util.FloatWrapper;
 import util.Mathf.Mathf;
+import util.Mathf.Mathf2D.Bounds2D.AABoundingRect;
 import util.Mathf.Mathf3D.Triangle;
 import util.Mathf.Mathf3D.Vector3D;
 
@@ -21,6 +22,9 @@ public class TriangleRasterizer {
 
     private List<Edge> edgesTODO;
     private List<Edge> edgesTODODouble;
+
+    private AABoundingRect boundingRect;
+
     public void fillTriangle(VertexOut v1, VertexOut v2, VertexOut v3) {
         int eIndex = 0;
         VertexOut maxY = v1, midY = v2, minY = v3, temp;
@@ -71,7 +75,7 @@ public class TriangleRasterizer {
 
 
         if (horizontalLineCount >= 2) {
-            RenderLocksMulti.setAABR(0f, 0f, 0f, 0f);
+            boundingRect.set(0f, 0f, 0, 0f);
             return;
         }
 
@@ -134,9 +138,9 @@ public class TriangleRasterizer {
 
     private void setUpAllThree(VertexOut maxY, VertexOut midY, VertexOut minY, float dy1, float dy2, float dy3) {
         boolean isOnLeft = Triangle.z_crossProd(minY.p_proj, maxY.p_proj, midY.p_proj) < 0f;
-        RenderLocksMulti.setAABR(maxY.p_proj.y, minY.p_proj.y, xMax.value, xMin.value);
+        boundingRect.set(maxY.p_proj.y, minY.p_proj.y, xMax.value, xMin.value);
 
-        if (RenderLocksMulti.BRintersect()) {
+        if (RenderLocks.BRintersect()) {
             storeEdges(maxY, midY, minY, dy1, dy2, dy3, isOnLeft);
             return;
         }
@@ -161,14 +165,15 @@ public class TriangleRasterizer {
         boolean isOnLeft = v1.p_proj.x < v3.p_proj.x;
         isOnLeft |= v2.p_proj.x < v4.p_proj.x;
 
-        RenderLocksMulti.setAABR(yMax, yMin, xMax.value, xMin.value);
-        if (RenderLocksMulti.BRintersect()) {
+        boundingRect.set(yMax, yMin, xMax.value, xMin.value);
+
+        if (RenderLocks.BRintersect()) {
             edgesTODODouble.add(edgeFactory.createEdge(v1, v2, dy1, isOnLeft));
             edgesTODODouble.add(edgeFactory.createEdge(v3, v4, dy2, !isOnLeft));
             return;
         }
         edgeFactory.reuseEdge(e1, v1, v2, dy1, isOnLeft);
-        edgeFactory.reuseEdge(e2, v3,v4, dy2, !isOnLeft);
+        edgeFactory.reuseEdge(e2, v3, v4, dy2, !isOnLeft);
         scan(e1, e2);
     }
 
@@ -191,7 +196,7 @@ public class TriangleRasterizer {
         }
 
         minX.value = min.x;
-        maxX.value = max.x-1;
+        maxX.value = max.x - 1;
     }
 
     public void setEdgesTODO(List<Edge> edgesTODO) {
@@ -200,5 +205,9 @@ public class TriangleRasterizer {
 
     public void setEdgesTODODouble(List<Edge> edgesTODODouble) {
         this.edgesTODODouble = edgesTODODouble;
+    }
+
+    public void setBoundingRect(AABoundingRect boundingRect) {
+        this.boundingRect = boundingRect;
     }
 }

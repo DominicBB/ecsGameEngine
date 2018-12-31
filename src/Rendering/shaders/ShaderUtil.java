@@ -2,7 +2,10 @@ package Rendering.shaders;
 
 import Rendering.Materials.Material;
 import Rendering.renderUtil.Bitmaps.BitmapABGR;
+import Rendering.renderUtil.Bitmaps.BitmapBGR;
 import Rendering.renderUtil.RenderState;
+import Rendering.renderUtil.Vertex;
+import Rendering.renderUtil.VertexOut;
 import util.FloatBuffer;
 import util.Mathf.Mathf;
 import util.Mathf.Mathf2D.Vector2D;
@@ -46,12 +49,21 @@ final class ShaderUtil {
 
     static Vector3D calcSpecularAtFrag(Vector2D specCoord, float spec, float z, Material material) {
         if (material.hasSpecularMap()) {
-            Vector3D specColor = perspectiveCorrectBitmap(specCoord, material.getSpecularMap(), z);
+            Vector3D specColor = sample_persp(specCoord, material.getSpecularMap(), z);
             return specColor.mul(spec);
         } else {
             return material.getDefualtSpecularColor().mul(spec);
         }
     }
+
+    static Vector3D diffuse(Vector3D n, Material material) {
+        return diffuse(RenderState.lightingState.lightColor,
+                RenderState.lightingState.lightDir,
+                n,
+                RenderState.lightingState.attenuation,
+                material.getDiffuseFactor());
+    }
+
 
     /**
      * cheaper
@@ -81,7 +93,6 @@ final class ShaderUtil {
     }
 
 
-
     static boolean zBufferTest(FloatBuffer zBuffer, float zVal, int x, int y) {
         if (zBuffer.getFloat(x, y) > zVal) {
             zBuffer.setFloat(x, y, zVal);
@@ -90,11 +101,11 @@ final class ShaderUtil {
         return false;
     }
 
-    static Vector3D perspectiveCorrectBitmap(Vector2D coord, BitmapABGR bitmapABGR, float z) {
+    static Vector3D sample_persp(Vector2D coord, BitmapABGR bitmapABGR, float z) {
         return bitmapABGR.getPixel((int) (coord.x * z), (int) (coord.y * z));
     }
 
-    static void perspectiveCorrectBitmapNonAlloc(Vector2D coord, BitmapABGR bitmapABGR, float z, Vector3D out) {
+    static void sample_persp_NonAlloc(Vector2D coord, BitmapABGR bitmapABGR, float z, Vector3D out) {
         bitmapABGR.getPixelNonAlloc((int) (coord.x * z), (int) (coord.y * z), out);
     }
 
@@ -103,5 +114,39 @@ final class ShaderUtil {
                 in.x * (bitmapABGR.getWidth() - 1) /*+ 0.5f*/,
                 in.y * (bitmapABGR.getHeight() - 1) /*+ 0.5f*/
         );
+    }
+
+    static Vector3D sample(Vector2D coord, BitmapBGR bitmapBGR) {
+        return bitmapBGR.getPixel((int) coord.x,
+                (int) coord.y);
+    }
+
+    static Vector3D sample(Vector2D coord, BitmapABGR bitmapABGR) {
+        return bitmapABGR.getPixel((int) coord.x,
+                (int) coord.y);
+    }
+
+    static VertexOut transformVIn(Vertex vertex, Material material) {
+        VertexOut vertexOut = new VertexOut(Vector3D.newZeros(), Vector2D.newZeros(), Vector2D.newZeros(),
+                0f, /*Vector3D.newCopy(material.getColor())*/Vector3D.newZeros(), Vector3D.newZeros(), Vector3D.newZeros(), 0f);
+        setVOut(vertex, material, vertexOut);
+        return vertexOut;
+    }
+
+    static void setVOut(Vertex vIn, Material material, VertexOut out) {
+        out.p_proj.set(RenderState.mvp.multiply4x4(vIn.vec));
+        out.invW = 1f / out.p_proj.w;
+        if (material.hasTexture()) {
+            out.texCoord.set(scaleToBitmap(vIn.texCoord, material.getTexture().texture));
+            out.texCoord.scale(out.invW);
+        }
+        if (material.hasSpecularMap()) {
+            out.specCoord.set(scaleToBitmap(vIn.specCoord, material.getSpecularMap()));
+            out.specCoord.scale(out.invW);
+        }
+        out.spec = 1f;
+        out.surfaceColor.set(/*material.getColor()*/Vector3D.ZERO);
+        out.n_ws.set(RenderState.transform.getRotation().rotate(vIn.normal));
+        out.p_ws.set(RenderState.world.multiply4x4(vIn.vec));
     }
 }

@@ -21,7 +21,7 @@ public class MultiThreadManager implements IThreadManager {
 
     private void init() {
         for (int i = 0; i < numThreads; i++) {
-            workers[i] = new Worker(this::threadReady);
+            workers[i] = new Worker(this);
             threads[i] = new Thread(workers[i]);
             threads[i].start();
         }
@@ -31,7 +31,7 @@ public class MultiThreadManager implements IThreadManager {
     public void threadReady() {
         synchronized (this) {
             if (++threadsReady >= numThreads)
-                notifyAll();
+                notifyAll();//notifies the dispatch thread (if waiting) that all threads are ready
         }
     }
 

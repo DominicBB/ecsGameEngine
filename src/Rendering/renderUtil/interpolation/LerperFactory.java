@@ -2,7 +2,6 @@ package Rendering.renderUtil.interpolation;
 
 import Rendering.Materials.Material;
 import Rendering.renderUtil.RenderState;
-import Rendering.renderUtil.Vertex;
 import Rendering.renderUtil.VertexOut;
 
 public class LerperFactory extends BaseLerperFactory {
@@ -108,12 +107,8 @@ public class LerperFactory extends BaseLerperFactory {
             calcVec2Step(fL.texCoordStep, factor, v1.texCoord, v2.texCoord);
         }
 
-        if (material.isSpecular()) {
-            if (material.hasSpecularMap())
-                calcVec2Step(fL.specCoordStep, factor, v1.specCoord, v2.specCoord);
-            fL.specStep = calcFloatStep(factor, v1.spec, v2.spec);
-
-        }
+        if (material.hasSpecularMap())
+            calcVec2Step(fL.specCoordStep, factor, v1.specCoord, v2.specCoord);
         return fL;
     }
 

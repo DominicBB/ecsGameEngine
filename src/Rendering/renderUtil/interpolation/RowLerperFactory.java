@@ -8,7 +8,7 @@ public class RowLerperFactory extends BaseLerperFactory {
     private final PhongLerper pL = new PhongLerper();
     private final FlatLerper fL = new FlatLerper();
 
-    public Interpolants setLerper(Material material, Interpolants interpolants, Interpolants l1, Interpolants l2,
+    public void setLerper(Material material, Interpolants interpolants, Interpolants l1, Interpolants l2,
                                   float factor) {
 
         switch (material.getShader().getShaderType()) {
@@ -22,8 +22,6 @@ public class RowLerperFactory extends BaseLerperFactory {
                 interpolants.setLerper(phongLerper(material, l1, l2, factor));
                 break;
         }
-
-        return interpolants;
     }
 
 
@@ -68,19 +66,15 @@ public class RowLerperFactory extends BaseLerperFactory {
     }
 
     private FlatLerper flatLerper(Material material, Interpolants l1, Interpolants l2, float factor) {
-        calcVec3Step(fL.p_proj_step, factor, l1.p_proj, l2.p_proj);
+        fL.p_proj_step.z = calcFloatStep(factor, l1.p_proj.z, l2.p_proj.z);
         fL.invWStep = calcFloatStep(factor, l1.invW, l2.invW);
 
         if (material.hasTexture()) {
             calcVec2Step(fL.texCoordStep, factor, l1.texCoord, l2.texCoord);
         }
+        if (material.hasSpecularMap())
+            calcVec2Step(fL.specCoordStep, factor, l1.specCoord, l2.specCoord);
 
-        if (material.isSpecular()) {
-            if (material.hasSpecularMap())
-                calcVec2Step(fL.specCoordStep, factor, l1.specCoord, l2.specCoord);
-            fL.specStep = calcFloatStep(factor, l1.specularity, l2.specularity);
-
-        }
         return fL;
     }
 

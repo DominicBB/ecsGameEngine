@@ -13,6 +13,9 @@ import static Rendering.shaders.ShaderUtil.*;
 
 public class GouraudShader implements IShader {
 
+    GouraudShader() {
+    }
+
     @Override
     public void vertNonAlloc(Vertex vIn, Material material, VertexOut out) {
         out.p_proj.set((RenderState.mvp.multiply4x4(vIn.vec)));
@@ -99,7 +102,6 @@ public class GouraudShader implements IShader {
     }
 
 
-
     @Override
     public final Vector3D frag(Interpolants lP, Material material) {
         Vector3D outColor = Vector3D.newZeros();
@@ -121,21 +123,15 @@ public class GouraudShader implements IShader {
         }
 
         if (material.hasTexture()) {
-            perspectiveCorrectBitmapNonAlloc(lP.texCoord, material.getTexture().texture, w, util);
+            sample_persp_NonAlloc(lP.texCoord, material.getTexture().texture, w, util);
             Vector3D.componentMulNonAlloc(outColor, util);
             return true;
         }
         Vector3D.componentMulNonAlloc(outColor, material.getColor());
 
-       /* perspectiveCorrectBitmapNonAlloc(lP.texCoord, material.getTexture().texture, w, fragTexColor);
+       /* sample_persp_NonAlloc(lP.texCoord, material.getTexture().texture, w, fragTexColor);
         Vector3D.componentMulNonAlloc(fragColor, fragTexColor);*/
         return true;
-    }
-
-
-    private Vector3D sampleTexture(Vector2D texC, Material material) {
-        return material.getTexture().texture.getPixel((int) texC.x,
-                (int) texC.y);
     }
 
 

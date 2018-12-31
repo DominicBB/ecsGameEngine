@@ -56,7 +56,6 @@ public class Worker implements Runnable {
     public synchronized void doNotifyAll() {
         hasStuffToProcess = true;
         notifyAll();
-
     }
 
     public synchronized void notifyWorkerSpin() {
@@ -72,7 +71,7 @@ public class Worker implements Runnable {
     }
 
     protected synchronized void doWait() {
-        while (!hasStuffToProcess) {
+        while (!hasStuffToProcess && isRunning) {
             try {
                 wait();
             } catch (InterruptedException e) {
@@ -83,6 +82,6 @@ public class Worker implements Runnable {
 
     public void stop() {
         isRunning = false;
-        notifyWorkerSpin();
+        doNotifyAll();
     }
 }

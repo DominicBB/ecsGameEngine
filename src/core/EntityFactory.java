@@ -37,6 +37,10 @@ public class EntityFactory {
         return entitySystem.createEntity(components);
     }
 
+    public static Entity createEntity(List<Component> components) {
+        return entitySystem.createEntity(components);
+    }
+
     public static Camera createCamera(Camera camera, Transform transform) {
         entitySystem.createEntity(new ArrayList<>(Arrays.asList(camera, new TransformComponent(transform))));
         return camera;

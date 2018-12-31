@@ -69,9 +69,9 @@ public class BitmapBGR {
      */
     public void setPixel(int x, int y, Vector3D color) {
         setPixel(x, y,
-                (byte) (((int) color.x) & 0xFF),
-                (byte) (((int) color.y) & 0xFF),
-                (byte) (((int) color.z) & 0xFF)
+                (byte) (((int) color.x) & 0xFF),//r
+                (byte) (((int) color.y) & 0xFF),//g
+                (byte) (((int) color.z) & 0xFF)//b
         );
     }
 

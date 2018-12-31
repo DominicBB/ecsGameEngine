@@ -61,6 +61,14 @@ public class Vector3D {
         return new Vector3D(this.x / divider, this.y / divider, this.z / divider/*, this.w / divider*/);
     }
 
+    public void mutDivide(float divider) {
+        this.x = x / divider;
+        this.y = y / divider;
+        this.z = z / divider;
+        /*, this.w =w/ divider;*/
+
+    }
+
 
     public Vector3D normal() {
         float invM = 1f / this.magnitude();
@@ -184,6 +192,10 @@ public class Vector3D {
 
     public static Vector3D newZeros() {
         return new Vector3D(0f, 0f, 0f);
+    }
+
+    public static Vector3D newCopy(Vector3D toCopy) {
+        return new Vector3D(toCopy.x, toCopy.y, toCopy.z, toCopy.w);
     }
 
 

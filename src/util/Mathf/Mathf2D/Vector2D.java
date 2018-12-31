@@ -109,6 +109,10 @@ public class Vector2D {
         return new Vector2D(0f, 0f);
     }
 
+    public static Vector2D newCopy(Vector2D toCopy) {
+        return new Vector2D(toCopy.x, toCopy.y);
+    }
+
     public static final Vector2D ZERO = newZeros();
 
     public void componentAdd(float x, float y) {

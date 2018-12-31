@@ -30,6 +30,17 @@ public class VertexOut {
 
     }
 
+    public void set(VertexOut vertexOut) {
+        this.p_proj.set(vertexOut.p_proj);
+        this.texCoord.set((vertexOut.texCoord == null) ? Vector2D.ZERO : vertexOut.texCoord);
+        this.specCoord.set((vertexOut.specCoord == null) ? Vector2D.ZERO : vertexOut.specCoord);
+        this.spec = vertexOut.spec;
+        this.surfaceColor.set(vertexOut.surfaceColor);
+        this.p_ws.set((vertexOut.p_ws == null) ? Vector3D.ZERO : vertexOut.p_ws);
+        this.n_ws.set((vertexOut.n_ws == null) ? Vector3D.ZERO : vertexOut.n_ws);
+        this.invW = vertexOut.invW;
+    }
+
     public void wDivide() {
         if (p_proj.w == 0)
             return;
@@ -67,5 +78,11 @@ public class VertexOut {
                 Mathf.lerp(invW, destination.invW, lerpAmt)
         );
     }
+
+    public static VertexOut newZeros() {
+        return new VertexOut(Vector3D.newZeros(), Vector2D.newZeros(), Vector2D.newZeros(), 0f, Vector3D.newZeros(),
+                Vector3D.newZeros(), Vector3D.newZeros(), 0f);
+    }
+
 
 }

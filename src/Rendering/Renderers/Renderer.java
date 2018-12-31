@@ -4,7 +4,6 @@ import Rendering.Clipping.ClippingSystem;
 import Rendering.Materials.Material;
 import Rendering.drawers.fill.TriangleRasterizer;
 import Rendering.renderUtil.Colorf;
-import Rendering.renderUtil.Edges.Edge;
 import Rendering.renderUtil.RenderState;
 import Rendering.renderUtil.VertexOut;
 import util.Mathf.Mathf3D.Triangle;
@@ -21,22 +20,17 @@ public class Renderer {
 
     private final ClippingSystem clippingSystem = new ClippingSystem();
     private final List<VertexOut> clippedVertices = new ArrayList<>();
-    private final VertexOut[] vertexOuts = new VertexOut[3];
+    private final VertexOut[] vertexOuts = new VertexOut[]{VertexOut.newZeros(), VertexOut.newZeros(), VertexOut.newZeros()};
     public final TriangleRasterizer triangleRasterizer = new TriangleRasterizer();
+    private static final Vector3DInt finalColor = new Vector3DInt(0, 0, 0, 0);
 
     public void drawTriangle(VertexOut v1, VertexOut v2, VertexOut v3) {
-
-        /*IShader shader = material.getShader();
-        vertexOuts[0] = shader.vert(v1, material);
-        vertexOuts[1] = shader.vert(v2, material);
-        vertexOuts[2] = shader.vert(v3, material);*/
-        vertexOuts[0] = v1;
-        vertexOuts[1] = v2;
-        vertexOuts[2] = v3;
-
         //check for geometry shader
         if (RenderState.material.hasGeometryShader()) {
-            RenderState.material.getGeometryShader().geom(vertexOuts, RenderState.material);
+            RenderState.material.getGeometryShader().geom(v1, v2, v3, RenderState.material, vertexOuts);
+            clippingSystem.clipTriangle(clippedVertices, vertexOuts[0], vertexOuts[1], vertexOuts[2]);
+        } else {
+            clippingSystem.clipTriangle(clippedVertices, v1, v2, v3);
         }
 
         /*//backfaceCull, THIS PRODUCES ARTIFACTS
@@ -44,7 +38,6 @@ public class Renderer {
             return;*/
 
         //clip
-        clippingSystem.clipTriangle(clippedVertices, vertexOuts[0], vertexOuts[1], vertexOuts[2]);
         if (clippedVertices.isEmpty()) return;
 
 
@@ -65,7 +58,6 @@ public class Renderer {
             //backfaceCull, HAVE TO BACKFACE CULL HERE
             if (backFaceCullPreClip(v1Out, v2Out, v3Out))
                 return;
-
             triangleRasterizer.fillTriangle(v1Out, v2Out, v3Out);
         }
     }
@@ -73,17 +65,20 @@ public class Renderer {
     public static void onFragShaded(int x, int y, Vector3D color, Material material) {
         //check for blending etc.
         setFinalColor(x, y, color);
+//        setFinalColor(x, y, color, finalColor);
     }
-
-    private static Vector3DInt finalColor = new Vector3DInt(0, 0, 0, 0);
 
     private static void setFinalColor(int x, int y, Vector3D color) {
 //        Colorf.clampNonAlloc(color);
         Colorf.clampMaxNonAlloc(color);
-//        Colorf.clampMaxNonAllocBit(color, finalColor);
-//        RenderState.colorBuffer.setPixel(x, y, finalColor);
         RenderState.colorBuffer.setPixel(x, y, color);
 
+    }
+
+    // this sucks :(
+    private static void setFinalColor(int x, int y, Vector3D color, Vector3DInt colori) {
+        Colorf.clampMaxNonAllocBit(color, colori);
+        RenderState.colorBuffer.setPixel(x, y, colori);
     }
 
 

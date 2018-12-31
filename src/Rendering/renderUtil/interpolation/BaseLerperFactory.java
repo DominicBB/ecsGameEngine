@@ -24,6 +24,7 @@ public abstract class BaseLerperFactory {
         );
     }
 
+
     /*protected static float calcSpecLerp(Vector2D specCoordStep, Vector2D s1,Vector2D s2, float factor, boolean hasSpecMap){
         if (hasSpecMap)
             calcVec2Step(specCoordStep, factor, s1, s2);

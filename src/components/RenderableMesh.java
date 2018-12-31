@@ -11,15 +11,9 @@ public class RenderableMesh extends Component {
 	public AABoundingBox aaBoundingBox;
 	public RenderMode renderMode;
 
-
 	public RenderableMesh(IndexedMesh indexedMesh, Material material) {
 		this.indexedMesh = indexedMesh;
 		this.material = material;
 		renderMode = RenderMode.MESH;
 	}
-
-	public RenderableMesh() {
-	}
-
-
 }

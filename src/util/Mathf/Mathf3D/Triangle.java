@@ -139,5 +139,9 @@ public class Triangle extends Polygon {
 //        return ((vertices[1].p_proj.minus(vertices[0].p_proj)).crossProduct(vertices[2].p_proj.minus(vertices[0].p_proj))).normal();
         return ((vertices[1].p_ws.minus(vertices[0].p_ws)).crossProduct(vertices[2].p_ws.minus(vertices[0].p_ws))).normal();
     }
+
+    public static Vector3D normal(VertexOut v1, VertexOut v2, VertexOut v3) {
+        return ((v2.p_ws.minus(v1.p_ws)).crossProduct(v3.p_ws.minus(v1.p_ws))).normal();
+    }
 }
 

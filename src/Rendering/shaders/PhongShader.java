@@ -1,44 +1,37 @@
 package Rendering.shaders;
 
 import Rendering.Materials.Material;
-import Rendering.renderUtil.interpolation.Interpolants;
 import Rendering.renderUtil.RenderState;
 import Rendering.renderUtil.Vertex;
 import Rendering.renderUtil.VertexOut;
+import Rendering.renderUtil.interpolation.Interpolants;
 import Rendering.shaders.interfaces.IShader;
 import util.Mathf.Mathf3D.Vector3D;
 
 import static Rendering.shaders.ShaderUtil.*;
 
 public class PhongShader implements IShader {
+     PhongShader(){}
     @Override
     public final VertexOut vert(Vertex vIn, Material material) {
-
-        //transform vertex into mvp
-        Vector3D p_proj = (RenderState.mvp.multiply4x4(vIn.vec));
-        return new VertexOut(p_proj,
-                vIn.texCoord, vIn.specCoord,
-                1f,
-                Vector3D.newZeros(),
-                RenderState.transform.getRotation().rotate(vIn.normal),
-                RenderState.world.multiply4x4(vIn.vec),
-                1f / p_proj.w);
+        return transformVIn(vIn, material);
     }
 
     @Override
     public void vertNonAlloc(Vertex vIn, Material material, VertexOut out) {
-
+        setVOut(vIn, material, out);
     }
 
     @Override
     public final Vector3D frag(Interpolants interpolants, Material material) {
 
-        int x = interpolants.xInt;
-        if (!ShaderUtil.zBufferTest(RenderState.zBuffer, interpolants.p_proj.z, x, interpolants.yInt)) {
+        if (!ShaderUtil.zBufferTest(RenderState.zBuffer, interpolants.p_proj.z, interpolants.xInt, interpolants.yInt)) {
             return null;
         }
 
-        Vector3D surfaceColor = calculateLighting(interpolants, material, x);
+        float w = 1f / interpolants.invW;
+
+        Vector3D surfaceColor = calculateLighting(interpolants, material, interpolants.xInt);
 
         Vector3D color;
         if (material.hasTexture()) {
@@ -80,14 +73,7 @@ public class PhongShader implements IShader {
         if (material.hasNormalMap()) {
             n = material.getNormalMap().getPixel(x, interpolants.yInt);
         }
-
-        Vector3D diffuse = diffuse(RenderState.lightingState.lightColor,
-                RenderState.lightingState.lightDir,
-                n,
-                RenderState.lightingState.attenuation,
-                material.getDiffuseFactor());
-
-        return diffuse;
+        return diffuse(n, material);
     }
 
     private Vector3D calcSpecular(Interpolants interpolants, Material material) {
@@ -97,7 +83,7 @@ public class PhongShader implements IShader {
         Vector3D specColor;
 
         if (material.hasSpecularMap()) {
-            specColor = perspectiveCorrectBitmap(interpolants.specCoord,material.getSpecularMap(), 0f);
+            specColor = sample_persp(interpolants.specCoord, material.getSpecularMap(), 0f);
 
         } else {
             specColor = material.getDefualtSpecularColor();
