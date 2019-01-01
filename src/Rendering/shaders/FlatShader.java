@@ -5,7 +5,7 @@ import Rendering.Materials.Material;
 import Rendering.renderUtil.RenderState;
 import Rendering.renderUtil.Vertex;
 import Rendering.renderUtil.VertexOut;
-import Rendering.renderUtil.interpolation.Interpolants;
+import Rendering.renderUtil.interpolation.IInterpolants;
 import Rendering.shaders.interfaces.IGeometryShader;
 import Rendering.shaders.interfaces.IShader;
 import util.Mathf.Mathf3D.Triangle;
@@ -83,7 +83,7 @@ public class FlatShader implements IShader, IGeometryShader {
     }
 
     @Override
-    public final Vector3D frag(Interpolants lP, Material material) {
+    public final Vector3D frag(IInterpolants lP, Material material) {
         Vector3D color = Vector3D.newZeros(), util = Vector3D.newZeros();
         if (fragNonAlloc(lP, material, color, util))
             return color;
@@ -91,7 +91,7 @@ public class FlatShader implements IShader, IGeometryShader {
     }
 
     @Override
-    public boolean fragNonAlloc(Interpolants lP, Material material, Vector3D outColor, Vector3D util) {
+    public boolean fragNonAlloc(IInterpolants lP, Material material, Vector3D outColor, Vector3D util) {
         float w = 1f / lP.invW;
         if (!ShaderUtil.zBufferTest(RenderState.zBuffer, lP.p_proj.z, lP.xInt, lP.yInt))
             return false;

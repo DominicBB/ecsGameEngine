@@ -4,7 +4,7 @@ import Rendering.Materials.Material;
 import Rendering.renderUtil.RenderState;
 import Rendering.renderUtil.Vertex;
 import Rendering.renderUtil.VertexOut;
-import Rendering.renderUtil.interpolation.Interpolants;
+import Rendering.renderUtil.interpolation.IInterpolants;
 import Rendering.shaders.interfaces.IShader;
 import util.Mathf.Mathf3D.Vector3D;
 
@@ -23,22 +23,22 @@ public class PhongShader implements IShader {
     }
 
     @Override
-    public final Vector3D frag(Interpolants interpolants, Material material) {
+    public final Vector3D frag(IInterpolants IInterpolants, Material material) {
 
-        if (!ShaderUtil.zBufferTest(RenderState.zBuffer, interpolants.p_proj.z, interpolants.xInt, interpolants.yInt)) {
+        if (!ShaderUtil.zBufferTest(RenderState.zBuffer, IInterpolants.p_proj.z, IInterpolants.xInt, IInterpolants.yInt)) {
             return null;
         }
 
-        float w = 1f / interpolants.invW;
+        float w = 1f / IInterpolants.invW;
 
-        Vector3D surfaceColor = calculateLighting(interpolants, material, interpolants.xInt);
+        Vector3D surfaceColor = calculateLighting(IInterpolants, material, IInterpolants.xInt);
 
         Vector3D color;
         if (material.hasTexture()) {
             color = surfaceColor.
                     componentMul(material.getTexture().texture.getPixel(
-                            (int) interpolants.texCoord.x,
-                            (int) interpolants.texCoord.y));
+                            (int) IInterpolants.texCoord.x,
+                            (int) IInterpolants.texCoord.y));
 
         } else {
             color = material.getColor().componentMul(surfaceColor);
@@ -47,43 +47,43 @@ public class PhongShader implements IShader {
     }
 
     @Override
-    public boolean fragNonAlloc(Interpolants vertex, Material material, Vector3D outColor, Vector3D util) {
+    public boolean fragNonAlloc(IInterpolants vertex, Material material, Vector3D outColor, Vector3D util) {
         return false;
     }
 
-    private Vector3D calculateLighting(Interpolants interpolants, Material material, int x) {
+    private Vector3D calculateLighting(IInterpolants IInterpolants, Material material, int x) {
 
         if (material.isDiffuse()) {
-            interpolants.surfaceColor.add(calcDiffuse(interpolants, material, x));
+            IInterpolants.surfaceColor.add(calcDiffuse(IInterpolants, material, x));
         }
 
         if (material.isSpecular()) {
-            interpolants.surfaceColor.add(calcSpecular(interpolants, material));
+            IInterpolants.surfaceColor.add(calcSpecular(IInterpolants, material));
         }
 
         if (material.isAmbient()) {
-            interpolants.surfaceColor.add(ambient(RenderState.lightingState.ambientColor,
+            IInterpolants.surfaceColor.add(ambient(RenderState.lightingState.ambientColor,
                     material.getAmbientFactor()));
         }
-        return interpolants.surfaceColor;
+        return IInterpolants.surfaceColor;
     }
 
-    private Vector3D calcDiffuse(Interpolants interpolants, Material material, int x) {
-        Vector3D n = interpolants.n_ws;
+    private Vector3D calcDiffuse(IInterpolants IInterpolants, Material material, int x) {
+        Vector3D n = IInterpolants.n_ws;
         if (material.hasNormalMap()) {
-            n = material.getNormalMap().getPixel(x, interpolants.yInt);
+            n = material.getNormalMap().getPixel(x, IInterpolants.yInt);
         }
         return diffuse(n, material);
     }
 
-    private Vector3D calcSpecular(Interpolants interpolants, Material material) {
-        //Vector3D p_ws = renderer.screenSpaceToWorldSpace(interpolants.getP_proj());
+    private Vector3D calcSpecular(IInterpolants IInterpolants, Material material) {
+        //Vector3D p_ws = renderer.screenSpaceToWorldSpace(IInterpolants.getP_proj());
 
-        float spec = calculateSpecular(interpolants.n_ws, interpolants.p_ws, material);
+        float spec = calculateSpecular(IInterpolants.n_ws, IInterpolants.p_ws, material);
         Vector3D specColor;
 
         if (material.hasSpecularMap()) {
-            specColor = sample_persp(interpolants.specCoord, material.getSpecularMap(), 0f);
+            specColor = sample_persp(IInterpolants.specCoord, material.getSpecularMap(), 0f);
 
         } else {
             specColor = material.getDefualtSpecularColor();

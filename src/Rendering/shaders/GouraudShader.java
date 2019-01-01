@@ -1,7 +1,7 @@
 package Rendering.shaders;
 
 import Rendering.Materials.Material;
-import Rendering.renderUtil.interpolation.Interpolants;
+import Rendering.renderUtil.interpolation.IInterpolants;
 import Rendering.renderUtil.RenderState;
 import Rendering.renderUtil.Vertex;
 import Rendering.renderUtil.VertexOut;
@@ -103,7 +103,7 @@ public class GouraudShader implements IShader {
 
 
     @Override
-    public final Vector3D frag(Interpolants lP, Material material) {
+    public final Vector3D frag(IInterpolants lP, Material material) {
         Vector3D outColor = Vector3D.newZeros();
         if (fragNonAlloc(lP, material, outColor, Vector3D.newZeros()))
             return outColor;
@@ -111,7 +111,7 @@ public class GouraudShader implements IShader {
     }
 
     @Override
-    public final boolean fragNonAlloc(Interpolants lP, Material material, Vector3D outColor, Vector3D util) {
+    public final boolean fragNonAlloc(IInterpolants lP, Material material, Vector3D outColor, Vector3D util) {
         if (!ShaderUtil.zBufferTest(RenderState.zBuffer, lP.p_proj.z, lP.xInt, lP.yInt))
             return false;
 

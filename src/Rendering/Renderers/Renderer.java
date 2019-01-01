@@ -33,11 +33,6 @@ public class Renderer {
             clippingSystem.clipTriangle(clippedVertices, v1, v2, v3);
         }
 
-        /*//backfaceCull, THIS PRODUCES ARTIFACTS
-        if (backFaceCullPreClip(vertexOuts[0], vertexOuts[1], vertexOuts[2]))
-            return;*/
-
-        //clip
         if (clippedVertices.isEmpty()) return;
 
         VertexOut v2Out, v3Out;
@@ -69,7 +64,6 @@ public class Renderer {
     }
 
     private static void setFinalColor(int x, int y, Vector3D color) {
-//        Colorf.clampNonAlloc(color);
         Colorf.clampMaxNonAlloc(color);
         RenderState.colorBuffer.setPixel(x, y, color);
 

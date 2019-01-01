@@ -54,8 +54,8 @@ public class TriangleRasterizer {
         //LERPFACTORYSHIT()
         while (i <= yChange) {
             rasterizer.rasterizeRow(left, right, y);
-            left.interpolants.lerp();
-            right.interpolants.lerp();
+            left.IInterpolants.lerp();
+            right.IInterpolants.lerp();
             ++y;
             ++i;
         }

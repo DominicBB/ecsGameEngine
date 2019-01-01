@@ -11,7 +11,7 @@ public abstract class BaseLerperFactory {
         );
     }
 
-    protected static float calcFloatStep(float factor, float f1, float f2) {
+    static float calcFloatStep(float factor, float f1, float f2) {
         return (f2 - f1) * factor;
     }
 
