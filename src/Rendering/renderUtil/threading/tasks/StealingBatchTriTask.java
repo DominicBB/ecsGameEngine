@@ -25,8 +25,10 @@ public class StealingBatchTriTask implements ITask {
         int step = size / batchTriangleTasks.length;
         int stepRem = step % 3;
         step -= stepRem;
+
         int start = 0;
         int end = step;
+
         for (int i = 0, len = batchTriangleTasks.length; i < len; i++) {
             if (i == len - 1) end = size;
             batchTriangleTasks[i].setBatch(indexedMesh.transformedVertices, indexedMesh.triIndices,
@@ -34,6 +36,7 @@ public class StealingBatchTriTask implements ITask {
             start += step;
             end += step;
         }
+
         currentIndex = 0;
     }
 

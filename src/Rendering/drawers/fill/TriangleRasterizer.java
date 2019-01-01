@@ -26,8 +26,44 @@ public class TriangleRasterizer {
     private AABoundingRect boundingRect;
 
     public void fillTriangle(VertexOut v1, VertexOut v2, VertexOut v3) {
+        setUpEdges(v1, v2, v3);
+    }
+
+    public void scan(Edge leftEdge, Edge rightEdge) {
+        if (leftEdge.isOnLeft)
+            scanSegment(leftEdge, rightEdge, leftEdge.yStart, leftEdge.deltaYInt);
+        else
+            scanSegment(rightEdge, leftEdge, rightEdge.yStart, rightEdge.deltaYInt);
+
+    }
+
+    public void scan(Edge tallestEdge, Edge bottomEdge, Edge topEdge) {
+        if (tallestEdge.isOnLeft) {
+            scanSegment(tallestEdge, bottomEdge, bottomEdge.yStart, bottomEdge.deltaYInt);
+            scanSegment(tallestEdge, topEdge, topEdge.yStart, topEdge.deltaYInt);
+        } else {
+            scanSegment(bottomEdge, tallestEdge, bottomEdge.yStart, bottomEdge.deltaYInt);
+            scanSegment(topEdge, tallestEdge, topEdge.yStart, topEdge.deltaYInt);
+        }
+
+    }
+
+    private void scanSegment(Edge left, Edge right, int y, int yChange) {
+        int i = 1;
+        //if ShaderA
+        //LERPFACTORYSHIT()
+        while (i <= yChange) {
+            rasterizer.rasterizeRow(left, right, y);
+            left.interpolants.lerp();
+            right.interpolants.lerp();
+            ++y;
+            ++i;
+        }
+    }
+
+    private void setUpEdges(VertexOut maxY, VertexOut midY, VertexOut minY) {
         int eIndex = 0;
-        VertexOut maxY = v1, midY = v2, minY = v3, temp;
+        VertexOut temp;
         if (maxY.p_proj.y < midY.p_proj.y) {
             temp = maxY;
             maxY = midY;
@@ -85,58 +121,10 @@ public class TriangleRasterizer {
             setUpForOneHorizontal();
             return;
         }
-        setUpAllThree(maxY, midY, minY, dy1, dy2, dy3);
-
+        setUpForNoHorizontal(maxY, midY, minY, dy1, dy2, dy3);
     }
 
-    public void scan(Edge leftEdge, Edge rightEdge) {
-
-        if (leftEdge.isOnLeft)
-            scanSegment(leftEdge, rightEdge, leftEdge.yStart, leftEdge.deltaYInt);
-        else
-            scanSegment(rightEdge, leftEdge, rightEdge.yStart, rightEdge.deltaYInt);
-
-    }
-
-    public void scan(Edge tallestEdge, Edge bottomEdge, Edge topEdge) {
-        if (tallestEdge.isOnLeft) {
-            scanSegment(tallestEdge, bottomEdge, bottomEdge.yStart, bottomEdge.deltaYInt);
-            scanSegment(tallestEdge, topEdge, topEdge.yStart, topEdge.deltaYInt);
-        } else {
-            scanSegment(bottomEdge, tallestEdge, bottomEdge.yStart, bottomEdge.deltaYInt);
-            scanSegment(topEdge, tallestEdge, topEdge.yStart, topEdge.deltaYInt);
-        }
-
-    }
-
-
-    private void scanSegment(Edge left, Edge right, int y, int yChange) {
-        int i = 1;
-        while (i <= yChange) {
-            rasterizer.rasterizeRow(left, right, y);
-            left.interpolants.lerp();
-            right.interpolants.lerp();
-            ++y;
-            ++i;
-        }
-    }
-
-    private void storeEdges(VertexOut maxY, VertexOut midY, VertexOut minY, float dy1, float dy2, float dy3,
-                            boolean isOnLeft) {
-        edgesTODO.add(edgeFactory.createEdge(minY, maxY, dy1, isOnLeft));
-        edgesTODO.add(edgeFactory.createEdge(minY, midY, dy2, !isOnLeft));
-        edgesTODO.add(edgeFactory.createEdge(midY, maxY, dy3, !isOnLeft));
-    }
-
-    private void reuseEdges(VertexOut maxY, VertexOut midY, VertexOut minY, float dy1, float dy2, float dy3,
-                            boolean isOnLeft) {
-
-        edgeFactory.reuseEdge(e1, minY, maxY, dy1, isOnLeft);
-        edgeFactory.reuseEdge(e2, minY, midY, dy2, !isOnLeft);
-        edgeFactory.reuseEdge(e3, midY, maxY, dy3, !isOnLeft);
-    }
-
-    private void setUpAllThree(VertexOut maxY, VertexOut midY, VertexOut minY, float dy1, float dy2, float dy3) {
+    private void setUpForNoHorizontal(VertexOut maxY, VertexOut midY, VertexOut minY, float dy1, float dy2, float dy3) {
         boolean isOnLeft = Triangle.z_crossProd(minY.p_proj, maxY.p_proj, midY.p_proj) < 0f;
         boundingRect.set(maxY.p_proj.y, minY.p_proj.y, xMax.value, xMin.value);
 
@@ -197,6 +185,21 @@ public class TriangleRasterizer {
 
         minX.value = min.x;
         maxX.value = max.x - 1;
+    }
+
+    private void storeEdges(VertexOut maxY, VertexOut midY, VertexOut minY, float dy1, float dy2, float dy3,
+                            boolean isOnLeft) {
+        edgesTODO.add(edgeFactory.createEdge(minY, maxY, dy1, isOnLeft));
+        edgesTODO.add(edgeFactory.createEdge(minY, midY, dy2, !isOnLeft));
+        edgesTODO.add(edgeFactory.createEdge(midY, maxY, dy3, !isOnLeft));
+    }
+
+    private void reuseEdges(VertexOut maxY, VertexOut midY, VertexOut minY, float dy1, float dy2, float dy3,
+                            boolean isOnLeft) {
+
+        edgeFactory.reuseEdge(e1, minY, maxY, dy1, isOnLeft);
+        edgeFactory.reuseEdge(e2, minY, midY, dy2, !isOnLeft);
+        edgeFactory.reuseEdge(e3, midY, maxY, dy3, !isOnLeft);
     }
 
     public void setEdgesTODO(List<Edge> edgesTODO) {

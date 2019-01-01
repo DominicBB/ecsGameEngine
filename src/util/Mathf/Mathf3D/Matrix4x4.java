@@ -12,15 +12,15 @@ public class Matrix4x4 {
     //transpose top newLeft 3x3. dot product last row buy other rows
     //pseudo inverse of pointAt
     public static Matrix4x4 pointAtToLookAt(Matrix4x4 pointAtMatrix) {
-        Matrix4x4 p = pointAtMatrix;
-        Vector3D a = new Vector3D(p.values[0][0], p.values[0][1], p.values[0][2]);
-        Vector3D b = new Vector3D(p.values[1][0], p.values[1][1], p.values[1][2]);
-        Vector3D c = new Vector3D(p.values[2][0], p.values[2][1], p.values[2][2]);
-        Vector3D t = new Vector3D(p.values[3][0], p.values[3][1], p.values[3][2]);
+        Matrix4x4 m = pointAtMatrix;
+        Vector3D a = new Vector3D(m.values[0][0], m.values[0][1], m.values[0][2]);
+        Vector3D b = new Vector3D(m.values[1][0], m.values[1][1], m.values[1][2]);
+        Vector3D c = new Vector3D(m.values[2][0], m.values[2][1], m.values[2][2]);
+        Vector3D t = new Vector3D(m.values[3][0], m.values[3][1], m.values[3][2]);
         return new Matrix4x4(new float[][]{
-                {p.values[0][0], p.values[1][0], p.values[2][0], 0.0f},
-                {p.values[0][1], p.values[1][1], p.values[2][1], 0.0f},
-                {p.values[0][2], p.values[1][2], p.values[2][2], 0.0f},
+                {m.values[0][0], m.values[1][0], m.values[2][0], 0.0f},
+                {m.values[0][1], m.values[1][1], m.values[2][1], 0.0f},
+                {m.values[0][2], m.values[1][2], m.values[2][2], 0.0f},
                 {-t.dotProduct(a), -t.dotProduct(b), -t.dotProduct(c), 1.0f}
         });
     }
@@ -82,13 +82,31 @@ public class Matrix4x4 {
                         {0.0f, 0.0f, 0.0f, 1.0f}});
     }
 
-    public static Matrix4x4 newLookAt(Vector3D f, Vector3D r, Vector3D up, Vector3D offset) {
+    /*public static Matrix4x4 newLookAt(Vector3D f, Vector3D r, Vector3D up, Vector3D offset) {
         return new Matrix4x4(
                 new float[][]{
                         {r.x, r.y, r.z, 0f},
                         {up.x, up.y, up.z, 0f},
                         {f.x, f.y, f.z, 0f},
-                        {offset.x, offset.y, offset.z, 1.0f}});
+                        {offset.x, -offset.y, offset.z, 1.0f}});
+    }*/
+
+    /*public static Matrix4x4 newLookAt(Vector3D f, Vector3D r, Vector3D up, Vector3D offset) {
+        return new Matrix4x4(
+                new float[][]{
+                        {r.x, r.y, r.z, 0f},
+                        {up.x, up.y, up.z, 0f},
+                        {f.x, f.y, f.z, 0f},
+                        {-offset.dotProduct(r), -offset.dotProduct(up), -offset.dotProduct(f), 1.0f}});
+    }*/
+
+    public static Matrix4x4 newLookAt(Vector3D f, Vector3D r, Vector3D up, Vector3D offset) {
+        return new Matrix4x4(
+                new float[][]{
+                        {r.x, up.x, f.x, 0f},
+                        {r.y, up.y, f.y, 0f},
+                        {r.z, up.z, f.z, 0f},
+                        {offset.dotProduct(r), -offset.dotProduct(up), offset.dotProduct(f), 1.0f}});
     }
 
 
@@ -111,17 +129,6 @@ public class Matrix4x4 {
                         {0.0f, 0.0f, -zFar / zRange, -1.0f},
                         {0.0f, 0.0f, -(zFar * zNear) / zRange, 0.0f}
                 });
-    }
-
-    public static Matrix4x4 InitPerspective(float fov, float aspectRatio, float zNear, float zFar) {
-        //float tanHalfFOV = (float) Math.tan(fov / 2);
-        float zRange = zNear - zFar;
-        return new Matrix4x4(new float[][]{
-                {aspectRatio, 0, 0, 0},
-                {0, -fov, 0, 0},
-                {0, 0, -(-zNear - zFar) / zRange, -1f},
-                {0.0f, 0f, 2f * zFar * zNear / zRange, 0f}
-        });
     }
 
     public static Matrix4x4 newProjectionToView(float fFov_aRatio, float fFov, float zNear, float zFar) {
@@ -199,7 +206,7 @@ public class Matrix4x4 {
      * @param q QUATERNION MUST BE NORMALISED
      * @return
      */
-    public static Matrix4x4 newRotationNormalisedQ(Quaternion q) {
+    public static Matrix4x4 newRotation_NormalisedQ(Quaternion q) {
         float xx = q.getX() * q.getX();
         float xy = q.getX() * q.getY();
         float xz = q.getX() * q.getZ();
@@ -221,16 +228,17 @@ public class Matrix4x4 {
     }
 
     /**
+     * This will normalise quaternion
      * @param q
      * @return
      */
     public static Matrix4x4 newRotation(Quaternion q) {
-        float sqw = q.getW() * q.getW();
-        float sqx = q.getX() * q.getX();
-        float sqy = q.getY() * q.getY();
-        float sqz = q.getZ() * q.getZ();
+        float ww = q.getW() * q.getW();
+        float xx = q.getX() * q.getX();
+        float yy = q.getY() * q.getY();
+        float zz = q.getZ() * q.getZ();
 
-        float invs = 1 / (sqx + sqy + sqz + sqw);
+        float invs = 1 / (xx + yy + zz + ww);
 
         float xy = q.getX() * q.getY();
         float zw = q.getZ() * q.getW();
@@ -243,9 +251,9 @@ public class Matrix4x4 {
 
 
         return new Matrix4x4(new float[][]{
-                {(sqx - sqy - sqz + sqw) * invs, 2.0f * (xy - zw) * invs, 2.0f * (xz + yw) * invs, 0.0f},
-                {2.0f * (xy + zw) * invs * invs, (-sqx + sqy - sqz + sqw) * invs, 2.0f * (yz - xw) * invs, 0.0f},
-                {2.0f * (xz - yw) * invs, 2.0f * (yz + xw) * invs, (-sqx - sqy + sqz + sqw) * invs, 0.0f},
+                {(xx - yy - zz + ww) * invs, 2.0f * (xy - zw) * invs, 2.0f * (xz + yw) * invs, 0.0f},
+                {2.0f * (xy + zw) * invs * invs, (-xx + yy - zz + ww) * invs, 2.0f * (yz - xw) * invs, 0.0f},
+                {2.0f * (xz - yw) * invs, 2.0f * (yz + xw) * invs, (-xx - yy + zz + ww) * invs, 0.0f},
                 {0.0f, 0.0f, 0.0f, 1.0f}
         });
     }

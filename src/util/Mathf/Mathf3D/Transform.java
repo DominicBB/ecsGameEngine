@@ -97,7 +97,6 @@ public class Transform {
 
         return rot.compose(compsedScale).compose(composedTranslation);
         // return composedTranslation.compose(compsedScale).compose(rot);
-
     }
 
     private void updateDirections(Quaternion rotation) {
@@ -106,6 +105,10 @@ public class Transform {
         this.rightDir = rotation.rotate(rightDir);
     }
 
+    /**
+     * relative to Vector3D.UP,Vector3D.FORWARD,Vector3D.RIGHT
+     * @param rotation
+     */
     private void setDirections(Quaternion rotation) {
         this.upDir = rotation.rotate(Vector3D.UP);
         this.forwardDir = rotation.rotate(Vector3D.FORWARD);

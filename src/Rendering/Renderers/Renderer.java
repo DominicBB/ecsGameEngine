@@ -40,7 +40,6 @@ public class Renderer {
         //clip
         if (clippedVertices.isEmpty()) return;
 
-
         VertexOut v2Out, v3Out;
         VertexOut v1Out = clippedVertices.get(0);
 
@@ -58,6 +57,7 @@ public class Renderer {
             //backfaceCull, HAVE TO BACKFACE CULL HERE
             if (backFaceCullPreClip(v1Out, v2Out, v3Out))
                 return;
+
             triangleRasterizer.fillTriangle(v1Out, v2Out, v3Out);
         }
     }

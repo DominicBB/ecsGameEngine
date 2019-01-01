@@ -1,5 +1,7 @@
 package util;
 
+import java.util.Arrays;
+
 public class FloatBuffer {
 
     private final float[] fBuffer;
@@ -33,9 +35,10 @@ public class FloatBuffer {
     }
 
     public void resetPositiveInf() {
-        for (int i = 0; i < fBuffer.length; i++) {
+        /*for (int i = 0; i < fBuffer.length; i++) {
             fBuffer[i] = Float.POSITIVE_INFINITY;
-        }
+        }*/
+        Arrays.fill(fBuffer,Float.POSITIVE_INFINITY);
     }
 
     public void reset(float resetTo) {
