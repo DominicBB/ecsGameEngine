@@ -4,6 +4,7 @@ import Rendering.renderUtil.Edges.Edge;
 import Rendering.renderUtil.Edges.EdgeFactory;
 import Rendering.renderUtil.VertexOut;
 import Rendering.renderUtil.threading.threadSaftey.RenderLocks;
+import Rendering.shaders.ShaderType;
 import util.FloatWrapper;
 import util.Mathf.Mathf;
 import util.Mathf.Mathf2D.Bounds2D.AABoundingRect;
@@ -14,11 +15,16 @@ import java.util.List;
 
 
 public class TriangleRasterizer {
-    private final EdgeFactory edgeFactory = new EdgeFactory();
     private final Edge e1 = Edge.newEmpty(), e2 = Edge.newEmpty(), e3 = Edge.newEmpty();
     private final VertexOut[] edgeVertices = new VertexOut[6];
-    private final Rasterizer rasterizer = new Rasterizer();
     private final FloatWrapper xMax = new FloatWrapper(0f), xMin = new FloatWrapper(0f);
+
+    private final Vector3D fragColor = Vector3D.newZeros(), fragUtil = Vector3D.newZeros();
+    private final TriangleRasterizer_G triangleRasterizer_g = new TriangleRasterizer_G(fragColor, fragUtil);
+    private final TriangleRasterizer_F triangleRasterizer_f = new TriangleRasterizer_F(fragColor, fragUtil);
+    private final TriangleRasterizer_P triangleRasterizer_p = new TriangleRasterizer_P(fragColor, fragUtil);
+
+    private ShaderType shaderType;
 
     private List<Edge> edgesTODO;
     private List<Edge> edgesTODODouble;
@@ -27,38 +33,6 @@ public class TriangleRasterizer {
 
     public void fillTriangle(VertexOut v1, VertexOut v2, VertexOut v3) {
         setUpEdges(v1, v2, v3);
-    }
-
-    public void scan(Edge leftEdge, Edge rightEdge) {
-        if (leftEdge.isOnLeft)
-            scanSegment(leftEdge, rightEdge, leftEdge.yStart, leftEdge.deltaYInt);
-        else
-            scanSegment(rightEdge, leftEdge, rightEdge.yStart, rightEdge.deltaYInt);
-
-    }
-
-    public void scan(Edge tallestEdge, Edge bottomEdge, Edge topEdge) {
-        if (tallestEdge.isOnLeft) {
-            scanSegment(tallestEdge, bottomEdge, bottomEdge.yStart, bottomEdge.deltaYInt);
-            scanSegment(tallestEdge, topEdge, topEdge.yStart, topEdge.deltaYInt);
-        } else {
-            scanSegment(bottomEdge, tallestEdge, bottomEdge.yStart, bottomEdge.deltaYInt);
-            scanSegment(topEdge, tallestEdge, topEdge.yStart, topEdge.deltaYInt);
-        }
-
-    }
-
-    private void scanSegment(Edge left, Edge right, int y, int yChange) {
-        int i = 1;
-        //if ShaderA
-        //LERPFACTORYSHIT()
-        while (i <= yChange) {
-            rasterizer.rasterizeRow(left, right, y);
-            left.IInterpolants.lerp();
-            right.IInterpolants.lerp();
-            ++y;
-            ++i;
-        }
     }
 
     private void setUpEdges(VertexOut maxY, VertexOut midY, VertexOut minY) {
@@ -133,7 +107,8 @@ public class TriangleRasterizer {
             return;
         }
         reuseEdges(maxY, midY, minY, dy1, dy2, dy3, isOnLeft);
-        scan(e1, e2, e3);
+
+        scanEdge(e1, e2, e3);
     }
 
     private void setUpForOneHorizontal() {
@@ -156,13 +131,14 @@ public class TriangleRasterizer {
         boundingRect.set(yMax, yMin, xMax.value, xMin.value);
 
         if (RenderLocks.BRintersect()) {
-            edgesTODODouble.add(edgeFactory.createEdge(v1, v2, dy1, isOnLeft));
-            edgesTODODouble.add(edgeFactory.createEdge(v3, v4, dy2, !isOnLeft));
+            edgesTODODouble.add(EdgeFactory.createEdge(v1, v2, dy1, isOnLeft));
+            edgesTODODouble.add(EdgeFactory.createEdge(v3, v4, dy2, !isOnLeft));
             return;
         }
-        edgeFactory.reuseEdge(e1, v1, v2, dy1, isOnLeft);
-        edgeFactory.reuseEdge(e2, v3, v4, dy2, !isOnLeft);
-        scan(e1, e2);
+        EdgeFactory.reuseEdge(e1, v1, v2, dy1, isOnLeft);
+        EdgeFactory.reuseEdge(e2, v3, v4, dy2, !isOnLeft);
+
+        scanEdge(e1, e2);
     }
 
     private void calcMinMaxX(FloatWrapper minX, FloatWrapper maxX, Vector3D v1, Vector3D v2, Vector3D v3) {
@@ -184,22 +160,22 @@ public class TriangleRasterizer {
         }
 
         minX.value = min.x;
-        maxX.value = max.x - 1;
+        maxX.value = max.x;
     }
 
     private void storeEdges(VertexOut maxY, VertexOut midY, VertexOut minY, float dy1, float dy2, float dy3,
                             boolean isOnLeft) {
-        edgesTODO.add(edgeFactory.createEdge(minY, maxY, dy1, isOnLeft));
-        edgesTODO.add(edgeFactory.createEdge(minY, midY, dy2, !isOnLeft));
-        edgesTODO.add(edgeFactory.createEdge(midY, maxY, dy3, !isOnLeft));
+        edgesTODO.add(EdgeFactory.createEdge(minY, maxY, dy1, isOnLeft));
+        edgesTODO.add(EdgeFactory.createEdge(minY, midY, dy2, !isOnLeft));
+        edgesTODO.add(EdgeFactory.createEdge(midY, maxY, dy3, !isOnLeft));
     }
 
     private void reuseEdges(VertexOut maxY, VertexOut midY, VertexOut minY, float dy1, float dy2, float dy3,
                             boolean isOnLeft) {
 
-        edgeFactory.reuseEdge(e1, minY, maxY, dy1, isOnLeft);
-        edgeFactory.reuseEdge(e2, minY, midY, dy2, !isOnLeft);
-        edgeFactory.reuseEdge(e3, midY, maxY, dy3, !isOnLeft);
+        EdgeFactory.reuseEdge(e1, minY, maxY, dy1, isOnLeft);
+        EdgeFactory.reuseEdge(e2, minY, midY, dy2, !isOnLeft);
+        EdgeFactory.reuseEdge(e3, midY, maxY, dy3, !isOnLeft);
     }
 
     public void setEdgesTODO(List<Edge> edgesTODO) {
@@ -212,5 +188,37 @@ public class TriangleRasterizer {
 
     public void setBoundingRect(AABoundingRect boundingRect) {
         this.boundingRect = boundingRect;
+    }
+
+    public void setShaderType(ShaderType shaderType) {
+        this.shaderType = shaderType;
+    }
+
+    public void scanEdge(Edge e1, Edge e2, Edge e3) {
+        switch (shaderType) {
+            case GOURUAD:
+                triangleRasterizer_g.fillTriangle(e1, e2, e3);
+                break;
+            case FLAT:
+                triangleRasterizer_f.fillTriangle(e1, e2, e3);
+                break;
+            case PHONG:
+                triangleRasterizer_p.fillTriangle(e1, e2, e3);
+                break;
+        }
+    }
+
+    public void scanEdge(Edge e1, Edge e2) {
+        switch (shaderType) {
+            case GOURUAD:
+                triangleRasterizer_g.fillTriangle(e1, e2);
+                break;
+            case FLAT:
+                triangleRasterizer_f.fillTriangle(e1, e2);
+                break;
+            case PHONG:
+                triangleRasterizer_p.fillTriangle(e1, e2);
+                break;
+        }
     }
 }

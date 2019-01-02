@@ -35,11 +35,11 @@ public class RenderLockNode {
 
     public void drawTODOs() {
         for (int i = 0, len = TODO.size(); i < len; i += 3) {
-            renderer.triangleRasterizer.scan(TODO.get(i), TODO.get(i + 1), TODO.get(i + 2));
+            renderer.triangleRasterizer.scanEdge(TODO.get(i), TODO.get(i + 1), TODO.get(i + 2));
         }
 
         for (int i = 0, len = TODODoubleEdge.size(); i < len; i += 2) {
-            renderer.triangleRasterizer.scan(TODODoubleEdge.get(i), TODODoubleEdge.get(i + 1));
+            renderer.triangleRasterizer.scanEdge(TODODoubleEdge.get(i), TODODoubleEdge.get(i + 1));
         }
 //        System.out.println("TODO Size: "+TODO.size()+", Double Size: "+TODODoubleEdge.size());
     }

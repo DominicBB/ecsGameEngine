@@ -3,11 +3,13 @@ package Rendering.renderUtil.threading.tasks;
 import Rendering.renderUtil.Meshes.IndexedMesh;
 import Rendering.renderUtil.threading.threadSaftey.RenderLockNode;
 import Rendering.renderUtil.threading.threadSaftey.RenderLocks;
+import Rendering.shaders.ShaderType;
 
 public class StealingBatchTriTask implements ITask {
 
     private final BatchTriangleTask[] batchTriangleTasks;
     private volatile int currentIndex;
+    private volatile ShaderType shaderType;
 
     public StealingBatchTriTask(int numTasks) {
         batchTriangleTasks = new BatchTriangleTask[numTasks];
@@ -56,6 +58,7 @@ public class StealingBatchTriTask implements ITask {
     public void doTask() {
         BatchTriangleTask task;
         RenderLockNode renderLockNode = RenderLocks.getRenderLockNode(Thread.currentThread().getId());
+        renderLockNode.renderer.triangleRasterizer.setShaderType(shaderType);
         while (currentIndex < batchTriangleTasks.length) {
             synchronized (batchTriangleTasks) {
                 if (currentIndex >= batchTriangleTasks.length) return;
@@ -66,5 +69,9 @@ public class StealingBatchTriTask implements ITask {
         }
         renderLockNode.drawTODOs();
         renderLockNode.reset();
+    }
+
+    public void setShaderType(ShaderType shaderType) {
+        this.shaderType = shaderType;
     }
 }

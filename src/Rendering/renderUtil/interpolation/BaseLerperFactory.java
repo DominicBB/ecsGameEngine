@@ -23,11 +23,4 @@ public abstract class BaseLerperFactory {
                 (vIn2.w - vIn1.w) * factor
         );
     }
-
-
-    /*protected static float calcSpecLerp(Vector2D specCoordStep, Vector2D s1,Vector2D s2, float factor, boolean hasSpecMap){
-        if (hasSpecMap)
-            calcVec2Step(specCoordStep, factor, s1, s2);
-       return calcFloatStep(factor, l1.getSpecularity(), l2.getSpecularity());
-    }*/
 }

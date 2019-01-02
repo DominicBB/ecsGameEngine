@@ -23,7 +23,7 @@ final class ShaderUtil {
      * @param attenuation
      * @return
      */
-    private static float specular(Vector3D n_worldSpace, Vector3D lightDir, Vector3D viewDir_worldSpace,
+     static float specular(Vector3D n_worldSpace, Vector3D lightDir, Vector3D viewDir_worldSpace,
                                   float specFactor, float specPower, float attenuation) {
         Vector3D halfWayDir;
         (halfWayDir = lightDir.plus(viewDir_worldSpace)).normalise();
@@ -47,9 +47,9 @@ final class ShaderUtil {
         return Mathf.unsafeMax(0f, spec);
     }
 
-    static Vector3D calcSpecularAtFrag(Vector2D specCoord, float spec, float z, Material material) {
+    static Vector3D calcSpecularAtFrag(float u, float v, float spec, float z, Material material) {
         if (material.hasSpecularMap()) {
-            Vector3D specColor = sample_persp(specCoord, material.getSpecularMap(), z);
+            Vector3D specColor = sample_persp(u, v, material.getSpecularMap(), z);
             return specColor.mul(spec);
         } else {
             return material.getDefualtSpecularColor().mul(spec);
@@ -93,6 +93,8 @@ final class ShaderUtil {
     }
 
 
+
+
     static boolean zBufferTest(FloatBuffer zBuffer, float zVal, int x, int y) {
         if (zBuffer.getFloat(x, y) > zVal) {// if pixel is further away
             zBuffer.setFloat(x, y, zVal);
@@ -101,12 +103,12 @@ final class ShaderUtil {
         return false;
     }
 
-    static Vector3D sample_persp(Vector2D coord, BitmapABGR bitmapABGR, float z) {
-        return bitmapABGR.getPixel((int) (coord.x * z), (int) (coord.y * z));
+    static Vector3D sample_persp(float u, float v, BitmapABGR bitmapABGR, float z) {
+        return bitmapABGR.getPixel((int) (u * z), (int) (v * z));
     }
 
-    static void sample_persp_NonAlloc(Vector2D coord, BitmapABGR bitmapABGR, float z, Vector3D out) {
-        bitmapABGR.getPixelNonAlloc((int) (coord.x * z), (int) (coord.y * z), out);
+    static void sample_persp_NonAlloc(float u, float v, BitmapABGR bitmapABGR, float z, Vector3D out) {
+        bitmapABGR.getPixelNonAlloc((int) (u * z), (int) (v * z), out);
     }
 
     static Vector2D scaleToBitmap(Vector2D in, BitmapABGR bitmapABGR) {
@@ -149,4 +151,5 @@ final class ShaderUtil {
         out.n_ws.set(RenderState.transform.getRotation().rotate(vIn.normal));
         out.p_ws.set(RenderState.world.multiply4x4(vIn.vec));
     }
+
 }

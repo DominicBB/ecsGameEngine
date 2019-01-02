@@ -1,12 +1,7 @@
 package Rendering.renderUtil.interpolation.flat;
 
-public class FlatLerper_E {
-    public float x, z;
-    public float invW;
-
-    public float tex_u, tex_v;
-
-    public float spec_u, spec_v;
+public class FlatLerper_E extends FlatLerper_Base{
+    public float x;
 
     public FlatLerper_E() {
     }

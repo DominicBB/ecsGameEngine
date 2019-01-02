@@ -1,5 +1,6 @@
 package Rendering.renderingSystems;
 
+import Rendering.Materials.Material;
 import Rendering.renderUtil.Meshes.IndexedMesh;
 import Rendering.renderUtil.threading.tasks.StealingBatchTriTask;
 import Rendering.renderUtil.threading.threadManagers.MultiThreadManager;
@@ -39,22 +40,16 @@ public class MeshRenderSystem {
 
     public final void render(RenderableMesh renderableMesh, TransformComponent transformComponent) {
         IndexedMesh indexedMesh = renderableMesh.indexedMesh;
-        setBatches(indexedMesh);
+        setBatches(indexedMesh, renderableMesh.material);
         multiThreadManager.goAll();
         stealingBatchTriTask.doTask();//run task on main thread
         multiThreadManager.waitForThreadsToFinish();
         RenderLocks.resetAll();
     }
 
-    private void setBatches(IndexedMesh indexedMesh) {
-       /* int skipAmt = 3 * numThreads;
-        for (int i = 0, len = batchTriangleTasks.length; i < len; i++) {
-            batchTriangleTasks[i].setBatch(indexedMesh.transformedVertices, indexedMesh.triIndices,
-                    3 * i, indexedMesh.triIndices.size(), skipAmt);
-        }*/
+    private void setBatches(IndexedMesh indexedMesh, Material material) {
+        stealingBatchTriTask.setShaderType(material.getShader().getShaderType());
         stealingBatchTriTask.setBatches(indexedMesh);
-
-
     }
 
     public void setRenderSystem(RenderSystem renderSystem) {

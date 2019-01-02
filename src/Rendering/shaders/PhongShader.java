@@ -4,14 +4,16 @@ import Rendering.Materials.Material;
 import Rendering.renderUtil.RenderState;
 import Rendering.renderUtil.Vertex;
 import Rendering.renderUtil.VertexOut;
-import Rendering.renderUtil.interpolation.IInterpolants;
+import Rendering.renderUtil.interpolation.phong.PhongInterpolants;
 import Rendering.shaders.interfaces.IShader;
 import util.Mathf.Mathf3D.Vector3D;
 
 import static Rendering.shaders.ShaderUtil.*;
 
 public class PhongShader implements IShader {
-     PhongShader(){}
+    PhongShader() {
+    }
+
     @Override
     public final VertexOut vert(Vertex vIn, Material material) {
         return transformVIn(vIn, material);
@@ -22,75 +24,59 @@ public class PhongShader implements IShader {
         setVOut(vIn, material, out);
     }
 
-    @Override
-    public final Vector3D frag(IInterpolants IInterpolants, Material material) {
-
-        if (!ShaderUtil.zBufferTest(RenderState.zBuffer, IInterpolants.p_proj.z, IInterpolants.xInt, IInterpolants.yInt)) {
-            return null;
+    public static boolean fragNonAlloc(PhongInterpolants pI, Material material, Vector3D outColor, Vector3D util, int y) {
+        if (!ShaderUtil.zBufferTest(RenderState.zBuffer, pI.z, pI.xInt, y)) {
+            return false;
         }
 
-        float w = 1f / IInterpolants.invW;
+        float w = 1f / pI.invW;
+        if (material.hasTexture())
+            sample_persp_NonAlloc(pI.tex_u, pI.tex_v, material.getTexture().texture, w, outColor);
+        else
+            outColor.set(material.getColor());
 
-        Vector3D surfaceColor = calculateLighting(IInterpolants, material, IInterpolants.xInt);
-
-        Vector3D color;
-        if (material.hasTexture()) {
-            color = surfaceColor.
-                    componentMul(material.getTexture().texture.getPixel(
-                            (int) IInterpolants.texCoord.x,
-                            (int) IInterpolants.texCoord.y));
-
-        } else {
-            color = material.getColor().componentMul(surfaceColor);
-        }
-        return color;
+        calculateLighting(pI, material, util, outColor);
+        return true;
     }
 
-    @Override
-    public boolean fragNonAlloc(IInterpolants vertex, Material material, Vector3D outColor, Vector3D util) {
-        return false;
-    }
-
-    private Vector3D calculateLighting(IInterpolants IInterpolants, Material material, int x) {
+    private static void calculateLighting(PhongInterpolants pI, Material material, Vector3D util, Vector3D surfaceColor) {
 
         if (material.isDiffuse()) {
-            IInterpolants.surfaceColor.add(calcDiffuse(IInterpolants, material, x));
+            addDiffuse(pI, material, util, surfaceColor);
         }
 
         if (material.isSpecular()) {
-            IInterpolants.surfaceColor.add(calcSpecular(IInterpolants, material));
+            calcSpecular(pI, material, util);
+            surfaceColor.add(surfaceColor.componentMul(util));
         }
 
         if (material.isAmbient()) {
-            IInterpolants.surfaceColor.add(ambient(RenderState.lightingState.ambientColor,
-                    material.getAmbientFactor()));
+            surfaceColor.add(surfaceColor.componentMul(ambient(RenderState.lightingState.ambientColor,
+                    material.getAmbientFactor())));
         }
-        return IInterpolants.surfaceColor;
     }
 
-    private Vector3D calcDiffuse(IInterpolants IInterpolants, Material material, int x) {
-        Vector3D n = IInterpolants.n_ws;
-        if (material.hasNormalMap()) {
-            n = material.getNormalMap().getPixel(x, IInterpolants.yInt);
-        }
-        return diffuse(n, material);
+    private static void addDiffuse(PhongInterpolants pI, Material material, Vector3D util, Vector3D outColor) {
+        util.set(pI.n_ws_x, pI.n_ws_y, pI.n_ws_z, 1f);
+        Vector3D.componentMulNonAlloc(outColor, (diffuse(util, material)));
     }
 
-    private Vector3D calcSpecular(IInterpolants IInterpolants, Material material) {
-        //Vector3D p_ws = renderer.screenSpaceToWorldSpace(IInterpolants.getP_proj());
-
-        float spec = calculateSpecular(IInterpolants.n_ws, IInterpolants.p_ws, material);
-        Vector3D specColor;
+    private static void calcSpecular(PhongInterpolants pI, Material material, Vector3D util) {
+        util.set(pI.p_ws_x, pI.p_ws_y, pI.p_ws_z, 1f);
+        Vector3D viewDir;
+        (viewDir = RenderState.camera.transform.getPosition().minus(util)).normalise();
+        util.set(pI.n_ws_x, pI.n_ws_y, pI.n_ws_z, 1f);
+        float spec = specular(util, RenderState.lightingState.lightDir, viewDir,
+                material.getSpecularFactor(), material.getSpecularPower(), RenderState.lightingState.attenuation);
 
         if (material.hasSpecularMap()) {
-            specColor = sample_persp(IInterpolants.specCoord, material.getSpecularMap(), 0f);
+            util.set(sample_persp(pI.spec_u, pI.spec_v, material.getSpecularMap(), 0f));
 
         } else {
-            specColor = material.getDefualtSpecularColor();
+            util.set(material.getDefualtSpecularColor());
         }
 
-        specColor.scale(spec);
-        return specColor;
+        util.scale(spec);
     }
 
 

@@ -5,7 +5,7 @@ import Rendering.Materials.Material;
 import Rendering.renderUtil.RenderState;
 import Rendering.renderUtil.Vertex;
 import Rendering.renderUtil.VertexOut;
-import Rendering.renderUtil.interpolation.IInterpolants;
+import Rendering.renderUtil.interpolation.flat.FlatInterpolants;
 import Rendering.shaders.interfaces.IGeometryShader;
 import Rendering.shaders.interfaces.IShader;
 import util.Mathf.Mathf3D.Triangle;
@@ -82,33 +82,24 @@ public class FlatShader implements IShader, IGeometryShader {
         return vertices;
     }
 
-    @Override
-    public final Vector3D frag(IInterpolants lP, Material material) {
-        Vector3D color = Vector3D.newZeros(), util = Vector3D.newZeros();
-        if (fragNonAlloc(lP, material, color, util))
-            return color;
-        return null;
-    }
 
-    @Override
-    public boolean fragNonAlloc(IInterpolants lP, Material material, Vector3D outColor, Vector3D util) {
-        float w = 1f / lP.invW;
-        if (!ShaderUtil.zBufferTest(RenderState.zBuffer, lP.p_proj.z, lP.xInt, lP.yInt))
+    public static boolean fragNonAlloc(FlatInterpolants fI, Vector3D surfaceColor, float spec,
+                                       Material material, Vector3D outColor, Vector3D util, int y) {
+        if (!ShaderUtil.zBufferTest(RenderState.zBuffer, fI.z, fI.xInt, y))
             return false;
 
-        outColor.set(lP.surfaceColor);
+        float w = 1f / fI.invW;
+        outColor.set(surfaceColor);
         if (material.hasSpecularMap()) {
-            sample_persp_NonAlloc(lP.specCoord, material.getSpecularMap(), w, util);
-            outColor.add(util.mul(lP.specularity));
+            sample_persp_NonAlloc(fI.spec_u, fI.spec_v, material.getSpecularMap(), w, util);
+            outColor.add(util.mul(spec));
         }
-
         if (material.hasTexture()) {
-            sample_persp_NonAlloc(lP.texCoord, material.getTexture().texture, w, util);
+            sample_persp_NonAlloc(fI.tex_u, fI.tex_v, material.getTexture().texture, w, util);
             Vector3D.componentMulNonAlloc(outColor, util);
         } else {
             Vector3D.componentMulNonAlloc(outColor, material.getColor());
         }
-
         return true;
     }
 
