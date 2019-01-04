@@ -10,8 +10,8 @@ import util.Mathf.Mathf;
 import util.Mathf.Mathf3D.Vector3D;
 
 public class Rasterizer_P {
-    private final PhongInterpolants ROW_I_INTERPOLANTS = new PhongInterpolants(new PhongLerper_R());
-
+    private final PhongLerper_R phongLerper_r = new PhongLerper_R();
+    private final PhongInterpolants ROW_I_INTERPOLANTS = new PhongInterpolants(null);
 
     void rasterizeRow(PhongInterpolants left, PhongInterpolants right, int y, Vector3D fColor, Vector3D util) {
         setRowInterpolants(left);
@@ -26,11 +26,11 @@ public class Rasterizer_P {
         }
 
         float invdX = 1f / (right.x - left.x);
-        RowLerperFactory.phongLerper(ROW_I_INTERPOLANTS.phongLerper_r, RenderState.material, left, right, invdX);
+        RowLerperFactory.phongLerper(phongLerper_r, RenderState.material, left, right, invdX);
 
         for (; ROW_I_INTERPOLANTS.xInt < to; ROW_I_INTERPOLANTS.xInt++) {
             fragShade(y, fColor, util);
-            ROW_I_INTERPOLANTS.phongLerper_r.lerp(ROW_I_INTERPOLANTS);
+            phongLerper_r.lerp(ROW_I_INTERPOLANTS);
         }
     }
 

@@ -27,7 +27,7 @@ public class FlatLerper_E extends FlatLerper_Base{
         interpolants.invW += invW;
         interpolants.tex_u += tex_u;
         interpolants.tex_v += tex_v;
-        interpolants.spec_u += spec_u;
-        interpolants.spec_v += spec_v;
+        /*interpolants.spec_u += spec_u;
+        interpolants.spec_v += spec_v;*/
     }
 }

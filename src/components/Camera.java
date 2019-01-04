@@ -20,7 +20,7 @@ public class Camera extends Component {
     private void setup() {
         transform = new Transform();
         zFar = 1000f;
-        zNear = .1f;
+        zNear = 1f;
         zRange = zFar - zNear;
         fov = Math.toRadians(50f);
         fFov = 1f / (float) Math.tan(fov / 2);

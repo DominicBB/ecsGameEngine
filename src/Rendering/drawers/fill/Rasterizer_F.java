@@ -10,7 +10,8 @@ import util.Mathf.Mathf;
 import util.Mathf.Mathf3D.Vector3D;
 
 public class Rasterizer_F {
-    private final FlatInterpolants ROW_I_INTERPOLANTS = new FlatInterpolants(new FlatLerper_R());
+    private final FlatLerper_R flatLerper_r = new FlatLerper_R();
+    private final FlatInterpolants ROW_I_INTERPOLANTS = new FlatInterpolants(null);
     Vector3D surfaceColor;
     float spec;
 
@@ -27,11 +28,11 @@ public class Rasterizer_F {
         }
 
         float invdX = 1f / (right.x - left.x);
-        RowLerperFactory.flatLerper(ROW_I_INTERPOLANTS.flatLerper_r, RenderState.material, left, right, invdX);
+        RowLerperFactory.flatLerper(flatLerper_r, RenderState.material, left, right, invdX);
 
         for (; ROW_I_INTERPOLANTS.xInt < to; ROW_I_INTERPOLANTS.xInt++) {
             fragShade(y, fColor, util);
-            ROW_I_INTERPOLANTS.flatLerper_r.lerp(ROW_I_INTERPOLANTS);
+            flatLerper_r.lerp(ROW_I_INTERPOLANTS);
         }
     }
 

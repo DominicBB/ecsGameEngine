@@ -38,8 +38,8 @@ public class GouruadLerper_R extends GouruadLerper_Base {
         interpolants.tex_u += tex_u;
         interpolants.tex_v += tex_v;
 
-        interpolants.spec_u += spec_u;
-        interpolants.spec_v += spec_v;
+        /*interpolants.spec_u += spec_u;
+        interpolants.spec_v += spec_v;*/
         interpolants.specularity += specularity;
 
         interpolants.invW += invW;

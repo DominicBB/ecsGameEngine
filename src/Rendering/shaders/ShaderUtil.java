@@ -23,8 +23,8 @@ final class ShaderUtil {
      * @param attenuation
      * @return
      */
-     static float specular(Vector3D n_worldSpace, Vector3D lightDir, Vector3D viewDir_worldSpace,
-                                  float specFactor, float specPower, float attenuation) {
+    static float specular(Vector3D n_worldSpace, Vector3D lightDir, Vector3D viewDir_worldSpace,
+                          float specFactor, float specPower, float attenuation) {
         Vector3D halfWayDir;
         (halfWayDir = lightDir.plus(viewDir_worldSpace)).normalise();
 
@@ -93,8 +93,6 @@ final class ShaderUtil {
     }
 
 
-
-
     static boolean zBufferTest(FloatBuffer zBuffer, float zVal, int x, int y) {
         if (zBuffer.getFloat(x, y) > zVal) {// if pixel is further away
             zBuffer.setFloat(x, y, zVal);
@@ -138,6 +136,7 @@ final class ShaderUtil {
     static void setVOut(Vertex vIn, Material material, VertexOut out) {
         out.p_proj.set(RenderState.mvp.multiply4x4(vIn.vec));
         out.invW = 1f / out.p_proj.w;
+
         if (material.hasTexture()) {
             out.texCoord.set(scaleToBitmap(vIn.texCoord, material.getTexture().texture));
             out.texCoord.scale(out.invW);

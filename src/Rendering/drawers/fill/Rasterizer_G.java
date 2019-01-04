@@ -10,7 +10,8 @@ import util.Mathf.Mathf;
 import util.Mathf.Mathf3D.Vector3D;
 
 class Rasterizer_G {
-    private final GouruadInterpolants ROW_I_INTERPOLANTS = new GouruadInterpolants(new GouruadLerper_R());
+    private final GouruadLerper_R gouruadLerper_r = new GouruadLerper_R();
+    private final GouruadInterpolants ROW_I_INTERPOLANTS = new GouruadInterpolants(null);
     void rasterizeRow(GouruadInterpolants left, GouruadInterpolants right, int y, Vector3D fColor, Vector3D util) {
         setRowInterpolants(left);
 
@@ -24,11 +25,11 @@ class Rasterizer_G {
         }
 
         float invdX = 1f / (right.x - left.x);
-        RowLerperFactory.gouruadLerper(ROW_I_INTERPOLANTS.gouruadLerper_R, RenderState.material, left, right, invdX);
+        RowLerperFactory.gouruadLerper(gouruadLerper_r, RenderState.material, left, right, invdX);
 
         for (; ROW_I_INTERPOLANTS.xInt < to; ROW_I_INTERPOLANTS.xInt++) {
             fragShade(y, fColor, util);
-            ROW_I_INTERPOLANTS.gouruadLerper_R.lerp(ROW_I_INTERPOLANTS);
+            gouruadLerper_r.lerp(ROW_I_INTERPOLANTS);
         }
     }
 

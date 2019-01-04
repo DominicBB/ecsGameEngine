@@ -14,19 +14,16 @@ public class PhongInterpolants {
     public float p_ws_x, p_ws_y, p_ws_z;
     public float n_ws_x, n_ws_y, n_ws_z;
 
-    public PhongLerper_E phongLerper_e;
-    public PhongLerper_R phongLerper_r;
+    public final PhongLerper_E phongLerper_e;
 
     public PhongInterpolants(PhongLerper_E phongLerper_e) {
         this.phongLerper_e = phongLerper_e;
     }
 
-    public PhongInterpolants(PhongLerper_R phongLerper_r) {
-        this.phongLerper_r = phongLerper_r;
-    }
 
     public PhongInterpolants(float x, float z, float invW, float tex_u, float tex_v, float spec_u, float spec_v,
                              float p_ws_x, float p_ws_y, float p_ws_z, float n_ws_x, float n_ws_y, float n_ws_z) {
+        phongLerper_e = null;
         reset(x, z, invW, tex_u, tex_v, spec_u, spec_v, p_ws_x, p_ws_y, p_ws_z, n_ws_x, n_ws_y, n_ws_z);
     }
 

@@ -12,19 +12,16 @@ public class FlatInterpolants {
 
     public float spec_u, spec_v;
 
-    public FlatLerper_E flatLerper_e;
-    public FlatLerper_R flatLerper_r;
+    public final FlatLerper_E flatLerper_e;
 
     public FlatInterpolants(FlatLerper_E flatLerper_e) {
         this.flatLerper_e = flatLerper_e;
     }
 
-    public FlatInterpolants(FlatLerper_R flatLerper_r) {
-        this.flatLerper_r = flatLerper_r;
-    }
 
     public FlatInterpolants(float x, float z, float invW,
                             float tex_u, float tex_v, float spec_u, float spec_v) {
+        this.flatLerper_e = null;
         reset(x, z, invW, tex_u, tex_v, spec_u, spec_v);
     }
 
