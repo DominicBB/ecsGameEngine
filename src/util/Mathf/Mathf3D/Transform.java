@@ -4,25 +4,25 @@ import util.Mathf.Mathf3D.Bounds.AABoundingBox;
 
 public class Transform {
     private Quaternion rotation;
-    //private Vector3D rotation;
-    private Vector3D scale;
+    //private Vec4f rotation;
+    private Vec4f scale;
 
-    private Vector3D position;
+    private Vec4f position;
 
-    private Vector3D forwardDir;
-    private Vector3D upDir;
-    private Vector3D rightDir;
+    private Vec4f forwardDir;
+    private Vec4f upDir;
+    private Vec4f rightDir;
 
     private AABoundingBox aaBoundingBox;
 
 //    private float fYaw;
 
     public Transform() {
-        this.position = Vector3D.newZeros();
-        this.forwardDir = Vector3D.newForward();
-        this.upDir = Vector3D.newUp();
-        this.rightDir = Vector3D.newRight();
-        this.scale = Vector3D.newOnes();
+        this.position = Vec4f.newZeros();
+        this.forwardDir = Vec4f.newForward();
+        this.upDir = Vec4f.newUp();
+        this.rightDir = Vec4f.newRight();
+        this.scale = Vec4f.newOnes();
         this.rotation = Quaternion.newIdentity();
 
         this.aaBoundingBox = AABoundingBox.zeros();
@@ -36,7 +36,7 @@ public class Transform {
         position.z += z;
     }
 
-    public void translate(Vector3D position) {
+    public void translate(Vec4f position) {
         this.position.add(position);
     }
 
@@ -57,7 +57,7 @@ public class Transform {
      * @param angle in radians
      * @param axis of rotation
      */
-    public void rotate(float angle, Vector3D axis) {
+    public void rotate(float angle, Vec4f axis) {
         Quaternion newRot = new Quaternion(angle, axis);
         rotate(newRot);
     }
@@ -67,7 +67,7 @@ public class Transform {
         updateDirections(rotation);
     }
 
-    public void setRotation(float angle, Vector3D axis) {
+    public void setRotation(float angle, Vec4f axis) {
         Quaternion newRot = new Quaternion(angle, axis);
         setRotation(newRot);
     }
@@ -88,8 +88,8 @@ public class Transform {
 
     public Matrix4x4 composeWith(Transform transform2) {
         Quaternion newR = rotation.multiply(transform2.rotation);
-        Vector3D newS = scale.plus(transform2.scale);
-        Vector3D newT = position.plus(transform2.position);
+        Vec4f newS = scale.plus(transform2.scale);
+        Vec4f newT = position.plus(transform2.position);
 
         Matrix4x4 rot = Matrix4x4.newRotation(newR);
         Matrix4x4 compsedScale = Matrix4x4.newScale(newS);
@@ -106,43 +106,43 @@ public class Transform {
     }
 
     /**
-     * relative to Vector3D.UP,Vector3D.FORWARD,Vector3D.RIGHT
+     * relative to Vec4f.UP,Vec4f.FORWARD,Vec4f.RIGHT
      * @param rotation
      */
     private void setDirections(Quaternion rotation) {
-        this.upDir = rotation.rotate(Vector3D.UP);
-        this.forwardDir = rotation.rotate(Vector3D.FORWARD);
-        this.rightDir = rotation.rotate(Vector3D.RIGHT);
+        this.upDir = rotation.rotate(Vec4f.UP);
+        this.forwardDir = rotation.rotate(Vec4f.FORWARD);
+        this.rightDir = rotation.rotate(Vec4f.RIGHT);
     }
 
-    public void setForwardDir(Vector3D forwardDir) {
+    public void setForwardDir(Vec4f forwardDir) {
         this.forwardDir = forwardDir;
         this.upDir = calcUpFromDir(forwardDir);
         this.rightDir = upDir.crossProduct(forwardDir);
     }
 
-    public void setRightDir(Vector3D rightDir) {
+    public void setRightDir(Vec4f rightDir) {
         this.rightDir = rightDir;
         this.upDir = calcUpFromDir(rightDir);
         this.forwardDir = upDir.crossProduct(rightDir);
     }
 
-    public void setUpDir(Vector3D upDir) {
+    public void setUpDir(Vec4f upDir) {
         this.upDir = upDir;
         //TODO: need to test
-        this.forwardDir = Vector3D.FORWARD.minus(upDir.mul(Vector3D.FORWARD.dotProduct(upDir)));
+        this.forwardDir = Vec4f.FORWARD.minus(upDir.mul(Vec4f.FORWARD.dotProduct(upDir)));
         this.rightDir = upDir.crossProduct(forwardDir);
     }
 
-    public Vector3D getForwardDir() {
+    public Vec4f getForwardDir() {
         return forwardDir;
     }
 
-    public Vector3D getUpDir() {
+    public Vec4f getUpDir() {
         return upDir;
     }
 
-    public Vector3D getRightDir() {
+    public Vec4f getRightDir() {
         return rightDir;
     }
 
@@ -150,11 +150,11 @@ public class Transform {
         return rotation;
     }
 
-    public Vector3D getScale() {
+    public Vec4f getScale() {
         return scale;
     }
 
-    public Vector3D getPosition() {
+    public Vec4f getPosition() {
         return position;
     }
 
@@ -164,11 +164,11 @@ public class Transform {
         this.position.z = z;
     }
 
-    public void setPosition(Vector3D position) {
+    public void setPosition(Vec4f position) {
         this.position = position;
     }
 
-    private Vector3D calcUpFromDir(Vector3D dir) {
-        return Vector3D.UP.minus(dir.mul(Vector3D.UP.dotProduct(dir)));
+    private Vec4f calcUpFromDir(Vec4f dir) {
+        return Vec4f.UP.minus(dir.mul(Vec4f.UP.dotProduct(dir)));
     }
 }

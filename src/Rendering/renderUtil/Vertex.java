@@ -1,25 +1,25 @@
 package Rendering.renderUtil;
 
-import util.Mathf.Mathf2D.Vector2D;
+import util.Mathf.Mathf2D.Vec2f;
 import util.Mathf.Mathf3D.Matrix4x4;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4f;
 
 public class Vertex {
-    public Vector3D vec;
-    public Vector3D normal;
-    public Vector2D texCoord;
-    public Vector2D specCoord;
+    public Vec4f vec;
+    public Vec4f normal;
+    public Vec2f texCoord;
+    public Vec2f specCoord;
 
 
-    public Vertex(Vector3D vec) {
-        this(vec, Vector2D.newZeros());
+    public Vertex(Vec4f vec) {
+        this(vec, Vec2f.newZeros());
     }
 
-    public Vertex(Vector3D vec, Vector2D texCoord) {
-        this(vec, texCoord, Vector3D.newZeros());
+    public Vertex(Vec4f vec, Vec2f texCoord) {
+        this(vec, texCoord, Vec4f.newZeros());
     }
 
-    public Vertex(Vector3D vec, Vector2D textCoord, Vector3D normal) {
+    public Vertex(Vec4f vec, Vec2f textCoord, Vec4f normal) {
         this.vec = vec;
         this.normal = normal;
         this.texCoord = textCoord;

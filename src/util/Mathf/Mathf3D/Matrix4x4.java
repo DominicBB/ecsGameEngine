@@ -13,10 +13,10 @@ public class Matrix4x4 {
     //pseudo inverse of pointAt
     public static Matrix4x4 pointAtToLookAt(Matrix4x4 pointAtMatrix) {
         Matrix4x4 m = pointAtMatrix;
-        Vector3D a = new Vector3D(m.values[0][0], m.values[0][1], m.values[0][2]);
-        Vector3D b = new Vector3D(m.values[1][0], m.values[1][1], m.values[1][2]);
-        Vector3D c = new Vector3D(m.values[2][0], m.values[2][1], m.values[2][2]);
-        Vector3D t = new Vector3D(m.values[3][0], m.values[3][1], m.values[3][2]);
+        Vec4f a = new Vec4f(m.values[0][0], m.values[0][1], m.values[0][2]);
+        Vec4f b = new Vec4f(m.values[1][0], m.values[1][1], m.values[1][2]);
+        Vec4f c = new Vec4f(m.values[2][0], m.values[2][1], m.values[2][2]);
+        Vec4f t = new Vec4f(m.values[3][0], m.values[3][1], m.values[3][2]);
         return new Matrix4x4(new float[][]{
                 {m.values[0][0], m.values[1][0], m.values[2][0], 0.0f},
                 {m.values[0][1], m.values[1][1], m.values[2][1], 0.0f},
@@ -43,28 +43,28 @@ public class Matrix4x4 {
         });
     }
 
-    /*public Vector3D multiply4x4(Vector3D v) {
+    /*public Vec4f multiply4x4(Vec4f v) {
         float x = (v.x * values[0][0] + v.y * values[0][1] + v.z * values[0][2]) + (v.w * values[0][3]);
         float y = (v.x * values[1][0] + v.y * values[1][1] + v.z * values[1][2]) + (v.w * values[1][3]);
         float z = (v.x * values[2][0] + v.y * values[2][1] + v.z * values[2][2]) + (v.w * values[2][3]);
         float w = (v.x * values[3][0] + v.y * values[3][1] + v.z * values[3][2]) + (v.w * values[3][3]);
 
-        return new Vector3D(x, y, z, w);
+        return new Vec4f(x, y, z, w);
     }*/
-    public Vector3D multiply4x4(Vector3D v) {
+    public Vec4f multiply4x4(Vec4f v) {
         float x = (v.x * values[0][0] + v.y * values[1][0] + v.z * values[2][0]) + (v.w * values[3][0]);
         float y = (v.x * values[0][1] + v.y * values[1][1] + v.z * values[2][1]) + (v.w * values[3][1]);
         float z = (v.x * values[0][2] + v.y * values[1][2] + v.z * values[2][2]) + (v.w * values[3][2]);
         float w = (v.x * values[0][3] + v.y * values[1][3] + v.z * values[2][3]) + (v.w * values[3][3]);
 
-        return new Vector3D(x, y, z, w);
+        return new Vec4f(x, y, z, w);
     }
 
     public Triangle multiply4x4(Triangle t) {
         return new Triangle(multiply4x4(t.vectors[0]), multiply4x4(t.vectors[1]), multiply4x4(t.vectors[2]), t);
     }
 
-    public static Matrix4x4 newPointAt(Vector3D f, Vector3D r, Vector3D up, Vector3D offset) {
+    public static Matrix4x4 newPointAt(Vec4f f, Vec4f r, Vec4f up, Vec4f offset) {
         return new Matrix4x4(
                 new float[][]{
                         {r.x, up.x, f.x, offset.x},
@@ -73,7 +73,7 @@ public class Matrix4x4 {
                         {0.0f, 0.0f, 0.0f, 1.0f}});
     }
 
-    public static Matrix4x4 newViewToWorld(Vector3D f, Vector3D r, Vector3D up, Vector3D offset) {
+    public static Matrix4x4 newViewToWorld(Vec4f f, Vec4f r, Vec4f up, Vec4f offset) {
         return new Matrix4x4(
                 new float[][]{
                         {r.x, up.x, f.x, offset.x},
@@ -82,7 +82,7 @@ public class Matrix4x4 {
                         {0.0f, 0.0f, 0.0f, 1.0f}});
     }
 
-    /*public static Matrix4x4 newLookAt(Vector3D f, Vector3D r, Vector3D up, Vector3D offset) {
+    /*public static Matrix4x4 newLookAt(Vec4f f, Vec4f r, Vec4f up, Vec4f offset) {
         return new Matrix4x4(
                 new float[][]{
                         {r.x, r.y, r.z, 0f},
@@ -91,7 +91,7 @@ public class Matrix4x4 {
                         {offset.x, -offset.y, offset.z, 1.0f}});
     }*/
 
-    /*public static Matrix4x4 newLookAt(Vector3D f, Vector3D r, Vector3D up, Vector3D offset) {
+    /*public static Matrix4x4 newLookAt(Vec4f f, Vec4f r, Vec4f up, Vec4f offset) {
         return new Matrix4x4(
                 new float[][]{
                         {r.x, r.y, r.z, 0f},
@@ -100,7 +100,7 @@ public class Matrix4x4 {
                         {-offset.dotProduct(r), -offset.dotProduct(up), -offset.dotProduct(f), 1.0f}});
     }*/
 
-    public static Matrix4x4 newLookAt(Vector3D f, Vector3D r, Vector3D up, Vector3D offset) {
+    public static Matrix4x4 newLookAt(Vec4f f, Vec4f r, Vec4f up, Vec4f offset) {
         return new Matrix4x4(
                 new float[][]{
                         {r.x, up.x, f.x, 0f},
@@ -142,7 +142,7 @@ public class Matrix4x4 {
                 });
     }
 
-    public static Matrix4x4 newTranslation(Vector3D translation) {
+    public static Matrix4x4 newTranslation(Vec4f translation) {
         return newTranslation(translation.x, translation.y, translation.z);
     }
 
@@ -155,7 +155,7 @@ public class Matrix4x4 {
                         {tx, ty, tz, 1.0f}});
     }
 
-    public static Matrix4x4 newScale(Vector3D translation) {
+    public static Matrix4x4 newScale(Vec4f translation) {
         return newScale(translation.x, translation.y, translation.z);
     }
 
@@ -258,7 +258,7 @@ public class Matrix4x4 {
         });
     }
 
-    public static Matrix4x4 newRotation(Vector3D r) {
+    public static Matrix4x4 newRotation(Vec4f r) {
         Matrix4x4 rz = Matrix4x4.newZRotation(r.z);
         Matrix4x4 rx = Matrix4x4.newXRotation(r.x);
         Matrix4x4 ry = Matrix4x4.newYRotation(r.y);

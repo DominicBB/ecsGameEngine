@@ -1,43 +1,41 @@
 package Rendering.renderUtil.Edges;
 
-import Rendering.renderUtil.VertexOut;
-import util.Mathf.Mathf;
+import Rendering.drawers.fill.Rasterfi;
+import Rendering.renderUtil.VOutfi;
 
 public class Edge {
-    public VertexOut v1, v2;
+    public VOutfi v1, v2;
 
     public int yStart;
     public int yEnd;
 
     public int deltaYInt;
-    public float dy;
+    public int dy;
     public boolean isOnLeft;
 
-    public Edge(VertexOut v1, VertexOut v2, boolean isOnLeft, float dy) {
+    Edge(VOutfi v1, VOutfi v2, boolean isOnLeft, int dy) {
         setUp(v1, v2, isOnLeft, dy);
     }
 
-    public final void reuse(VertexOut v1, VertexOut v2, boolean isOnLeft, float dy) {
+    final void reuse(VOutfi v1, VOutfi v2, boolean isOnLeft, int dy) {
         setUp(v1, v2, isOnLeft, dy);
-
     }
 
-    private void setUp(VertexOut v1, VertexOut v2, boolean isOnLeft, float dy) {
+    private void setUp(VOutfi v1, VOutfi v2, boolean isOnLeft, int dy) {
         this.v1 = v1;
         this.v2 = v2;
         this.dy = dy;
         this.isOnLeft = isOnLeft;
-        setYBounds(v1, v2);
+        setYBounds(v1.p_proj.y, v2.p_proj.y);
     }
 
-    private void setYBounds(VertexOut v1, VertexOut v2) {
-        yStart = Mathf.fastCeil(v1.p_proj.y);
-        yEnd = Mathf.fastCeil(v2.p_proj.y);
+    private void setYBounds(int y1, int y2) {
+        yStart = Rasterfi.ceil_destroy_format(y1);
+        yEnd = Rasterfi.ceil_destroy_format(y2);
         deltaYInt = yEnd - yStart;
     }
 
     private Edge() {
-
     }
 
     public static Edge newEmpty() {

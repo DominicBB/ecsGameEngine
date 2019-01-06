@@ -5,7 +5,7 @@ import Rendering.renderUtil.RenderState;
 import Rendering.renderUtil.interpolation.LerperFactory;
 import Rendering.renderUtil.interpolation.gouruad.GouruadInterpolants;
 import Rendering.renderUtil.interpolation.gouruad.GouruadLerper_E;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4fi;
 
 public class TriangleRasterizer_G implements ITriRasterizer {
     private final Rasterizer_G rasterizer_G = new Rasterizer_G();
@@ -14,9 +14,9 @@ public class TriangleRasterizer_G implements ITriRasterizer {
             gI2 = new GouruadInterpolants(new GouruadLerper_E()),
             gI3 = new GouruadInterpolants(new GouruadLerper_E());
 
-    private final Vector3D fragColor, fragUtil;
+    private final Vec4fi fragColor, fragUtil;
 
-    public TriangleRasterizer_G(Vector3D fragColor, Vector3D fragUtil) {
+    public TriangleRasterizer_G(Vec4fi fragColor, Vec4fi fragUtil) {
         this.fragColor = fragColor;
         this.fragUtil = fragUtil;
     }
@@ -27,9 +27,9 @@ public class TriangleRasterizer_G implements ITriRasterizer {
         gI2.reset(bottom.v1);
         gI3.reset(top.v1);
 
-        LerperFactory.gouruadLerper(RenderState.material, gI1.gouruadLerper_E, tallest.v1, tallest.v2, 1f / tallest.dy);
-        LerperFactory.gouruadLerper(RenderState.material, gI2.gouruadLerper_E, bottom.v1, bottom.v2, 1f / bottom.dy);
-        LerperFactory.gouruadLerper(RenderState.material, gI3.gouruadLerper_E, top.v1, top.v2, 1f / top.dy);
+        LerperFactory.gouruadLerper(RenderState.material, gI1.gouruadLerper_E, tallest.v1, tallest.v2, Rasterfi.inverse(tallest.dy));
+        LerperFactory.gouruadLerper(RenderState.material, gI2.gouruadLerper_E, bottom.v1, bottom.v2, Rasterfi.inverse(bottom.dy));
+        LerperFactory.gouruadLerper(RenderState.material, gI3.gouruadLerper_E, top.v1, top.v2, Rasterfi.inverse(top.dy));
 
         scan(gI1, gI2, gI3, tallest.isOnLeft, bottom.yStart, top.yStart, bottom.deltaYInt, top.deltaYInt);
     }
@@ -38,7 +38,7 @@ public class TriangleRasterizer_G implements ITriRasterizer {
     public void fillTriangle(Edge left, Edge right) {
         gI1.reset(left.v1);
         gI2.reset(right.v1);
-        float factor = 1f / left.dy;
+        int factor = Rasterfi.inverse(left.dy);
 
         LerperFactory.gouruadLerper(RenderState.material, gI1.gouruadLerper_E, left.v1, left.v2, factor);
         LerperFactory.gouruadLerper(RenderState.material, gI2.gouruadLerper_E, right.v1, right.v2, factor);
@@ -63,7 +63,6 @@ public class TriangleRasterizer_G implements ITriRasterizer {
             scanSegment_G(bottom, tallest, bottomStarty, bottomdy);
             scanSegment_G(top, tallest, topStarty, topdy);
         }
-
     }
 
     private void scanSegment_G(GouruadInterpolants left, GouruadInterpolants right, int y, int yChange) {

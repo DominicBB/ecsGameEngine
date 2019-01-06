@@ -1,16 +1,16 @@
 package Rendering.renderUtil.interpolation.flat;
 
-import Rendering.renderUtil.VertexOut;
+import Rendering.renderUtil.VOutfi;
 
 public class FlatInterpolants {
     public int xInt;
 
-    public float x, z;
-    public float invW;
+    public int x, z;
+    public int invW;
 
-    public float tex_u, tex_v;
+    public int tex_u, tex_v;
 
-    public float spec_u, spec_v;
+    public int spec_u, spec_v;
 
     public final FlatLerper_E flatLerper_e;
 
@@ -19,18 +19,18 @@ public class FlatInterpolants {
     }
 
 
-    public FlatInterpolants(float x, float z, float invW,
-                            float tex_u, float tex_v, float spec_u, float spec_v) {
+    public FlatInterpolants(int x, int z, int invW,
+                            int tex_u, int tex_v, int spec_u, int spec_v) {
         this.flatLerper_e = null;
         reset(x, z, invW, tex_u, tex_v, spec_u, spec_v);
     }
 
-    public void reset(VertexOut v) {
+    public void reset(VOutfi v) {
         reset(v.p_proj.x, v.p_proj.z, v.invW, v.texCoord.x, v.texCoord.y, v.specCoord.x, v.specCoord.y);
     }
 
-    public void reset(float x, float z, float invW,
-                      float tex_u, float tex_v, float spec_u, float spec_v) {
+    public void reset(int x, int z, int invW,
+                      int tex_u, int tex_v, int spec_u, int spec_v) {
         this.x = x;
         this.z = z;
         this.invW = invW;

@@ -1,17 +1,17 @@
 package util.Mathf.Mathf3D.Bounds;
 
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4f;
 
 public class BoundingSphere extends Bounds{
 
-    private Vector3D center;
+    private Vec4f center;
     private float radius;
-    public BoundingSphere(Vector3D center, float radius){
+    public BoundingSphere(Vec4f center, float radius){
         this.center = center;
         this.radius = radius;
     }
     @Override
-    public boolean contains(Vector3D position) {
+    public boolean contains(Vec4f position) {
         float distance = position.minus(center).magnitude();
         return distance <= radius;
     }
@@ -19,7 +19,7 @@ public class BoundingSphere extends Bounds{
 
 
     @Override
-    public Vector3D getCenter() {
+    public Vec4f getCenter() {
         return center;
     }
 

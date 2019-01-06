@@ -1,12 +1,14 @@
 package Rendering.Materials;
 
+import Rendering.drawers.fill.Rasterfi;
 import Rendering.renderUtil.Bitmaps.BitmapABGR;
-import Rendering.renderUtil.Colorf;
 import Rendering.renderUtil.Bitmaps.Texture;
+import Rendering.renderUtil.Colorf;
 import Rendering.shaders.interfaces.IGeometryShader;
 import Rendering.shaders.interfaces.IShader;
 import util.Mathf.Mathf;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4f;
+import util.Mathf.Mathf3D.Vec4fi;
 
 public class Material {
     private String name;
@@ -22,9 +24,10 @@ public class Material {
     private float diffuseFactor = 1f;
     private float specularFactor = 1f;
     private float specularPower = 100f;
-    private Vector3D defualtSpecularColor = Vector3D.newOnes();
+    private Vec4f defualtSpecularColor = Vec4f.newOnes();
 
-    private Vector3D color;
+    private Vec4f color;
+    private Vec4fi colorfi;
 
     private boolean hasGeometryShader;
     private boolean isSpecular;
@@ -44,7 +47,8 @@ public class Material {
         this.diffuseFactor = diffuseFactor;
         this.specularFactor = specularFactor;
 
-        this.color = Vector3D.newOnes();
+        this.color = Vec4f.newOnes();
+        this.colorfi = new Vec4fi(color, Rasterfi.D_SHIFT);
 
         this.isDiffuse = true;
         this.isAmbient = true;
@@ -153,20 +157,25 @@ public class Material {
         this.specularPower = specularPower;
     }
 
-    public Vector3D getDefualtSpecularColor() {
+    public Vec4f getDefualtSpecularColor() {
         return defualtSpecularColor;
     }
 
-    public void setDefualtSpecularColor(Vector3D defualtSpecularColor) {
+    public void setDefualtSpecularColor(Vec4f defualtSpecularColor) {
         this.defualtSpecularColor = Colorf.clamp(defualtSpecularColor);
     }
 
-    public Vector3D getColor() {
+    public Vec4f getColor() {
         return color;
     }
 
-    public void setColor(Vector3D color) {
+    public Vec4fi getColorfi() {
+        return colorfi;
+    }
+
+    public void setColor(Vec4f color) {
         this.color = Colorf.clamp(color);
+        this.colorfi = new Vec4fi(color, Rasterfi.D_SHIFT);
     }
 
     public boolean isAmbient() {
@@ -213,7 +222,7 @@ public class Material {
 
     public Material(String name, IShader shader, IGeometryShader geometryShader, Texture texture,
                     BitmapABGR specularMap, BitmapABGR normalMap, float ambientFactor, float diffuseFactor,
-                    float specularFactor, float specularPower, Vector3D defualtSpecularColor, Vector3D color,
+                    float specularFactor, float specularPower, Vec4f defualtSpecularColor, Vec4f color,
                     boolean isSpecular, boolean isDiffuse, boolean isAmbient) {
         this.name = name;
         this.shader = shader;

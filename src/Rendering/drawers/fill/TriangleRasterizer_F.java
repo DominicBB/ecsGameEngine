@@ -5,7 +5,7 @@ import Rendering.renderUtil.RenderState;
 import Rendering.renderUtil.interpolation.LerperFactory;
 import Rendering.renderUtil.interpolation.flat.FlatInterpolants;
 import Rendering.renderUtil.interpolation.flat.FlatLerper_E;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4fi;
 
 public class TriangleRasterizer_F implements ITriRasterizer {
     private final Rasterizer_F rasterizer_f = new Rasterizer_F();
@@ -14,10 +14,10 @@ public class TriangleRasterizer_F implements ITriRasterizer {
             gI2 = new FlatInterpolants(new FlatLerper_E()),
             gI3 = new FlatInterpolants(new FlatLerper_E());
 
-    private final Vector3D fragColor, fragUtil;
+    private final Vec4fi fragColor, fragUtil;
 
 
-    public TriangleRasterizer_F(Vector3D fragColor, Vector3D fragUtil) {
+    public TriangleRasterizer_F(Vec4fi fragColor, Vec4fi fragUtil) {
         this.fragColor = fragColor;
         this.fragUtil = fragUtil;
     }
@@ -30,9 +30,9 @@ public class TriangleRasterizer_F implements ITriRasterizer {
         gI2.reset(bottom.v1);
         gI3.reset(top.v1);
 
-        LerperFactory.flatLerper(RenderState.material, gI1.flatLerper_e, tallest.v1, tallest.v2, 1f / tallest.dy);
-        LerperFactory.flatLerper(RenderState.material, gI2.flatLerper_e, bottom.v1, bottom.v2, 1f / bottom.dy);
-        LerperFactory.flatLerper(RenderState.material, gI3.flatLerper_e, top.v1, top.v2, 1f / top.dy);
+        LerperFactory.flatLerper(RenderState.material, gI1.flatLerper_e, tallest.v1, tallest.v2, Rasterfi.inverse(tallest.dy));
+        LerperFactory.flatLerper(RenderState.material, gI2.flatLerper_e, bottom.v1, bottom.v2, Rasterfi.inverse(bottom.dy));
+        LerperFactory.flatLerper(RenderState.material, gI3.flatLerper_e, top.v1, top.v2, Rasterfi.inverse(top.dy));
 
         scan(gI1, gI2, gI3, tallest.isOnLeft, bottom.yStart, top.yStart, bottom.deltaYInt, top.deltaYInt);
     }
@@ -43,7 +43,7 @@ public class TriangleRasterizer_F implements ITriRasterizer {
 
         gI1.reset(left.v1);
         gI2.reset(right.v1);
-        float factor = 1f / left.dy;
+        int factor = Rasterfi.inverse(left.dy);
 
         LerperFactory.flatLerper(RenderState.material, gI1.flatLerper_e, left.v1, left.v2, factor);
         LerperFactory.flatLerper(RenderState.material, gI2.flatLerper_e, right.v1, right.v2, factor);
@@ -82,7 +82,7 @@ public class TriangleRasterizer_F implements ITriRasterizer {
         }
     }
 
-    private void setTriData(Edge edge){
+    private void setTriData(Edge edge) {
         rasterizer_f.surfaceColor = edge.v1.surfaceColor;
         rasterizer_f.spec = edge.v1.spec;
     }

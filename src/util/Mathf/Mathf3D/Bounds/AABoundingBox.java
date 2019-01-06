@@ -1,16 +1,16 @@
 package util.Mathf.Mathf3D.Bounds;
 
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4f;
 
 public class AABoundingBox extends Bounds {
 
-    private Vector3D halfSize;
-    private Vector3D center;
-    private Vector3D size;
+    private Vec4f halfSize;
+    private Vec4f center;
+    private Vec4f size;
 
 
 
-    public AABoundingBox(Vector3D center, Vector3D size) {
+    public AABoundingBox(Vec4f center, Vec4f size) {
         this.halfSize = size.divide(2f);
 
         this.size = size;
@@ -18,14 +18,14 @@ public class AABoundingBox extends Bounds {
     }
 
     /*public AABoundingBox(float xMin, float xMax, float yMin, float yMax, float zMin, float zMax) {
-        maxExtents = new Vector3D(xMax, yMax, zMax);
-        minExtents = new Vector3D(xMin, yMin, zMin);
+        maxExtents = new Vec4f(xMax, yMax, zMax);
+        minExtents = new Vec4f(xMin, yMin, zMin);
     }*/
 
     private AABoundingBox() {
-        center = Vector3D.newZeros();
-        size = Vector3D.newZeros();
-        halfSize = Vector3D.newZeros();
+        center = Vec4f.newZeros();
+        size = Vec4f.newZeros();
+        halfSize = Vec4f.newZeros();
     }
 
     public static AABoundingBox zeros() {
@@ -33,36 +33,36 @@ public class AABoundingBox extends Bounds {
     }
 
     @Override
-    public boolean contains(Vector3D position) {
-        Vector3D minExtents = getMinExtents();
-        Vector3D maxExtents = getMaxExtents();
+    public boolean contains(Vec4f position) {
+        Vec4f minExtents = getMinExtents();
+        Vec4f maxExtents = getMaxExtents();
         return position.x >= minExtents.x && position.x <= maxExtents.x
                 && position.y >= minExtents.y && position.y <= maxExtents.y
                 && position.z >= minExtents.z && position.z <= maxExtents.z;
     }
 
     @Override
-    public Vector3D getCenter() {
+    public Vec4f getCenter() {
         return center;
     }
 
-    public void setCenter(Vector3D center) {
+    public void setCenter(Vec4f center) {
         this.center = center;
     }
 
-    public Vector3D getMaxExtents() {
+    public Vec4f getMaxExtents() {
         return center.plus(halfSize);
     }
 
-    public Vector3D getMinExtents() {
+    public Vec4f getMinExtents() {
         return center.minus(halfSize);
     }
 
-    public Vector3D getHalfSize() {
+    public Vec4f getHalfSize() {
         return halfSize;
     }
 
-    public Vector3D getSize() {
+    public Vec4f getSize() {
         return size;
     }
 }

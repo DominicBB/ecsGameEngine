@@ -1,12 +1,14 @@
 package Rendering.renderUtil;
 
 import util.Mathf.Mathf;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4f;
+import util.Mathf.Mathf3D.Vec4fi;
 import util.Mathf.Mathf3D.Vector3DInt;
 
 public class Colorf {
-    public static final Vector3D minColor = new Vector3D(0f, 0f, 0f, 255f);
-    public static final Vector3D maxColor = new Vector3D(255f, 255f, 255f, 255f);
+    public static final Vec4f minColor = new Vec4f(0f, 0f, 0f, 255f);
+    public static final Vec4f maxColor = new Vec4f(255f, 255f, 255f, 255f);
+    public static final Vec4fi maxColorfp = new Vec4fi(255, 255, 255, 255, 0);
 
     //TESTING STUFF
     private static final int zero = 0;
@@ -19,23 +21,27 @@ public class Colorf {
     private static final IntMapper[] ORSFInt = new IntMapper[]{getC, get255, get255};
     //TESTING STUFF END
 
-    public static Vector3D clamp(Vector3D color) {
+    public static Vec4f clamp(Vec4f color) {
         return Mathf.clamp(minColor, color, maxColor);
     }
 
-    public static void clampNonAlloc(Vector3D color) {
+    public static void clampNonAlloc(Vec4f color) {
         Mathf.clampNonAlloc(minColor, color, maxColor);
     }
 
-    public static void clampMinNonAlloc(Vector3D color) {
+    public static void clampMinNonAlloc(Vec4f color) {
         Mathf.clampMinNonAlloc(minColor, color);
     }
 
-    public static void clampMaxNonAlloc(Vector3D color) {
+    public static void clampMaxNonAlloc(Vec4f color) {
         Mathf.clampMaxNonAlloc(color, maxColor);
     }
 
-    public static void clampMaxNonAllocBit(Vector3D color, Vector3DInt out) {
+    public static void clampMaxNonAlloc(Vec4fi color) {
+        Mathf.clampMaxNonAlloc(color, maxColorfp);
+    }
+
+    public static void clampMaxNonAllocBit(Vec4f color, Vector3DInt out) {
        /* int r = (int) color.x;
         int g = (int) color.y;
         int b = (int) color.z;
@@ -69,9 +75,9 @@ public class Colorf {
 
     }
 
-    public static final Vector3D WHITE = new Vector3D(255f, 255f, 255f);
-    public static final Vector3D BLUE = new Vector3D(0f, 0f, 255f);
-    public static final Vector3D GREEN = new Vector3D(0f, 255f, 0f);
-    public static final Vector3D RED = new Vector3D(255f, 0f, 0f);
+    public static final Vec4f WHITE = new Vec4f(255f, 255f, 255f);
+    public static final Vec4f BLUE = new Vec4f(0f, 0f, 255f);
+    public static final Vec4f GREEN = new Vec4f(0f, 255f, 0f);
+    public static final Vec4f RED = new Vec4f(255f, 0f, 0f);
 
 }

@@ -1,17 +1,17 @@
 package Rendering.renderingSystems;
 
 import Rendering.Clipping.ClippingSystem;
-import Rendering.renderUtil.RenderState;
 import Rendering.Renderers.RendererWireFrame;
+import Rendering.renderUtil.RenderState;
 import components.Camera;
 import components.Component;
 import components.RenderableMesh;
 import components.TransformComponent;
 import core.EntityFactory;
-import core.display.Window;
 import core.coreSystems.EntityGrabberSystem;
 import core.coreSystems.SystemCommunicator;
-import util.FloatBuffer;
+import core.display.Window;
+import util.IntBuffer;
 import util.Mathf.Mathf3D.Bounds.AABoundingBox;
 import util.Mathf.Mathf3D.Matrix4x4;
 import util.Mathf.Mathf3D.Transform;
@@ -36,7 +36,7 @@ public class RenderSystem extends EntityGrabberSystem {
     private void initRenderState(){
         RenderState.camera = EntityFactory.createCamera(new Camera(), new Transform());
         RenderState.createLightingState();
-        RenderState.zBuffer = new FloatBuffer(Window.defaultWidth, Window.defaultHeight);
+        RenderState.zBuffer = new IntBuffer(Window.defaultWidth, Window.defaultHeight);
     }
 
     private void initRenderers() {
@@ -50,7 +50,7 @@ public class RenderSystem extends EntityGrabberSystem {
     @Override
     public void update() {
 //        timeStamp = System.currentTimeMillis();
-        RenderState.zBuffer.resetPositiveInf();
+        RenderState.zBuffer.resetMaxVal();
         RenderState.colorBuffer.clearToBlack();
 
         Matrix4x4 projMatrix = constructProjMatrix(RenderState.camera);

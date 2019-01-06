@@ -2,24 +2,24 @@ package Rendering.drawers.fill;
 
 import Rendering.renderUtil.Edges.Edge;
 import Rendering.renderUtil.Edges.EdgeFactory;
-import Rendering.renderUtil.VertexOut;
-import Rendering.renderUtil.threading.threadSaftey.RenderLocks;
+import Rendering.renderUtil.VOutfi;
 import Rendering.shaders.ShaderType;
-import util.FloatWrapper;
-import util.Mathf.Mathf;
+import util.IntWrapper;
 import util.Mathf.Mathf2D.Bounds2D.AABoundingRect;
 import util.Mathf.Mathf3D.Triangle;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4fi;
 
 import java.util.List;
 
 
 public class TriangleRasterizer {
-    private final Edge e1 = Edge.newEmpty(), e2 = Edge.newEmpty(), e3 = Edge.newEmpty();
-    private final VertexOut[] edgeVertices = new VertexOut[6];
-    private final FloatWrapper xMax = new FloatWrapper(0f), xMin = new FloatWrapper(0f);
 
-    private final Vector3D fragColor = Vector3D.newZeros(), fragUtil = Vector3D.newZeros();
+
+    private final Edge e1 = Edge.newEmpty(), e2 = Edge.newEmpty(), e3 = Edge.newEmpty();
+    private final VOutfi[] edgeVertices = new VOutfi[6];
+    private final IntWrapper xMax = new IntWrapper(0), xMin = new IntWrapper(0);
+
+    private final Vec4fi fragColor = Vec4fi.newZeros(Rasterfi.D_SHIFT), fragUtil = Vec4fi.newZeros(Rasterfi.D_SHIFT);
     private final TriangleRasterizer_G triangleRasterizer_g = new TriangleRasterizer_G(fragColor, fragUtil);
     private final TriangleRasterizer_F triangleRasterizer_f = new TriangleRasterizer_F(fragColor, fragUtil);
     private final TriangleRasterizer_P triangleRasterizer_p = new TriangleRasterizer_P(fragColor, fragUtil);
@@ -31,13 +31,13 @@ public class TriangleRasterizer {
 
     private AABoundingRect boundingRect;
 
-    public void fillTriangle(VertexOut v1, VertexOut v2, VertexOut v3) {
+    public void fillTriangle(VOutfi v1, VOutfi v2, VOutfi v3) {
         setUpEdges(v1, v2, v3);
     }
 
-    private void setUpEdges(VertexOut maxY, VertexOut midY, VertexOut minY) {
+    private void setUpEdges(VOutfi maxY, VOutfi midY, VOutfi minY) {
         int eIndex = 0;
-        VertexOut temp;
+        VOutfi temp;
         if (maxY.p_proj.y < midY.p_proj.y) {
             temp = maxY;
             maxY = midY;
@@ -56,27 +56,27 @@ public class TriangleRasterizer {
             midY = temp;
         }
 
-        float ceil1 = (float) Mathf.fastCeil(maxY.p_proj.y);
-        float ceil2 = (float) Mathf.fastCeil(midY.p_proj.y);
-        float ceil3 = (float) Mathf.fastCeil(minY.p_proj.y);
-        float dy1 = ceil1 - ceil3;
-        float dy2 = ceil2 - ceil3;
-        float dy3 = ceil1 - ceil2;
+        int ceil_maxY = Rasterfi.ceil(maxY.p_proj.y);
+        int ceil_midY = Rasterfi.ceil(midY.p_proj.y);
+        int ceil_minY = Rasterfi.ceil(minY.p_proj.y);
+        int dy1 = ceil_maxY - ceil_minY;
+        int dy2 = ceil_midY - ceil_minY;
+        int dy3 = ceil_maxY - ceil_midY;
 
         int horizontalLineCount = 0;
-        if (dy1 == 0.0f)
+        if (dy1 == 0)
             ++horizontalLineCount;
         else {
             edgeVertices[eIndex++] = minY;
             edgeVertices[eIndex++] = maxY;
         }
-        if (dy2 == 0.0f)
+        if (dy2 == 0)
             ++horizontalLineCount;
         else {
             edgeVertices[eIndex++] = minY;
             edgeVertices[eIndex++] = midY;
         }
-        if (dy3 == 0.0f)
+        if (dy3 == 0)
             ++horizontalLineCount;
         else {
             edgeVertices[eIndex++] = midY;
@@ -85,7 +85,7 @@ public class TriangleRasterizer {
 
 
         if (horizontalLineCount >= 2) {
-            boundingRect.set(0f, 0f, 0, 0f);
+//            boundingRect.set(0f, 0f, 0, 0f);
             return;
         }
 
@@ -98,25 +98,25 @@ public class TriangleRasterizer {
         setUpForNoHorizontal(maxY, midY, minY, dy1, dy2, dy3);
     }
 
-    private void setUpForNoHorizontal(VertexOut maxY, VertexOut midY, VertexOut minY, float dy1, float dy2, float dy3) {
-        boolean isOnLeft = Triangle.z_crossProd(minY.p_proj, maxY.p_proj, midY.p_proj) < 0f;
-        boundingRect.set(maxY.p_proj.y, minY.p_proj.y, xMax.value, xMin.value);
+    private void setUpForNoHorizontal(VOutfi maxY, VOutfi midY, VOutfi minY, int dy1, int dy2, int dy3) {
+        boolean isOnLeft = Triangle.z_crossProd(minY.p_proj, maxY.p_proj, midY.p_proj) < 0;
+//        boundingRect.set(maxY.p_proj.y, minY.p_proj.y, xMax.value, xMin.value);
 
-        if (RenderLocks.BRintersect()) {
+        /*if (RenderLocks.BRintersect()) {
             storeEdges(maxY, midY, minY, dy1, dy2, dy3, isOnLeft);
             return;
-        }
+        }*/
         reuseEdges(maxY, midY, minY, dy1, dy2, dy3, isOnLeft);
 
         scanEdge(e1, e2, e3);
     }
 
     private void setUpForOneHorizontal() {
-        VertexOut v1 = edgeVertices[0], v2 = edgeVertices[1], v3 = edgeVertices[2], v4 = edgeVertices[3];
+        VOutfi v1 = edgeVertices[0], v2 = edgeVertices[1], v3 = edgeVertices[2], v4 = edgeVertices[3];
 
-        float dy1 = v2.p_proj.y - v1.p_proj.y;
-        float dy2 = v4.p_proj.y - v3.p_proj.y;
-        float yMax, yMin;
+        int dy1 = v2.p_proj.y - v1.p_proj.y;
+        int dy2 = v4.p_proj.y - v3.p_proj.y;
+        int yMax, yMin;
         if (v2.p_proj.y > v4.p_proj.y) {
             yMax = v2.p_proj.y;
             yMin = v4.p_proj.y;
@@ -128,21 +128,21 @@ public class TriangleRasterizer {
         boolean isOnLeft = v1.p_proj.x < v3.p_proj.x;
         isOnLeft |= v2.p_proj.x < v4.p_proj.x;
 
-        boundingRect.set(yMax, yMin, xMax.value, xMin.value);
+//        boundingRect.set(yMax, yMin, xMax.value, xMin.value);
 
-        if (RenderLocks.BRintersect()) {
+        /*if (RenderLocks.BRintersect()) {
             edgesTODODouble.add(EdgeFactory.createEdge(v1, v2, dy1, isOnLeft));
             edgesTODODouble.add(EdgeFactory.createEdge(v3, v4, dy2, !isOnLeft));
             return;
-        }
+        }*/
         EdgeFactory.reuseEdge(e1, v1, v2, dy1, isOnLeft);
         EdgeFactory.reuseEdge(e2, v3, v4, dy2, !isOnLeft);
 
         scanEdge(e1, e2);
     }
 
-    private void calcMinMaxX(FloatWrapper minX, FloatWrapper maxX, Vector3D v1, Vector3D v2, Vector3D v3) {
-        Vector3D max = v1, mid = v2, min = v3, temp;
+    private void calcMinMaxX(IntWrapper minX, IntWrapper maxX, Vec4fi v1, Vec4fi v2, Vec4fi v3) {
+        Vec4fi max = v1, mid = v2, min = v3, temp;
         if (max.x < mid.x) {
             temp = v2;
             max = mid;
@@ -163,14 +163,14 @@ public class TriangleRasterizer {
         maxX.value = max.x;
     }
 
-    private void storeEdges(VertexOut maxY, VertexOut midY, VertexOut minY, float dy1, float dy2, float dy3,
+    private void storeEdges(VOutfi maxY, VOutfi midY, VOutfi minY, int dy1, int dy2, int dy3,
                             boolean isOnLeft) {
         edgesTODO.add(EdgeFactory.createEdge(minY, maxY, dy1, isOnLeft));
         edgesTODO.add(EdgeFactory.createEdge(minY, midY, dy2, !isOnLeft));
         edgesTODO.add(EdgeFactory.createEdge(midY, maxY, dy3, !isOnLeft));
     }
 
-    private void reuseEdges(VertexOut maxY, VertexOut midY, VertexOut minY, float dy1, float dy2, float dy3,
+    private void reuseEdges(VOutfi maxY, VOutfi midY, VOutfi minY, int dy1, int dy2, int dy3,
                             boolean isOnLeft) {
 
         EdgeFactory.reuseEdge(e1, minY, maxY, dy1, isOnLeft);

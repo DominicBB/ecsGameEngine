@@ -1,8 +1,8 @@
 package util.Mathf.Mathf3D;
 
 public class Line3D {
-	public Vector3D v1;
-	public Vector3D v2;
+	public Vec4f v1;
+	public Vec4f v2;
 	
 	public float deltaX;
 	public float deltaY;
@@ -11,10 +11,10 @@ public class Line3D {
 	public int deltaYInt;
 	
 
-//	public Vector3D vPerYStep;
+//	public Vec4f vPerYStep;
 	
 	
-	public Line3D(Vector3D v1, Vector3D v2) {
+	public Line3D(Vec4f v1, Vec4f v2) {
 		this.v1 = v1;
 		this.v2 = v2;
 		
@@ -25,10 +25,10 @@ public class Line3D {
 //		deltaXInt = (int)v2.x -(int) v1.x; //(int)deltaX;
 		deltaYInt = (int)v2.y -(int) v1.y; //(int)deltaY;
 		
-//		vPerYStep = normal.mul(mag/deltaYInt); //used in paramCalculate
+//		vPerYStep = normal.mul_unsafe(mag/deltaYInt); //used in paramCalculate
 	}
 	
-	public Vector3D unit() {
+	public Vec4f unit() {
 		return v2.minus(v1).normal();
 	}
 	

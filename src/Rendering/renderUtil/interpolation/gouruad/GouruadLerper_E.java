@@ -1,18 +1,18 @@
 package Rendering.renderUtil.interpolation.gouruad;
 
 public class GouruadLerper_E extends GouruadLerper_Base{
-    public float x;
+    public int x;
 
     public GouruadLerper_E() {
     }
 
-    public GouruadLerper_E(float x, float z, float invW, float specularity, float color_r, float color_g, float color_b,
-                           float color_a, float tex_u, float tex_v, float spec_u, float spec_v) {
+    public GouruadLerper_E(int x, int z, int invW, int specularity, int color_r, int color_g, int color_b,
+                           int color_a, int tex_u, int tex_v, int spec_u, int spec_v) {
        reset(x, z, invW, specularity, color_r, color_g, color_b, color_a, tex_u, tex_v, spec_u, spec_v);
     }
 
-    public void reset(float x, float z, float invW, float specularity, float color_r, float color_g, float color_b,
-                      float color_a, float tex_u, float tex_v, float spec_u, float spec_v) {
+    public void reset(int x, int z, int invW, int specularity, int color_r, int color_g, int color_b,
+                      int color_a, int tex_u, int tex_v, int spec_u, int spec_v) {
         this.x = x;
         this.z = z;
         this.invW = invW;

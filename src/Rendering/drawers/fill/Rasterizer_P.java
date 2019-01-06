@@ -1,23 +1,20 @@
 package Rendering.drawers.fill;
 
-import Rendering.Renderers.Renderer;
 import Rendering.renderUtil.RenderState;
 import Rendering.renderUtil.interpolation.RowLerperFactory;
 import Rendering.renderUtil.interpolation.phong.PhongInterpolants;
 import Rendering.renderUtil.interpolation.phong.PhongLerper_R;
-import Rendering.shaders.PhongShader;
-import util.Mathf.Mathf;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4fi;
 
 public class Rasterizer_P {
     private final PhongLerper_R phongLerper_r = new PhongLerper_R();
     private final PhongInterpolants ROW_I_INTERPOLANTS = new PhongInterpolants(null);
 
-    void rasterizeRow(PhongInterpolants left, PhongInterpolants right, int y, Vector3D fColor, Vector3D util) {
+    void rasterizeRow(PhongInterpolants left, PhongInterpolants right, int y, Vec4fi fColor, Vec4fi util) {
         setRowInterpolants(left);
 
-        int from = Mathf.fastCeil(left.x);
-        int to = Mathf.fastCeil(right.x);
+        int from = Rasterfi.ceil_destroy_format(left.x);
+        int to = Rasterfi.ceil_destroy_format(right.x);
         ROW_I_INTERPOLANTS.xInt = from;
 
         if (to - from == 0) {
@@ -25,7 +22,7 @@ public class Rasterizer_P {
             return;
         }
 
-        float invdX = 1f / (right.x - left.x);
+        int invdX = Rasterfi.inverse(right.x - left.x);
         RowLerperFactory.phongLerper(phongLerper_r, RenderState.material, left, right, invdX);
 
         for (; ROW_I_INTERPOLANTS.xInt < to; ROW_I_INTERPOLANTS.xInt++) {
@@ -34,9 +31,9 @@ public class Rasterizer_P {
         }
     }
 
-    private void fragShade(int y, Vector3D fColor, Vector3D util) {
-        if (PhongShader.fragNonAlloc(ROW_I_INTERPOLANTS, RenderState.material, fColor, util, y))
-            Renderer.onFragShaded(ROW_I_INTERPOLANTS.xInt, y, fColor, RenderState.material);
+    private void fragShade(int y, Vec4fi fColor, Vec4fi util) {
+        /*if (PhongShader.fragNonAlloc(ROW_I_INTERPOLANTS, RenderState.material, fColor, util, y))
+            Renderer.onFragShaded(ROW_I_INTERPOLANTS.xInt, y, fColor, RenderState.material);*/
     }
 
     private void setRowInterpolants(PhongInterpolants pI) {

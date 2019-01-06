@@ -1,7 +1,7 @@
 package components.PhysicsComponents.Colliders;
 
 import util.Mathf.Mathf3D.Bounds.BoundingSphere;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4f;
 
 public class SphereCollider {
     public BoundingSphere boundingSphere;
@@ -10,7 +10,7 @@ public class SphereCollider {
         this.boundingSphere = boundingSphere;
     }
 
-    public SphereCollider(Vector3D center, float radius){
+    public SphereCollider(Vec4f center, float radius){
         this.boundingSphere = new BoundingSphere(center, radius);
     }
 }

@@ -1,15 +1,15 @@
 package Physics.physicsUtil;
-import util.Mathf.Mathf2D.Vector2D;
+import util.Mathf.Mathf2D.Vec2f;
 
 public class Physics2D {
-    public static final Vector2D DEFUALT_GRAVITY = new Vector2D(0f, -9.8f);
-    public static Vector2D globalGravity = new Vector2D(0f, -9.8f);
+    public static final Vec2f DEFUALT_GRAVITY = new Vec2f(0f, -9.8f);
+    public static Vec2f globalGravity = new Vec2f(0f, -9.8f);
 
-    public static boolean raycast2D(Vector2D origin, Vector2D direction, float maxDistance) {
+    public static boolean raycast2D(Vec2f origin, Vec2f direction, float maxDistance) {
         return false;
     }
 
-    public static boolean raycast2D(Vector2D origin, Vector2D direction) {
+    public static boolean raycast2D(Vec2f origin, Vec2f direction) {
         return false;
     }
 }

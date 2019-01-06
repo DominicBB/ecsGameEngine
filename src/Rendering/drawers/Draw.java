@@ -7,7 +7,7 @@ import Rendering.renderUtil.VertexOut;
 import core.display.Window;
 import util.Mathf.Mathf3D.Line3D;
 import util.Mathf.Mathf3D.Polygon;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4f;
 
 public abstract class Draw {
 
@@ -19,7 +19,7 @@ public abstract class Draw {
         TriangleRasterizer.fillTriangle(v1, v2, v3, material);
     }*/
 
-    private static Vector3D white = new Vector3D(255, 255, 255);
+    private static Vec4f white = new Vec4f(255, 255, 255);
 
     public static void wireframePolygon(Polygon p) {
         DrawLine3D.drawLine(p.vectors[0], p.vectors[1], white, white);
@@ -39,7 +39,7 @@ public abstract class Draw {
         DrawLine3D.drawLine(v2, v1, material);
     }
 
-    public static void drawLine(Vector3D v1, Vector3D v2, Vector3D c, Vector3D c2) {
+    public static void drawLine(Vec4f v1, Vec4f v2, Vec4f c, Vec4f c2) {
         DrawLine3D.drawLine(v1, v2, c, c2);
     }
 
@@ -47,7 +47,7 @@ public abstract class Draw {
         return x < 0 || y < 0 || x >= Window.defaultWidth || y >= Window.defaultHeight;
     }
 
-    public final static Line3D yIncreasingLine3D(Vector3D v1, Vector3D v2) {
+    public final static Line3D yIncreasingLine3D(Vec4f v1, Vec4f v2) {
         if (v1.y > v2.y) {
             return new Line3D(v2, v1);
         }

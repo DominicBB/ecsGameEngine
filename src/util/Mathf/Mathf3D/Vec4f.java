@@ -3,51 +3,51 @@ package util.Mathf.Mathf3D;
 
 import util.Mathf.Mathf;
 
-public class Vector3D {
+public class Vec4f {
     public float x;
     public float y;
     public float z;
     public float w;
 
-    public Vector3D(float x, float y, float z) {
+    public Vec4f(float x, float y, float z) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.w = 1f;
     }
 
-    public Vector3D(float x, float y, float z, float w) {
+    public Vec4f(float x, float y, float z, float w) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.w = w;
     }
 
-    public Vector3D(float w) {
+    public Vec4f(float w) {
         this.w = w;
     }
 
-    public Vector3D minus(Vector3D other) {
-        return new Vector3D(this.x - other.x, this.y - other.y, this.z - other.z/*, this.w - other.w*/);
+    public Vec4f minus(Vec4f other) {
+        return new Vec4f(this.x - other.x, this.y - other.y, this.z - other.z/*, this.w - other.w*/);
     }
 
-    public Vector3D absDiff(Vector3D other) {
-        return new Vector3D(Math.abs(this.x - other.x), Math.abs(this.y - other.y), Math.abs(this.z - other.z));
+    public Vec4f absDiff(Vec4f other) {
+        return new Vec4f(Math.abs(this.x - other.x), Math.abs(this.y - other.y), Math.abs(this.z - other.z));
     }
 
-    public Vector3D plus(Vector3D other) {
-        return new Vector3D(this.x + other.x, this.y + other.y, this.z + other.z/*, this.w + other.w*/);
+    public Vec4f plus(Vec4f other) {
+        return new Vec4f(this.x + other.x, this.y + other.y, this.z + other.z/*, this.w + other.w*/);
     }
 
-    public void add(Vector3D toAdd) {
+    public void add(Vec4f toAdd) {
         this.x += toAdd.x;
         this.y += toAdd.y;
         this.z += toAdd.z;
 //        this.w = w + toAdd.w;
     }
 
-    public Vector3D mul(float scaler) {
-        return new Vector3D(this.x * scaler, this.y * scaler, this.z * scaler/*, this.w * scaler*/);
+    public Vec4f mul(float scaler) {
+        return new Vec4f(this.x * scaler, this.y * scaler, this.z * scaler/*, this.w * scaler*/);
     }
 
     public void scale(float scaler) {
@@ -57,8 +57,8 @@ public class Vector3D {
         this.w *= scaler;
     }
 
-    public Vector3D divide(float divider) {
-        return new Vector3D(this.x / divider, this.y / divider, this.z / divider/*, this.w / divider*/);
+    public Vec4f divide(float divider) {
+        return new Vec4f(this.x / divider, this.y / divider, this.z / divider/*, this.w / divider*/);
     }
 
     public void mutDivide(float divider) {
@@ -70,9 +70,9 @@ public class Vector3D {
     }
 
 
-    public Vector3D normal() {
+    public Vec4f normal() {
         float invM = 1f / this.magnitude();
-        return new Vector3D(this.x * invM, this.y * invM, this.z * invM);
+        return new Vec4f(this.x * invM, this.y * invM, this.z * invM);
     }
 
     public void normalise() {
@@ -90,19 +90,19 @@ public class Vector3D {
         return (this.x * this.x) + (this.y * this.y) + (this.z * this.z);
     }
 
-    public Vector3D crossProduct(Vector3D other) {
+    public Vec4f crossProduct(Vec4f other) {
         float x = this.y * other.z - this.z * other.y;
         float y = this.z * other.x - this.x * other.z;
         float z = this.x * other.y - this.y * other.x;
-        return new Vector3D(x, y, z);
+        return new Vec4f(x, y, z);
     }
 
-    public float dotProduct(Vector3D other) {
+    public float dotProduct(Vec4f other) {
         return this.x * other.x + this.y * other.y + this.z * other.z;
     }
 
-    public Vector3D componentMul(Vector3D other) {
-        return new Vector3D(
+    public Vec4f componentMul(Vec4f other) {
+        return new Vec4f(
                 other.x * x,
                 other.y * y,
                 other.z * z,
@@ -117,29 +117,29 @@ public class Vector3D {
         this.w += w;
     }
 
-    public static void componentMulNonAlloc(Vector3D out, Vector3D other) {
+    public static void componentMulNonAlloc(Vec4f out, Vec4f other) {
         out.x *= other.x;
         out.y *= other.y;
         out.z *= other.z;
         out.w *= other.w;
     }
 
-    public double cosTheta(Vector3D other) {
+    public double cosTheta(Vec4f other) {
         float mag = this.magnitude();
         float oMag = other.magnitude();
         return this.dotProduct(other) / mag / oMag;
     }
 
-    public Vector3D maxValues(Vector3D other) {
-        Vector3D maxValues = Vector3D.newZeros();
+    public Vec4f maxValues(Vec4f other) {
+        Vec4f maxValues = Vec4f.newZeros();
         maxValues.x = Mathf.max(x, other.x);
         maxValues.y = Mathf.max(y, other.y);
         maxValues.z = Mathf.max(z, other.z);
         return maxValues;
     }
 
-    public Vector3D minValues(Vector3D other) {
-        Vector3D minValues = Vector3D.newZeros();
+    public Vec4f minValues(Vec4f other) {
+        Vec4f minValues = Vec4f.newZeros();
         minValues.x = Mathf.min(x, other.x);
         minValues.y = Mathf.min(y, other.y);
         minValues.z = Mathf.min(z, other.z);
@@ -162,51 +162,51 @@ public class Vector3D {
         return "[" + x + "," + y + "," + z + "]";
     }
 
-    public static Vector3D newDown() {
-        return new Vector3D(0f, -1f, 0f);
+    public static Vec4f newDown() {
+        return new Vec4f(0f, -1f, 0f);
     }
 
-    public static Vector3D newUp() {
-        return new Vector3D(0f, 1f, 0f);
+    public static Vec4f newUp() {
+        return new Vec4f(0f, 1f, 0f);
     }
 
-    public static Vector3D newLeft() {
-        return new Vector3D(-1f, 0f, 0f);
+    public static Vec4f newLeft() {
+        return new Vec4f(-1f, 0f, 0f);
     }
 
-    public static Vector3D newRight() {
-        return new Vector3D(1f, 0f, 0f);
+    public static Vec4f newRight() {
+        return new Vec4f(1f, 0f, 0f);
     }
 
-    public static Vector3D newForward() {
-        return new Vector3D(0f, 0f, 1f);
+    public static Vec4f newForward() {
+        return new Vec4f(0f, 0f, 1f);
     }
 
-    public static Vector3D newBackward() {
-        return new Vector3D(0f, 0f, -1f);
+    public static Vec4f newBackward() {
+        return new Vec4f(0f, 0f, -1f);
     }
 
-    public static Vector3D newOnes() {
-        return new Vector3D(1f, 1f, 1f);
+    public static Vec4f newOnes() {
+        return new Vec4f(1f, 1f, 1f);
     }
 
-    public static Vector3D newZeros() {
-        return new Vector3D(0f, 0f, 0f);
+    public static Vec4f newZeros() {
+        return new Vec4f(0f, 0f, 0f);
     }
 
-    public static Vector3D newCopy(Vector3D toCopy) {
-        return new Vector3D(toCopy.x, toCopy.y, toCopy.z, toCopy.w);
+    public static Vec4f newCopy(Vec4f toCopy) {
+        return new Vec4f(toCopy.x, toCopy.y, toCopy.z, toCopy.w);
     }
 
 
-    public static final Vector3D UP = newUp();
-    public static final Vector3D DOWN = newDown();
-    public static final Vector3D LEFT = newLeft();
-    public static final Vector3D RIGHT = newRight();
-    public static final Vector3D FORWARD = newForward();
-    public static final Vector3D BACKWARD = newBackward();
-    public static final Vector3D ZERO = newZeros();
-    public static final Vector3D ONE = newOnes();
+    public static final Vec4f UP = newUp();
+    public static final Vec4f DOWN = newDown();
+    public static final Vec4f LEFT = newLeft();
+    public static final Vec4f RIGHT = newRight();
+    public static final Vec4f FORWARD = newForward();
+    public static final Vec4f BACKWARD = newBackward();
+    public static final Vec4f ZERO = newZeros();
+    public static final Vec4f ONE = newOnes();
 
     public void set(float x, float y, float z, float w) {
         this.x = x;
@@ -215,7 +215,7 @@ public class Vector3D {
         this.w = w;
     }
 
-    public void set(Vector3D other) {
+    public void set(Vec4f other) {
         this.x = other.x;
         this.y = other.y;
         this.z = other.z;
@@ -237,21 +237,21 @@ public class Vector3D {
         }
     }
 
-    public static void lerp(Vector3D start, Vector3D destination, float lerpAmt) {
+    public static void lerp(Vec4f start, Vec4f destination, float lerpAmt) {
         start.add(destination.minus(start).mul(lerpAmt));
     }
 
-    public static void lerpWithW(Vector3D start, Vector3D destination, float lerpAmt) {
+    public static void lerpWithW(Vec4f start, Vec4f destination, float lerpAmt) {
         start.add(destination.minus(start).mul(lerpAmt));
         start.w = Mathf.lerp(start.w, destination.w, lerpAmt);
     }
 
-    public Vector3D lerp(Vector3D destination, float lerpAmt) {
+    public Vec4f lerp(Vec4f destination, float lerpAmt) {
         return destination.minus(this).mul(lerpAmt).plus(this);
     }
 
-    public Vector3D lerpWithW(Vector3D destination, float lerpAmt) {
-        Vector3D res = destination.minus(this);
+    public Vec4f lerpWithW(Vec4f destination, float lerpAmt) {
+        Vec4f res = destination.minus(this);
         res.x = res.x * lerpAmt + x;
         res.y = res.y * lerpAmt + y;
         res.z = res.z * lerpAmt + z;
@@ -261,8 +261,8 @@ public class Vector3D {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Vector3D) {
-            Vector3D v = (Vector3D) obj;
+        if (obj instanceof Vec4f) {
+            Vec4f v = (Vec4f) obj;
             return (x == v.x && y == v.y && z == v.z);
         }
         return false;

@@ -1,16 +1,16 @@
 package Rendering.renderUtil.interpolation.flat;
 
 public class FlatLerper_E extends FlatLerper_Base{
-    public float x;
+    public int x;
 
     public FlatLerper_E() {
     }
 
-    public FlatLerper_E(float x, float z, float invW, float tex_u, float tex_v, float spec_u, float spec_v) {
+    public FlatLerper_E(int x, int z, int invW, int tex_u, int tex_v, int spec_u, int spec_v) {
         reset(x, z, invW, tex_u, tex_v, spec_u, spec_v);
     }
 
-    public void reset(float x, float z, float invW, float tex_u, float tex_v, float spec_u, float spec_v) {
+    public void reset(int x, int z, int invW, int tex_u, int tex_v, int spec_u, int spec_v) {
         this.x = x;
         this.z = z;
         this.invW = invW;

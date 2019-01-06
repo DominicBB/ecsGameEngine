@@ -1,13 +1,13 @@
 package components.Physics2DComponents;
 
 import components.PhysicsComponents.BaseRigidBody;
-import util.Mathf.Mathf2D.Vector2D;
+import util.Mathf.Mathf2D.Vec2f;
 
 public class RigidBody2D extends BaseRigidBody {
 
-    public Vector2D velocity;
-    public Vector2D currentForce;
-    public  Vector2D gravityForce = new Vector2D(0f,-9.8f);
-    public Vector2D gravityDirection = Vector2D.newDown();
+    public Vec2f velocity;
+    public Vec2f currentForce;
+    public Vec2f gravityForce = new Vec2f(0f,-9.8f);
+    public Vec2f gravityDirection = Vec2f.newDown();
 
 }

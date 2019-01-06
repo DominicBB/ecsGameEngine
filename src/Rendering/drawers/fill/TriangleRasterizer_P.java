@@ -5,18 +5,18 @@ import Rendering.renderUtil.RenderState;
 import Rendering.renderUtil.interpolation.LerperFactory;
 import Rendering.renderUtil.interpolation.phong.PhongInterpolants;
 import Rendering.renderUtil.interpolation.phong.PhongLerper_E;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4fi;
 
-public class TriangleRasterizer_P implements ITriRasterizer{
+public class TriangleRasterizer_P implements ITriRasterizer {
     private Rasterizer_P rasterizer_P = new Rasterizer_P();
     private final PhongInterpolants
             gI1 = new PhongInterpolants(new PhongLerper_E()),
             gI2 = new PhongInterpolants(new PhongLerper_E()),
             gI3 = new PhongInterpolants(new PhongLerper_E());
 
-    private final Vector3D fragColor, fragUtil;
+    private final Vec4fi fragColor, fragUtil;
 
-    public TriangleRasterizer_P(Vector3D fragColor, Vector3D fragUtil) {
+    public TriangleRasterizer_P(Vec4fi fragColor, Vec4fi fragUtil) {
         this.fragColor = fragColor;
         this.fragUtil = fragUtil;
     }
@@ -27,9 +27,9 @@ public class TriangleRasterizer_P implements ITriRasterizer{
         gI2.reset(bottom.v1);
         gI3.reset(top.v1);
 
-        LerperFactory.phongLerper(RenderState.material, gI1.phongLerper_e, tallest.v1, tallest.v2, 1f / tallest.dy);
-        LerperFactory.phongLerper(RenderState.material, gI2.phongLerper_e, bottom.v1, bottom.v2, 1f / bottom.dy);
-        LerperFactory.phongLerper(RenderState.material, gI3.phongLerper_e, top.v1, top.v2, 1f / top.dy);
+        LerperFactory.phongLerper(RenderState.material, gI1.phongLerper_e, tallest.v1, tallest.v2, Rasterfi.inverse(tallest.dy));
+        LerperFactory.phongLerper(RenderState.material, gI2.phongLerper_e, bottom.v1, bottom.v2, Rasterfi.inverse(bottom.dy));
+        LerperFactory.phongLerper(RenderState.material, gI3.phongLerper_e, top.v1, top.v2, Rasterfi.inverse(top.dy));
 
         scan(gI1, gI2, gI3, tallest.isOnLeft, bottom.yStart, top.yStart, bottom.deltaYInt, top.deltaYInt);
     }
@@ -38,7 +38,7 @@ public class TriangleRasterizer_P implements ITriRasterizer{
     public void fillTriangle(Edge left, Edge right) {
         gI1.reset(left.v1);
         gI2.reset(right.v1);
-        float factor = 1f / left.dy;
+        int factor = Rasterfi.inverse(left.dy);
 
         LerperFactory.phongLerper(RenderState.material, gI1.phongLerper_e, left.v1, left.v2, factor);
         LerperFactory.phongLerper(RenderState.material, gI2.phongLerper_e, right.v1, right.v2, factor);
@@ -65,6 +65,7 @@ public class TriangleRasterizer_P implements ITriRasterizer{
         }
 
     }
+
     private void scanSegment_P(PhongInterpolants left, PhongInterpolants right, int y, int yChange) {
         int i = 1;
         while (i <= yChange) {

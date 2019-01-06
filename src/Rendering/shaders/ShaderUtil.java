@@ -1,17 +1,22 @@
 package Rendering.shaders;
 
 import Rendering.Materials.Material;
+import Rendering.drawers.fill.Rasterfi;
 import Rendering.renderUtil.Bitmaps.BitmapABGR;
 import Rendering.renderUtil.Bitmaps.BitmapBGR;
 import Rendering.renderUtil.RenderState;
 import Rendering.renderUtil.Vertex;
 import Rendering.renderUtil.VertexOut;
-import util.FloatBuffer;
+import util.IntBuffer;
 import util.Mathf.Mathf;
-import util.Mathf.Mathf2D.Vector2D;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf2D.Vec2f;
+import util.Mathf.Mathf3D.Vec4f;
+import util.Mathf.Mathf3D.Vec4fi;
 
 final class ShaderUtil {
+
+    // -------------- SPECULAR --------------------------------------------
+
     /**
      * Expensive :)
      *
@@ -23,9 +28,9 @@ final class ShaderUtil {
      * @param attenuation
      * @return
      */
-    static float specular(Vector3D n_worldSpace, Vector3D lightDir, Vector3D viewDir_worldSpace,
+    static float specular(Vec4f n_worldSpace, Vec4f lightDir, Vec4f viewDir_worldSpace,
                           float specFactor, float specPower, float attenuation) {
-        Vector3D halfWayDir;
+        Vec4f halfWayDir;
         (halfWayDir = lightDir.plus(viewDir_worldSpace)).normalise();
 
         return (specFactor *
@@ -33,8 +38,8 @@ final class ShaderUtil {
                 (float) Math.pow(Math.max(0f, n_worldSpace.dotProduct(halfWayDir)), specPower));
     }
 
-    static float calculateSpecular(Vector3D n_ws, Vector3D pos_ws, Material material) {
-        Vector3D viewDir;
+    static float calculateSpecular(Vec4f n_ws, Vec4f pos_ws, Material material) {
+        Vec4f viewDir;
         (viewDir = RenderState.camera.transform.getPosition().minus(pos_ws)).normalise();
 
         float spec = specular(n_ws,
@@ -47,22 +52,35 @@ final class ShaderUtil {
         return Mathf.unsafeMax(0f, spec);
     }
 
-    static Vector3D calcSpecularAtFrag(float u, float v, float spec, float z, Material material) {
+    static Vec4fi calcSpecularAtFrag(int u, int v, int spec, int w, Material material) {
+        Vec4fi specColor;
         if (material.hasSpecularMap()) {
-            Vector3D specColor = sample_persp(u, v, material.getSpecularMap(), z);
-            return specColor.mul(spec);
+             specColor = sample_persp(u, v, material.getSpecularMap(), w);
         } else {
-            return material.getDefualtSpecularColor().mul(spec);
+           specColor = new Vec4fi(material.getDefualtSpecularColor(), Rasterfi.D_SHIFT);//TODO: should store in mat
         }
+        specColor.mul_unsafe(spec, 18);
+        return specColor ;
+
     }
 
-    static Vector3D diffuse(Vector3D n, Material material) {
+    // -------------- DIFFUSE --------------------------------------------
+
+    static Vec4f diffuse(Vec4f n, Material material) {
         return diffuse(RenderState.lightingState.lightColor,
                 RenderState.lightingState.lightDir,
                 n,
                 RenderState.lightingState.attenuation,
                 material.getDiffuseFactor());
     }
+
+    /*static Vec4fi diffuse(Vec4fi n, Material material) {
+        return diffuse(RenderState.lightingState.lightColor,
+                RenderState.lightingState.lightDir,
+                n,
+                RenderState.lightingState.attenuation,
+                material.getDiffuseFactor());
+    }*/
 
 
     /**
@@ -75,11 +93,19 @@ final class ShaderUtil {
      * @param diffuseFactor
      * @return
      */
-    static Vector3D diffuse(Vector3D lightColor, Vector3D lightDir, Vector3D norm, float attenuation, float diffuseFactor) {
+    static Vec4f diffuse(Vec4f lightColor, Vec4f lightDir, Vec4f norm, float attenuation, float diffuseFactor) {
         float cosTheta = (norm.dotProduct(lightDir));
 
         return lightColor.mul(Mathf.clamp(0f, cosTheta * attenuation * diffuseFactor, 1f));
     }
+
+    /*static Vec4fi diffuse(Vec4f lightColor, Vec4f lightDir, Vec4fi norm, float attenuation, float diffuseFactor) {
+        float cosTheta = (norm.dotProduct(lightDir));
+
+        return lightColor.mul(Mathf.clamp(0f, cosTheta * attenuation * diffuseFactor, 1f));
+    }*/
+
+    // -------------- AMBIENT --------------------------------------------
 
     /**
      * super cheap
@@ -88,47 +114,44 @@ final class ShaderUtil {
      * @param ambientFactor
      * @return
      */
-    static Vector3D ambient(Vector3D ambientColor, float ambientFactor) {
+    static Vec4f ambient(Vec4f ambientColor, float ambientFactor) {
         return ambientColor.mul(ambientFactor);
     }
 
+    // -------------- SAMPLING --------------------------------------------
 
-    static boolean zBufferTest(FloatBuffer zBuffer, float zVal, int x, int y) {
-        if (zBuffer.getFloat(x, y) > zVal) {// if pixel is further away
-            zBuffer.setFloat(x, y, zVal);
-            return true;
-        }
-        return false;
+    static Vec4fi sample_persp(int u, int v, BitmapABGR bitmapABGR, int z) {
+        return bitmapABGR.getPixel_vInt(Rasterfi.toInt(Rasterfi.multiply(u, z)), Rasterfi.toInt(Rasterfi.multiply(v, z)),
+                Rasterfi.D_SHIFT);
     }
 
-    static Vector3D sample_persp(float u, float v, BitmapABGR bitmapABGR, float z) {
-        return bitmapABGR.getPixel((int) (u * z), (int) (v * z));
+    static void sample_persp_NonAlloc(int u, int v, BitmapABGR bitmapABGR, int z, Vec4fi out) {
+        bitmapABGR.getPixelNonAlloc_vInt(Rasterfi.toInt(Rasterfi.multiply(u, z)), Rasterfi.toInt(Rasterfi.multiply(v, z)),
+                out);
     }
 
-    static void sample_persp_NonAlloc(float u, float v, BitmapABGR bitmapABGR, float z, Vector3D out) {
-        bitmapABGR.getPixelNonAlloc((int) (u * z), (int) (v * z), out);
-    }
-
-    static Vector2D scaleToBitmap(Vector2D in, BitmapABGR bitmapABGR) {
-        return new Vector2D(
+    static Vec2f scaleToBitmap(Vec2f in, BitmapABGR bitmapABGR) {
+        return new Vec2f(
                 in.x * (bitmapABGR.getWidth() - 1) /*+ 0.5f*/,
                 in.y * (bitmapABGR.getHeight() - 1) /*+ 0.5f*/
         );
     }
 
-    static Vector3D sample(Vector2D coord, BitmapBGR bitmapBGR) {
+    static Vec4f sample(Vec2f coord, BitmapBGR bitmapBGR) {
         return bitmapBGR.getPixel((int) coord.x,
                 (int) coord.y);
     }
 
-    static Vector3D sample(Vector2D coord, BitmapABGR bitmapABGR) {
+    static Vec4f sample(Vec2f coord, BitmapABGR bitmapABGR) {
         return bitmapABGR.getPixel((int) coord.x,
                 (int) coord.y);
     }
 
+    // -------------- CREATING VERTEXOUTS --------------------------------------------
+
     static VertexOut transformVIn(Vertex vertex, Material material) {
-        VertexOut vertexOut = new VertexOut(Vector3D.newZeros(), Vector2D.newZeros(), Vector2D.newZeros(),
-                0f, /*Vector3D.newCopy(material.getColor())*/Vector3D.newZeros(), Vector3D.newZeros(), Vector3D.newZeros(), 0f);
+        VertexOut vertexOut = new VertexOut(Vec4f.newZeros(), Vec2f.newZeros(), Vec2f.newZeros(),
+                0f, /*Vec4f.newCopy(material.getColor())*/Vec4f.newZeros(), Vec4f.newZeros(), Vec4f.newZeros(), 0f);
         setVOut(vertex, material, vertexOut);
         return vertexOut;
     }
@@ -146,9 +169,18 @@ final class ShaderUtil {
             out.specCoord.scale(out.invW);
         }
         out.spec = 1f;
-        out.surfaceColor.set(/*material.getColor()*/Vector3D.ZERO);
+        out.surfaceColor.set(/*material.getColor()*/Vec4f.ZERO);
         out.n_ws.set(RenderState.transform.getRotation().rotate(vIn.normal));
         out.p_ws.set(RenderState.world.multiply4x4(vIn.vec));
     }
 
+    // -------------- MISC --------------------------------------------
+
+    static boolean zBufferTest(IntBuffer zBuffer, int zVal, int x, int y) {
+        if (zBuffer.getInt(x, y) > zVal) {// if pixel is further away
+            zBuffer.setInt(x, y, zVal);
+            return true;
+        }
+        return false;
+    }
 }

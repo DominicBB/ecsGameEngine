@@ -3,7 +3,7 @@ package Physics.physicsUtil;
 import util.Mathf.Mathf3D.Bounds.AABoundingBox;
 import util.Mathf.Mathf3D.Bounds.BoundingSphere;
 import util.Mathf.Mathf3D.Bounds.Bounds;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4f;
 
 public class Intersect {
     private Intersect() {
@@ -18,7 +18,7 @@ public class Intersect {
         if (aabb.contains(bs.getCenter()))
             return true;
 
-        Vector3D centerDif = bs.getCenter().absDiff(aabb.getCenter());
+        Vec4f centerDif = bs.getCenter().absDiff(aabb.getCenter());
 
         if (centerDif.x > (bs.getRadius() + aabb.getHalfSize().x) || centerDif.y > (bs.getRadius() + aabb.getHalfSize().y))
             return false;
@@ -38,9 +38,9 @@ public class Intersect {
     }
 
     public static boolean intersectsBool(AABoundingBox aabb1, AABoundingBox aabb2) {
-        Vector3D dif1 = aabb2.getMinExtents().minus(aabb1.getMaxExtents());
-        Vector3D dif2 = aabb1.getMinExtents().minus(aabb2.getMaxExtents());
-        Vector3D maxDif = dif1.maxValues(dif2);
+        Vec4f dif1 = aabb2.getMinExtents().minus(aabb1.getMaxExtents());
+        Vec4f dif2 = aabb1.getMinExtents().minus(aabb2.getMaxExtents());
+        Vec4f maxDif = dif1.maxValues(dif2);
         float maxVal = maxDif.maxVal();
         return maxVal <= 0;
     }

@@ -5,16 +5,17 @@ import Rendering.Materials.Material;
 import Rendering.drawers.fill.TriangleRasterizer;
 import Rendering.renderUtil.Colorf;
 import Rendering.renderUtil.RenderState;
+import Rendering.renderUtil.VOutfi;
 import Rendering.renderUtil.VertexOut;
 import util.Mathf.Mathf3D.Triangle;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4fi;
 import util.Mathf.Mathf3D.Vector3DInt;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static Rendering.renderUtil.RenderState.halfHeight;
-import static Rendering.renderUtil.RenderState.halfWidth;
+import static Rendering.renderUtil.RenderState.HALF_HEIGHT;
+import static Rendering.renderUtil.RenderState.HALF_WIDTH;
 
 public class Renderer {
 
@@ -35,21 +36,13 @@ public class Renderer {
 
         if (clippedVertices.isEmpty()) return;
 
-        VertexOut v2Out, v3Out;
-        VertexOut v1Out = clippedVertices.get(0);
-
-        v1Out = moveToScreenSpaceNew(v1Out);
+        VOutfi v1Out, v2Out, v3Out;
+        v1Out = prepareForRaster(clippedVertices.get(0));
 
         int end = clippedVertices.size() - 1;
         for (int i = 1; i < end; i++) {
-            v2Out = clippedVertices.get(i);
-            v3Out = clippedVertices.get(i + 1);
-            if (v2Out.invW > 1f || v2Out.invW < 0.009f) System.out.println("invW: " + v2Out.invW);
-
-
-            //perspective divide
-            v2Out = moveToScreenSpaceNew(v2Out);
-            v3Out = moveToScreenSpaceNew(v3Out);
+            v2Out = prepareForRaster(clippedVertices.get(i));
+            v3Out = prepareForRaster(clippedVertices.get(i + 1));
 
             //backfaceCull, HAVE TO BACKFACE CULL HERE
             if (backFaceCullPreClip(v1Out, v2Out, v3Out))
@@ -59,30 +52,26 @@ public class Renderer {
         }
     }
 
-    public static void onFragShaded(int x, int y, Vector3D color, Material material) {
+    public static void onFragShaded(int x, int y, Vec4fi color, Material material) {
         //check for blending etc.
         setFinalColor(x, y, color);
 //        setFinalColor(x, y, color, finalColor);
     }
 
-    private static void setFinalColor(int x, int y, Vector3D color) {
+    private static void setFinalColor(int x, int y, Vec4fi color) {
+        color.toInt();
         Colorf.clampMaxNonAlloc(color);
         RenderState.colorBuffer.setPixel(x, y, color);
-
     }
 
     // this sucks :(
-    private static void setFinalColor(int x, int y, Vector3D color, Vector3DInt colori) {
+   /* private static void setFinalColor(int x, int y, Vec4f color, Vector3DInt colori) {
         Colorf.clampMaxNonAllocBit(color, colori);
         RenderState.colorBuffer.setPixel(x, y, colori);
-    }
+    }*/
 
 
-    static boolean backFaceCull(VertexOut v1, VertexOut v2, VertexOut v3) {
-        return Triangle.z_crossProd(v1.p_proj, v2.p_proj, v3.p_proj) >= 0;//TODO: possibly '>0'. p_proj or p_ws
-    }
-
-    static boolean backFaceCullPreClip(VertexOut v1, VertexOut v2, VertexOut v3) {
+    static boolean backFaceCullPreClip(VOutfi v1, VOutfi v2, VOutfi v3) {
         return Triangle.z_crossProd(v1.p_proj, v2.p_proj, v3.p_proj) >= 0;//TODO: possibly '>0'. p_proj or p_ws
 //        return Triangle.z_crossProd(v1.p_ws, v2.p_ws, v3.p_ws) <= 0;//TODO: possibly '>0'. p_proj or p_ws
     }
@@ -90,14 +79,17 @@ public class Renderer {
 
     static void moveToScreenSpace(VertexOut v) {
         v.wDivide();
-        v.p_proj.x = (v.p_proj.x + 1) * halfWidth;
-        v.p_proj.y = (v.p_proj.y + 1) * halfHeight;
+        v.p_proj.x = (v.p_proj.x + 1) * HALF_WIDTH;
+        v.p_proj.y = (v.p_proj.y + 1) * HALF_HEIGHT;
     }
 
-    static VertexOut moveToScreenSpaceNew(VertexOut v) {
-        VertexOut nV = v.wDivideNew();
-        nV.p_proj.x = (nV.p_proj.x + 1) * halfWidth;
-        nV.p_proj.y = (nV.p_proj.y + 1) * halfHeight;
+    static VOutfi prepareForRaster(VertexOut v) {
+        VOutfi nV = v.wDivideNew();
+       /* nV.p_proj.x = Rasterfi.multiply(nV.p_proj.x + D_FACTOR, HALF_WIDTH,0);
+        nV.p_proj.y = Rasterfi.multiply(nV.p_proj.y + D_FACTOR, HALF_HEIGHT, 0);*/
+       if(nV.p_proj.w <0||nV.invW <0){
+           return nV;
+       }
         return nV;
     }
 

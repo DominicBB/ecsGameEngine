@@ -1,24 +1,24 @@
 package util.Mathf.Mathf2D.Bounds2D;
 
-import util.Mathf.Mathf2D.Vector2D;
+import util.Mathf.Mathf2D.Vec2f;
 
 public class BoundingCircle extends Bounds2D {
-    private Vector2D center;
+    private Vec2f center;
     private float radius;
 
-    public BoundingCircle(Vector2D center, float radius) {
+    public BoundingCircle(Vec2f center, float radius) {
         this.center = center;
         this.radius = radius;
     }
 
     @Override
-    public boolean contains(Vector2D position) {
+    public boolean contains(Vec2f position) {
         float distance = position.minus(center).magnitude();
         return distance <= radius;
     }
 
     @Override
-    public Vector2D getCenter() {
+    public Vec2f getCenter() {
         return center;
     }
 

@@ -24,7 +24,7 @@ public class Matrix3x3 {
     }
 
 
-    public Vector2D multiplyProjection(Vector2D v2d) {
+    public Vec2f multiplyProjection(Vec2f v2d) {
         //float w = 1;
         float x = (v2d.x * values[0][0] + v2d.y * values[1][0] + v2d.z * values[2][0]) + values[3][0];
         float y = (v2d.x * values[0][1] + v2d.y * values[1][1] + v2d.z * values[2][1]) + values[3][1];
@@ -35,7 +35,7 @@ public class Matrix3x3 {
             y = y / e;
             z = z / e;
         }
-        return new Vector2D(x, y);
+        return new Vec2f(x, y);
     }
 
     public Triangle multiplyProjection(Triangle t) {
@@ -45,19 +45,19 @@ public class Matrix3x3 {
 
     }
 
-    public Vector2D multiply3x3(Vector2D v2d, float w) {
+    public Vec2f multiply3x3(Vec2f v2d, float w) {
         float x = (v2d.x * values[0][0] + v2d.y * values[1][0]) + (w*values[2][0]);
         float y = (v2d.x * values[0][1] + v2d.y * values[1][1]) + (w*values[2][1]);
         float z = (v2d.x * values[0][2] + v2d.y * values[1][2])  + (w*values[2][2]);
 
-        return new Vector2D(x, y);
+        return new Vec2f(x, y);
     }
 
     public Triangle multiply3x3(Triangle t, float w) {
         return new Triangle(multiply3x3(t.textures[0], 1),multiply3x3(t.textures[1], 1), multiply3x3(t.textures[2], 1), t);
     }
 
-    public static Matrix3x3 newPointAt(Vector2D f, Vector2D r, Vector2D newUp, Vector2D offset) {
+    public static Matrix3x3 newPointAt(Vec2f f, Vec2f r, Vec2f newUp, Vec2f offset) {
         return new Matrix3x3(
                 new float[][] {
                         { r.x, r.y, 0.0f },
@@ -66,7 +66,7 @@ public class Matrix3x3 {
                         {offset.x, offset.y, 1.0f }});
     }
 
-    public static Matrix3x3 newLookAt(Vector2D f, Vector2D r, Vector2D newUp, Vector2D offset) {
+    public static Matrix3x3 newLookAt(Vec2f f, Vec2f r, Vec2f newUp, Vec2f offset) {
         return new Matrix3x3(
                 new float[][] {
                         { r.x, newUp.x, f.x },

@@ -1,11 +1,11 @@
 package Rendering.renderUtil.interpolation.gouruad;
 
 public abstract class GouruadLerper_Base {
-    public float z;
-    public float invW;
-    public float specularity;
+    public int z;
+    public int invW;
+    public int specularity;
 
-    public float color_r, color_g, color_b, color_a;
-    public float tex_u, tex_v;
-    public float spec_u, spec_v;
+    public int color_r, color_g, color_b, color_a;
+    public int tex_u, tex_v;
+    public int spec_u, spec_v;
 }

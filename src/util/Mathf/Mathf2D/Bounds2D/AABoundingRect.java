@@ -1,21 +1,21 @@
 package util.Mathf.Mathf2D.Bounds2D;
 
-import util.Mathf.Mathf2D.Vector2D;
+import util.Mathf.Mathf2D.Vec2f;
 
 public class AABoundingRect extends Bounds2D {
 
-    private Vector2D topLeft;
-    private Vector2D bottomRight;
-    private Vector2D halfSize;
+    private Vec2f topLeft;
+    private Vec2f bottomRight;
+    private Vec2f halfSize;
 
-    public AABoundingRect(Vector2D topLeft, Vector2D bottomRight) {
+    public AABoundingRect(Vec2f topLeft, Vec2f bottomRight) {
         this.topLeft = topLeft;
         this.bottomRight = bottomRight;
         halfSize = bottomRight.minus(topLeft).divide(2f);
     }
 
     @Override
-    public boolean contains(Vector2D point) {
+    public boolean contains(Vec2f point) {
         return point.x >= topLeft.x && point.x <= bottomRight.x
                 && point.y >= topLeft.y && point.y <= bottomRight.y;
     }
@@ -27,23 +27,23 @@ public class AABoundingRect extends Bounds2D {
     }
 
     @Override
-    public Vector2D getCenter() {
+    public Vec2f getCenter() {
         return topLeft.plus(halfSize);
     }
 
-    public Vector2D getBottomRight() {
+    public Vec2f getBottomRight() {
         return bottomRight;
     }
 
-    public Vector2D getTopLeft() {
+    public Vec2f getTopLeft() {
         return topLeft;
     }
 
-    public Vector2D getSize() {
+    public Vec2f getSize() {
         return halfSize.mul(2f);
     }
 
-    public Vector2D getHalfSize() {
+    public Vec2f getHalfSize() {
         return halfSize;
     }
 }

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Stores each of the required Components for each GameSystem. On every entity create or new component add,
+ * Stores each of the required Components for each GameSystem. On every entity create or new component add_with_w,
  * updates each GameSystems entity references if there is a match
  */
 public class ComponentSystem implements Updateable {
@@ -24,7 +24,7 @@ public class ComponentSystem implements Updateable {
     //TODO yikes, too many loops
 
     /**
-     * Go through every EntityGrabber and add entityID's and componentIndexs that contain the required components
+     * Go through every EntityGrabber and add_with_w entityID's and componentIndexs that contain the required components
      * @param entityID
      * @param components
      */
