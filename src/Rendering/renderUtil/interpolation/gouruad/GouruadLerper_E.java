@@ -30,7 +30,8 @@ public class GouruadLerper_E extends GouruadLerper_Base{
 
     public void lerp(GouruadInterpolants interpolants) {
         interpolants.x += x;
-        interpolants.z += z;
+        lerp(interpolants, this);
+        /*interpolants.z += z;
 
         interpolants.color_r += color_r;
         interpolants.color_g += color_g;
@@ -40,10 +41,10 @@ public class GouruadLerper_E extends GouruadLerper_Base{
         interpolants.tex_u += tex_u;
         interpolants.tex_v += tex_v;
 
-        /*interpolants.spec_u += spec_u;
-        interpolants.spec_v += spec_v;*/
+        *//*interpolants.spec_u += spec_u;
+        interpolants.spec_v += spec_v;*//*
 
         interpolants.invW += invW;
-        interpolants.specularity += specularity;
+        interpolants.specularity += specularity;*/
     }
 }

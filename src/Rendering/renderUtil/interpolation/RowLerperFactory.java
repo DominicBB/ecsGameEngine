@@ -15,16 +15,16 @@ public class RowLerperFactory extends BaseLerperFactory {
                                      int factor) {
         gL.z = calcStep_shiftAfter(factor, gI.z, gI2.z);
 
-        gL.color_a = calcStep(factor, gI.color_a, gI2.color_a, colorStep_shift);
-        gL.color_r = calcStep(factor, gI.color_r, gI2.color_r, colorStep_shift);
-        gL.color_g = calcStep(factor, gI.color_g, gI2.color_g, colorStep_shift);
-        gL.color_b = calcStep(factor, gI.color_b, gI2.color_b, colorStep_shift);
+        gL.color_a = calcStep_color(factor, gI.color_a, gI2.color_a);
+        gL.color_r = calcStep_color(factor, gI.color_r, gI2.color_r);
+        gL.color_g = calcStep_color(factor, gI.color_g, gI2.color_g);
+        gL.color_b = calcStep_color(factor, gI.color_b, gI2.color_b);
 
         gL.invW = calcStep_shiftAfter(factor, gI.invW, gI2.invW);
 
         if (material.hasTexture()) {
-            gL.tex_u = calcStep(factor, gI.tex_u, gI2.tex_u);
-            gL.tex_v = calcStep(factor, gI.tex_v, gI2.tex_v);
+            gL.tex_u = calcStep_tex(factor, gI.tex_u, gI2.tex_u);
+            gL.tex_v = calcStep_tex(factor, gI.tex_v, gI2.tex_v);
         }
 
         if (material.isSpecular()) {
@@ -32,7 +32,7 @@ public class RowLerperFactory extends BaseLerperFactory {
                 gL.spec_u = calcStep(factor, gI.spec_u, gI2.spec_u);
                 gL.spec_v = calcStep(factor, gI.spec_v, gI2.spec_v);
             }
-            gL.specularity = calcStep(factor, gI.specularity, gI2.specularity);
+            gL.specularity = calcStep_tex(factor, gI.specularity, gI2.specularity);
         }
     }
 

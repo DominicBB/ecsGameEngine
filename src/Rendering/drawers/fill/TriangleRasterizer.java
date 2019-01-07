@@ -37,6 +37,9 @@ public class TriangleRasterizer {
 
     private void setUpEdges(VOutfi maxY, VOutfi midY, VOutfi minY) {
         int eIndex = 0;
+        if ((maxY.p_proj.y >> Rasterfi.D_SHIFT) >= 1080 || (midY.p_proj.y >> Rasterfi.D_SHIFT) >= 1080 || (minY.p_proj.y >> Rasterfi.D_SHIFT) >= 1080) {
+            eIndex = 0;
+        }
         VOutfi temp;
         if (maxY.p_proj.y < midY.p_proj.y) {
             temp = maxY;

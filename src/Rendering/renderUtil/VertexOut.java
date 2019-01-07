@@ -55,6 +55,7 @@ public class VertexOut {
         if (p_proj.w == 0)
             return new VOutfi(this);
 
+        float invW = 1f/p_proj.w;
         Vec4fi vec = new Vec4fi(
                 Rasterfi.floatToFixed(moveToScreenSpace(p_proj.x * invW, RenderState.HALF_WIDTHf)),
                 Rasterfi.floatToFixed(moveToScreenSpace(p_proj.y * invW, RenderState.HALF_HEIGHTf)),

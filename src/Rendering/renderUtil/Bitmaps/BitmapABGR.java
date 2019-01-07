@@ -173,6 +173,14 @@ public class BitmapABGR {
         out.w = (byteArray[i] & 0xFF) << out.D_SHIFT;
     }
 
+    public void getPixelNonAlloc_vInt_noshift(int x, int y, Vec4fi out) {
+        int i = (y * width + x) << 2;
+        out.x = (byteArray[i + 3] & 0xFF);
+        out.y = (byteArray[i + 2] & 0xFF);
+        out.z = (byteArray[i + 1] & 0xFF);
+        out.w = (byteArray[i] & 0xFF);
+    }
+
     public int getHeight() {
         return height;
     }

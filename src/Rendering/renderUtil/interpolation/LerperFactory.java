@@ -11,20 +11,20 @@ public class LerperFactory extends BaseLerperFactory {
 
     public static void gouruadLerper(Material material, GouruadLerper_E gL, VOutfi v1, VOutfi v2,
                                      int factor) {
-        gL.x = calcStep(factor, v1.p_proj.x, v2.p_proj.x);
+        gL.x = calcStep_x(factor, v1.p_proj.x, v2.p_proj.x);
 
         gL.z = calcStep_shiftAfter(factor, v1.p_proj.z, v2.p_proj.z);
 
-        gL.color_a = calcStep(factor, v1.surfaceColor.w, v2.surfaceColor.w, colorStep_shift);
-        gL.color_r = calcStep(factor, v1.surfaceColor.x, v2.surfaceColor.x, colorStep_shift);
-        gL.color_g = calcStep(factor, v1.surfaceColor.y, v2.surfaceColor.y, colorStep_shift);
-        gL.color_b = calcStep(factor, v1.surfaceColor.z, v2.surfaceColor.z, colorStep_shift);
+        gL.color_a = calcStep_color(factor, v1.surfaceColor.w, v2.surfaceColor.w);
+        gL.color_r = calcStep_color(factor, v1.surfaceColor.x, v2.surfaceColor.x);
+        gL.color_g = calcStep_color(factor, v1.surfaceColor.y, v2.surfaceColor.y);
+        gL.color_b = calcStep_color(factor, v1.surfaceColor.z, v2.surfaceColor.z);
 
         gL.invW = calcStep_shiftAfter(factor, v1.invW, v2.invW);
 
         if (material.hasTexture()) {
-            gL.tex_u = calcStep(factor, v1.texCoord.x, v2.texCoord.x);
-            gL.tex_v = calcStep(factor, v1.texCoord.y, v2.texCoord.y);
+            gL.tex_u = calcStep_tex(factor, v1.texCoord.x, v2.texCoord.x);
+            gL.tex_v = calcStep_tex(factor, v1.texCoord.y, v2.texCoord.y);
         }
 
         if (material.isSpecular()) {
@@ -32,7 +32,7 @@ public class LerperFactory extends BaseLerperFactory {
                 gL.spec_u = calcStep(factor, v1.specCoord.x, v2.specCoord.x);
                 gL.spec_v = calcStep(factor, v1.specCoord.y, v2.specCoord.y);
             }
-            gL.specularity = calcStep(factor, v1.spec, v2.spec);
+            gL.specularity = calcStep_tex(factor, v1.spec, v2.spec);
         }
     }
 

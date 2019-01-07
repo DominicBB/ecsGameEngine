@@ -27,11 +27,11 @@ public class Rasterfi {
     }
 
     public static int inverse(int fp) {
-        return ((Mathfi.MAX_D_FACT) / (fp >> INVERSE_SHIFT));
+        return ((Mathfi.MAX_D_FACT) / (fp /*>> 6*/)) << INVERSE_SHIFT;
     }
 
     public static int un_inverse(int fp) {
-        return ((Mathfi.MAX_D_FACT) / (fp >> 1)) << 7;
+        return ((Mathfi.MAX_D_FACT) / (fp /*>> 1*/)) << INVERSE_SHIFT;
     }
 
     public static int multiplyByInv(int fp_0, int inv) {
@@ -52,17 +52,29 @@ public class Rasterfi {
         return multiply(fp_0, fp_1, DEFAULT_L_SHIFT);
     }
 
+    public static int multiply_onlySL(int fp_0, int fp_1) {
+        return (fp_0 * (fp_1 >> D_SHIFT));
+    }
 
-    public static void multiply(Vec4fi vfp0, Vec4fi vfp1, int left_val_shift) {
+    public static int multiply_noshift(int fp_0, int fp_1) {
+        return fp_0 * fp_1;
+    }
+
+    public static int multiply_sample_coord(int coord, int z) {
+        return ((coord >> 4) * (z >> 15))/* >> 5*/;
+    }
+
+
+    public static void multiply(Vec4fi vfp0, Vec4fi vfp1) {
         vfp0.set(
                 /*multiply(vfp0.x, vfp1.x, left_val_shift),
                 multiply(vfp0.y, vfp1.y, left_val_shift),
                 multiply(vfp0.z, vfp1.z, left_val_shift),
                 multiply(vfp0.w, vfp1.w, left_val_shift)*/
-                multiply_shiftAfter(vfp0.x, vfp1.x),
-                multiply_shiftAfter(vfp0.y, vfp1.y),
-                multiply_shiftAfter(vfp0.z, vfp1.z),
-                multiply_shiftAfter(vfp0.w, vfp1.w));
+                multiply_noshift(vfp0.x, vfp1.x),
+                multiply_noshift(vfp0.y, vfp1.y),
+                multiply_noshift(vfp0.z, vfp1.z),
+                multiply_noshift(vfp0.w, vfp1.w));
     }
 
 

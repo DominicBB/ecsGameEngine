@@ -55,12 +55,12 @@ final class ShaderUtil {
     static Vec4fi calcSpecularAtFrag(int u, int v, int spec, int w, Material material) {
         Vec4fi specColor;
         if (material.hasSpecularMap()) {
-             specColor = sample_persp(u, v, material.getSpecularMap(), w);
+            specColor = sample_persp(u, v, material.getSpecularMap(), w);
         } else {
-           specColor = new Vec4fi(material.getDefualtSpecularColor(), Rasterfi.D_SHIFT);//TODO: should store in mat
+            specColor = new Vec4fi(material.getDefualtSpecularColor(), Rasterfi.D_SHIFT);//TODO: should store in mat
         }
         specColor.mul_unsafe(spec, 18);
-        return specColor ;
+        return specColor;
 
     }
 
@@ -126,14 +126,15 @@ final class ShaderUtil {
     }
 
     static void sample_persp_NonAlloc(int u, int v, BitmapABGR bitmapABGR, int z, Vec4fi out) {
-        bitmapABGR.getPixelNonAlloc_vInt(Rasterfi.toInt(Rasterfi.multiply(u, z)), Rasterfi.toInt(Rasterfi.multiply(v, z)),
+        bitmapABGR.getPixelNonAlloc_vInt_noshift(Rasterfi.toInt(Rasterfi.multiply_sample_coord(u, z)),
+                Rasterfi.toInt(Rasterfi.multiply_sample_coord(v, z)),
                 out);
     }
 
     static Vec2f scaleToBitmap(Vec2f in, BitmapABGR bitmapABGR) {
         return new Vec2f(
-                in.x * (bitmapABGR.getWidth() - 1) /*+ 0.5f*/,
-                in.y * (bitmapABGR.getHeight() - 1) /*+ 0.5f*/
+                in.x * (bitmapABGR.getWidth() - 1.5f) /*+ 0.5f*/,
+                in.y * (bitmapABGR.getHeight() - 1.5f) /*+ 0.5f*/
         );
     }
 

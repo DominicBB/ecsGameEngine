@@ -93,9 +93,7 @@ public class FlatShader implements IShader, IGeometryShader {
         Material material = RenderState.material;
 
         int w = Rasterfi.un_inverse(fI.invW);
-        if(w<0){
-            w= w;
-        }
+
         outColor.set(surfaceColor);
         if (material.hasSpecularMap()) {
             sample_persp_NonAlloc(fI.spec_u, fI.spec_v, material.getSpecularMap(), w, util);
@@ -107,7 +105,7 @@ public class FlatShader implements IShader, IGeometryShader {
         } else {
             util.set_unsafe(material.getColorfi());
         }
-        Rasterfi.multiply(outColor, util, 2);
+        Rasterfi.multiply(outColor, util);
         return true;
     }
 

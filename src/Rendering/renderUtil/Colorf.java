@@ -3,12 +3,13 @@ package Rendering.renderUtil;
 import util.Mathf.Mathf;
 import util.Mathf.Mathf3D.Vec4f;
 import util.Mathf.Mathf3D.Vec4fi;
+import util.Mathf.Mathf3D.Vec4fiImmut;
 import util.Mathf.Mathf3D.Vector3DInt;
 
 public class Colorf {
     public static final Vec4f minColor = new Vec4f(0f, 0f, 0f, 255f);
     public static final Vec4f maxColor = new Vec4f(255f, 255f, 255f, 255f);
-    public static final Vec4fi maxColorfp = new Vec4fi(255, 255, 255, 255, 0);
+    public static final Vec4fiImmut maxColorfp = new Vec4fiImmut(255, 255, 255, 255, 0);
 
     //TESTING STUFF
     private static final int zero = 0;
@@ -38,7 +39,10 @@ public class Colorf {
     }
 
     public static void clampMaxNonAlloc(Vec4fi color) {
-        Mathf.clampMaxNonAlloc(color, maxColorfp);
+        color.x = (color.x <= maxColorfp.x) ? color.x : maxColorfp.x;
+        color.y = (color.y <= maxColorfp.y) ? color.y : maxColorfp.y;
+        color.z = (color.z <= maxColorfp.z) ? color.z : maxColorfp.z;
+        color.w = (color.w <= maxColorfp.w) ? color.w : maxColorfp.w;
     }
 
     public static void clampMaxNonAllocBit(Vec4f color, Vector3DInt out) {

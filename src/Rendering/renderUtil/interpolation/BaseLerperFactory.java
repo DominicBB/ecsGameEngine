@@ -18,12 +18,25 @@ public abstract class BaseLerperFactory {
     static int calcStep(int factor, int f1, int f2) {
         return Rasterfi.multiply(f2 - f1, factor);
     }
+
+    static int calcStep_x(int factor, int f1, int f2) {
+        return (((f2 - f1) >> colorStep_shift) * factor) >> 7;
+    }
+
     static int calcStep(int factor, int f1, int f2, int left_val_shift) {
         return Rasterfi.multiply(f2 - f1, factor, left_val_shift);
     }
 
     static int calcStep_shiftAfter(int factor, int f1, int f2) {
         return Rasterfi.multiply_shiftAfter(f2 - f1, factor);
+    }
+
+    static int calcStep_color(int factor, int f1, int f2) {
+        return (((f2 - f1) >> colorStep_shift) * factor) >> 7;
+    }
+
+    static int calcStep_tex(int factor, int f1, int f2) {
+        return (((f2 - f1) >> 4) * (factor >> 4)) >> 11;
     }
 
 

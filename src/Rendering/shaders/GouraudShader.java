@@ -90,7 +90,7 @@ public class GouraudShader implements IShader {
             sample_persp_NonAlloc(gI.tex_u, gI.tex_v, material.getTexture().texture, w, util);
         else
             util.set_unsafe(material.getColorfi());
-        Rasterfi.multiply(outColor, util, 2);
+        Rasterfi.multiply(outColor, util);
         return true;
     }
 
