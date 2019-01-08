@@ -3,7 +3,7 @@ package Physics.physicsUtil;
 import util.Mathf.Mathf2D.Bounds2D.AABoundingRect;
 import util.Mathf.Mathf2D.Bounds2D.BoundingCircle;
 import util.Mathf.Mathf2D.Bounds2D.Bounds2D;
-import util.Mathf.Mathf2D.Vector2D;
+import util.Mathf.Mathf2D.Vec2f;
 
 public class Intersect2D {
 
@@ -29,7 +29,7 @@ public class Intersect2D {
     public static boolean intersectsBool(BoundingCircle bc, AABoundingRect aabr) {
         if (aabr.contains(bc.getCenter()))
             return true;
-        Vector2D centerDif = bc.getCenter().absDiff(aabr.getCenter());
+        Vec2f centerDif = bc.getCenter().absDiff(aabr.getCenter());
         if (centerDif.x > (bc.getRadius() + aabr.getHalfSize().x) || centerDif.y > (bc.getRadius() + aabr.getHalfSize().y))
             return false;
 
@@ -49,9 +49,9 @@ public class Intersect2D {
     }
 
     public static boolean intersectsBool(AABoundingRect aabr1, AABoundingRect aabr2) {
-        Vector2D dif1 = aabr2.getTopLeft().minus(aabr1.getBottomRight());
-        Vector2D dif2 = aabr1.getTopLeft().minus(aabr2.getBottomRight());
-        Vector2D maxDif = dif1.maxValues(dif2);
+        Vec2f dif1 = aabr2.getTopLeft().minus(aabr1.getBottomRight());
+        Vec2f dif2 = aabr1.getTopLeft().minus(aabr2.getBottomRight());
+        Vec2f maxDif = dif1.maxValues(dif2);
         float maxVal = maxDif.maxVal();
         return maxVal <= 0;
     }

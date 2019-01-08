@@ -1,7 +1,7 @@
 package components.Physics2DComponents.Colliders2D;
 
 import util.Mathf.Mathf2D.Bounds2D.BoundingCircle;
-import util.Mathf.Mathf2D.Vector2D;
+import util.Mathf.Mathf2D.Vec2f;
 
 public class CircleCollider extends Collider2D{
     public BoundingCircle boundingCircle;
@@ -10,7 +10,7 @@ public class CircleCollider extends Collider2D{
         this.boundingCircle = boundingCircle;
     }
 
-    public CircleCollider(Vector2D center, float radius){
+    public CircleCollider(Vec2f center, float radius){
         this.boundingCircle = new BoundingCircle(center, radius);
     }
 }

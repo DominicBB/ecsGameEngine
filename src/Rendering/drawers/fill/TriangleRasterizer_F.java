@@ -5,7 +5,7 @@ import Rendering.renderUtil.RenderState;
 import Rendering.renderUtil.interpolation.LerperFactory;
 import Rendering.renderUtil.interpolation.flat.FlatInterpolants;
 import Rendering.renderUtil.interpolation.flat.FlatLerper_E;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4f;
 
 public class TriangleRasterizer_F implements ITriRasterizer {
     private final Rasterizer_F rasterizer_f = new Rasterizer_F();
@@ -14,10 +14,10 @@ public class TriangleRasterizer_F implements ITriRasterizer {
             gI2 = new FlatInterpolants(new FlatLerper_E()),
             gI3 = new FlatInterpolants(new FlatLerper_E());
 
-    private final Vector3D fragColor, fragUtil;
+    private final Vec4f fragColor, fragUtil;
 
 
-    public TriangleRasterizer_F(Vector3D fragColor, Vector3D fragUtil) {
+    public TriangleRasterizer_F(Vec4f fragColor, Vec4f fragUtil) {
         this.fragColor = fragColor;
         this.fragUtil = fragUtil;
     }

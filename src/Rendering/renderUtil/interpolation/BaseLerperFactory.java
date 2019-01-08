@@ -1,10 +1,10 @@
 package Rendering.renderUtil.interpolation;
 
-import util.Mathf.Mathf2D.Vector2D;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf2D.Vec2f;
+import util.Mathf.Mathf3D.Vec4f;
 
 public abstract class BaseLerperFactory {
-    protected static void calcVec2Step(Vector2D out, float factor, Vector2D vIn1, Vector2D vIn2) {
+    protected static void calcVec2Step(Vec2f out, float factor, Vec2f vIn1, Vec2f vIn2) {
         out.set(
                 (vIn2.x - vIn1.x) * factor,
                 (vIn2.y - vIn1.y) * factor
@@ -15,7 +15,7 @@ public abstract class BaseLerperFactory {
         return (f2 - f1) * factor;
     }
 
-    protected static void calcVec3Step(Vector3D out, float factor, Vector3D vIn1, Vector3D vIn2) {
+    protected static void calcVec3Step(Vec4f out, float factor, Vec4f vIn1, Vec4f vIn2) {
         out.set(
                 (vIn2.x - vIn1.x) * factor,
                 (vIn2.y - vIn1.y) * factor,

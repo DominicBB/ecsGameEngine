@@ -1,6 +1,6 @@
 package Rendering.renderUtil.Bitmaps;
 
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4f;
 import util.Mathf.Mathf3D.Vector3DInt;
 
 import javax.imageio.ImageIO;
@@ -67,7 +67,7 @@ public class BitmapBGR {
      * @param y
      * @param color
      */
-    public void setPixel(int x, int y, Vector3D color) {
+    public void setPixel(int x, int y, Vec4f color) {
         setPixel(x, y,
                 (byte) (((int) color.x) & 0xFF),//r
                 (byte) (((int) color.y) & 0xFF),//g
@@ -139,9 +139,9 @@ public class BitmapBGR {
     }
 
 
-    public Vector3D getPixel(int x, int y) {
+    public Vec4f getPixel(int x, int y) {
         int i = (y * width + x) * 3;
-        return new Vector3D(
+        return new Vec4f(
                 byteArray[i + 2] & 0xFF,
                 byteArray[i + 1] & 0xFF,
                 byteArray[i] & 0xFF,
@@ -149,7 +149,7 @@ public class BitmapBGR {
         );
     }
 
-    public void getPixelNonAlloc(int x, int y, Vector3D out) {
+    public void getPixelNonAlloc(int x, int y, Vec4f out) {
         int i = (y * width + x) * 3;
         out.x = byteArray[i + 2] & 0xFF;
         out.y = byteArray[i + 1] & 0xFF;

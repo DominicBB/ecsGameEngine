@@ -9,7 +9,7 @@ import Rendering.renderUtil.interpolation.flat.FlatInterpolants;
 import Rendering.shaders.interfaces.IGeometryShader;
 import Rendering.shaders.interfaces.IShader;
 import util.Mathf.Mathf3D.Triangle;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4f;
 
 import static Rendering.shaders.ShaderUtil.*;
 
@@ -31,9 +31,9 @@ public class FlatShader implements IShader, IGeometryShader {
 
     @Override
     public final VertexOut[] geom(VertexOut v1, VertexOut v2, VertexOut v3, Material material, VertexOut[] vertices) {
-        Vector3D averageNorm = (v1.n_ws.sqrMagnitude() == 0f) ? Triangle.normal(v1, v2, v3) : averageNormal(v1, v2, v3);
+        Vec4f averageNorm = (v1.n_ws.sqrMagnitude() == 0f) ? Triangle.normal(v1, v2, v3) : averageNormal(v1, v2, v3);
 
-        Vector3D surfaceColor = Vector3D.newZeros();
+        Vec4f surfaceColor = Vec4f.newZeros();
         float spec = calculateBasicLighting(averageNorm, v1.p_ws, material, surfaceColor);
 
         //TODO: do not need to set for all 3
@@ -70,12 +70,12 @@ public class FlatShader implements IShader, IGeometryShader {
 
         /*for (int i = 0; i < vertices.length; i++) {
             vertices[i] = new VertexOut(vertices[i].p_proj,
-                    Vector2D.newCopy(vertices[i].texCoord),
-                    *//*Vector2D.newCopy(vertices[i].specCoord)*//*vertices[i].specCoord,
+                    Vec2f.newCopy(vertices[i].texCoord),
+                    *//*Vec2f.newCopy(vertices[i].specCoord)*//*vertices[i].specCoord,
                     spec,
                     surfaceColor,
-                    Vector3D.newCopy(vertices[i].n_ws),
-                    Vector3D.newCopy(vertices[i].p_ws),
+                    Vec4f.newCopy(vertices[i].n_ws),
+                    Vec4f.newCopy(vertices[i].p_ws),
                     vertices[i].invW);
         }*/
 
@@ -83,8 +83,8 @@ public class FlatShader implements IShader, IGeometryShader {
     }
 
 
-    public static boolean fragNonAlloc(FlatInterpolants fI, Vector3D surfaceColor, float spec,
-                                       Material material, Vector3D outColor, Vector3D util, int y) {
+    public static boolean fragNonAlloc(FlatInterpolants fI, Vec4f surfaceColor, float spec,
+                                       Material material, Vec4f outColor, Vec4f util, int y) {
         if (!ShaderUtil.zBufferTest(RenderState.zBuffer, fI.z, fI.xInt, y))
             return false;
 
@@ -96,9 +96,9 @@ public class FlatShader implements IShader, IGeometryShader {
         }
         if (material.hasTexture()) {
             sample_persp_NonAlloc(fI.tex_u, fI.tex_v, material.getTexture().texture, w, util);
-            Vector3D.componentMulNonAlloc(outColor, util);
+            Vec4f.componentMulNonAlloc(outColor, util);
         } else {
-            Vector3D.componentMulNonAlloc(outColor, material.getColor());
+            Vec4f.componentMulNonAlloc(outColor, material.getColor());
         }
         return true;
     }
@@ -109,7 +109,7 @@ public class FlatShader implements IShader, IGeometryShader {
     }
 
 
-    private float calculateBasicLighting(Vector3D n, Vector3D p, Material material, Vector3D sColor) {
+    private float calculateBasicLighting(Vec4f n, Vec4f p, Material material, Vec4f sColor) {
         if (material.isDiffuse()) {
             sColor.add(diffuse(n, material));
         }
@@ -124,8 +124,8 @@ public class FlatShader implements IShader, IGeometryShader {
         return spec;
     }
 
-    private float calcSpecularity(Vector3D n, Vector3D p,
-                                  Material material, Vector3D sColor) {
+    private float calcSpecularity(Vec4f n, Vec4f p,
+                                  Material material, Vec4f sColor) {
         float specularity = calculateSpecular(n, p, material);
         if (!material.hasSpecularMap()) {
             sColor.add(material.getDefualtSpecularColor().mul(specularity));
@@ -133,8 +133,8 @@ public class FlatShader implements IShader, IGeometryShader {
         return specularity;
     }
 
-    private Vector3D averageNormal(VertexOut v1, VertexOut v2, VertexOut v3) {
-        Vector3D avg = Vector3D.newCopy(v1.n_ws);
+    private Vec4f averageNormal(VertexOut v1, VertexOut v2, VertexOut v3) {
+        Vec4f avg = Vec4f.newCopy(v1.n_ws);
         avg.add(v2.n_ws);
         avg.add(v3.n_ws);
         avg.mutDivide(3);

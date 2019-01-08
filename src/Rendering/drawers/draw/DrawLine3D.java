@@ -4,7 +4,7 @@ import Rendering.Materials.Material;
 import Rendering.drawers.Draw;
 import Rendering.renderUtil.RenderState;
 import Rendering.renderUtil.VertexOut;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4f;
 
 public class DrawLine3D extends Draw {
 
@@ -18,8 +18,8 @@ public class DrawLine3D extends Draw {
     public static void drawLine(VertexOut v1, VertexOut v2, Material material) {
         // DDA implementation, with z buff
         float dx, dy, dz, step, x, y, z;
-        Vector3D dc;
-        Vector3D c;
+        Vec4f dc;
+        Vec4f c;
         int i;
 
         dx = (v2.p_proj.x - v1.p_proj.x);
@@ -57,7 +57,7 @@ public class DrawLine3D extends Draw {
         }
     }
 
-    public static void drawLine(Vector3D v1, Vector3D v2, Vector3D color) {
+    public static void drawLine(Vec4f v1, Vec4f v2, Vec4f color) {
         // DDA implementation, with z buff
         float dx, dy, dz, step, x, y, z;
         int i;

@@ -5,17 +5,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import Rendering.renderUtil.Meshes.TriangleMesh;
-import util.Mathf.Mathf2D.Vector2D;
-import util.Mathf.Mathf3D.Bounds.AABoundingBox;
+import util.Mathf.Mathf2D.Vec2f;
 import util.Mathf.Mathf3D.Quad;
 import util.Mathf.Mathf3D.Triangle;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4f;
 
 public class ObjFileToTriangleMesh {
 
-    private static Vector3D[] vecterDict;
-    private static Vector3D[] vtDict;
-    private static Vector3D[] vnDict;
+    private static Vec4f[] vecterDict;
+    private static Vec4f[] vtDict;
+    private static Vec4f[] vnDict;
 
     //	private static String vectorLine = "v\\s(-?[0-9]+\\.?[0-9]+\\s){3}";
     private static String vectorSplit = "(-?[0-9]+\\.?[0-9]+\\s)";
@@ -28,9 +27,9 @@ public class ObjFileToTriangleMesh {
         try {
             TriangleMesh triangleMesh = new TriangleMesh();
             BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-            vecterDict = new Vector3D[(int) file.length()];
-            vtDict = new Vector3D[(int) file.length()];
-            vnDict = new Vector3D[(int) file.length()];
+            vecterDict = new Vec4f[(int) file.length()];
+            vtDict = new Vec4f[(int) file.length()];
+            vnDict = new Vec4f[(int) file.length()];
             String line = bufferedReader.readLine();
             int vCount = 1;
             int vtCount = 1;
@@ -54,9 +53,9 @@ public class ObjFileToTriangleMesh {
                 }
                 //vector
                 else if (line.startsWith("v")) {
-                    Vector3D vector3D = readVector(line);
-                    updateBoundingBox(triangleMesh, vector3D);
-                    vecterDict[vCount++] = vector3D;
+                    Vec4f vec4f = readVector(line);
+                    updateBoundingBox(triangleMesh, vec4f);
+                    vecterDict[vCount++] = vec4f;
 
                 }
 
@@ -66,8 +65,8 @@ public class ObjFileToTriangleMesh {
                     if (m.find()) {
                         String[] face = line.split(" ");
 
-                        Vector3D[] vectors = new Vector3D[4];//enough room for quad
-                        Vector2D[] textures = new Vector2D[4];
+                        Vec4f[] vectors = new Vec4f[4];//enough room for quad
+                        Vec2f[] textures = new Vec2f[4];
 
                         //start at 1 as first index is "f"
                         int i;
@@ -77,9 +76,9 @@ public class ObjFileToTriangleMesh {
                             vectors[i - 1] = vecterDict[Integer.parseInt(f_vt_vn[0])];
                             //texturePath
                             if (f_vt_vn.length > 2) {
-                                Vector3D tx = vtDict[Integer.parseInt(f_vt_vn[1])];
+                                Vec4f tx = vtDict[Integer.parseInt(f_vt_vn[1])];
                                 if (tx != null) {
-                                    textures[i - 1] = new Vector2D(tx.x, tx.y);
+                                    textures[i - 1] = new Vec2f(tx.x, tx.y);
                                 }
                             }
                         }
@@ -110,20 +109,20 @@ public class ObjFileToTriangleMesh {
         return null;
     }
 
-    private static Vector3D minExtents;
-    private static Vector3D maxExtents;
-    private static void updateBoundingBox(TriangleMesh triangleMesh, Vector3D vector3D) {
-        if (vector3D.x > maxExtents.x) maxExtents.x = vector3D.x;
-        if (vector3D.x < minExtents.x) minExtents.x = vector3D.x;
+    private static Vec4f minExtents;
+    private static Vec4f maxExtents;
+    private static void updateBoundingBox(TriangleMesh triangleMesh, Vec4f vec4f) {
+        if (vec4f.x > maxExtents.x) maxExtents.x = vec4f.x;
+        if (vec4f.x < minExtents.x) minExtents.x = vec4f.x;
 
-        if (vector3D.y > maxExtents.y) maxExtents.y = vector3D.y;
-        if (vector3D.y < minExtents.y) minExtents.y = vector3D.y;
+        if (vec4f.y > maxExtents.y) maxExtents.y = vec4f.y;
+        if (vec4f.y < minExtents.y) minExtents.y = vec4f.y;
 
-        if (vector3D.z > maxExtents.z) maxExtents.z = vector3D.z;
-        if (vector3D.z < minExtents.z) minExtents.z = vector3D.z;
+        if (vec4f.z > maxExtents.z) maxExtents.z = vec4f.z;
+        if (vec4f.z < minExtents.z) minExtents.z = vec4f.z;
     }
 
-    private static Vector3D readVector(String line) {
+    private static Vec4f readVector(String line) {
         float x, y, z;
 
         Pattern p = Pattern.compile(vectorSplit, Pattern.CASE_INSENSITIVE);
@@ -138,7 +137,7 @@ public class ObjFileToTriangleMesh {
             y = Float.parseFloat(xyz[i + 1]);
             z = Float.parseFloat(xyz[i + 2]);
 
-            return new Vector3D(x, y, z);
+            return new Vec4f(x, y, z);
         }
         return null;
     }

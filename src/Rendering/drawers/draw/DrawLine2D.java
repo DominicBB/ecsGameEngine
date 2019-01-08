@@ -2,11 +2,11 @@ package Rendering.drawers.draw;
 
 import Rendering.drawers.Draw;
 import Rendering.renderUtil.RenderState;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4f;
 
 public class DrawLine2D extends Draw {
 
-    public static void drawLine2D(float x1, float y1, float x2, float y2, Vector3D c) {
+    public static void drawLine2D(float x1, float y1, float x2, float y2, Vec4f c) {
         // DDA implementation
         float dx, dy, step, x, y;
         int i;
@@ -32,7 +32,7 @@ public class DrawLine2D extends Draw {
         }
     }
 
-    public static void drawLine2DBresenham(int x1, int y1, int x2, int y2, Vector3D c) {
+    public static void drawLine2DBresenham(int x1, int y1, int x2, int y2, Vec4f c) {
         if (Math.abs(y2 - y1) < Math.abs(x2 - x1)) {
             if (x1 > x2)
                 drawLineLow(x2, y2, x1, y1, c);
@@ -45,7 +45,7 @@ public class DrawLine2D extends Draw {
     }
 
 
-    private static void drawLineLow(int x1, int y1, int x2, int y2, Vector3D c) {
+    private static void drawLineLow(int x1, int y1, int x2, int y2, Vec4f c) {
         int dx = x2 - x1;
         int dy = y2 - y1;
 
@@ -71,7 +71,7 @@ public class DrawLine2D extends Draw {
         }
     }
 
-    private static void drawLineHigh(int x1, int y1, int x2, int y2, Vector3D c) {
+    private static void drawLineHigh(int x1, int y1, int x2, int y2, Vec4f c) {
         int dx = x2 - x1;
         int dy = y2 - y1;
 

@@ -2,7 +2,7 @@ package Rendering.renderUtil.threading.threadSaftey;
 
 import Rendering.renderUtil.Edges.Edge;
 import util.Mathf.Mathf2D.Bounds2D.AABoundingRect;
-import util.Mathf.Mathf2D.Vector2D;
+import util.Mathf.Mathf2D.Vec2f;
 
 import java.util.*;
 
@@ -36,9 +36,9 @@ public class RenderLocks {
     public static boolean BRintersect(AABoundingRect aabr) {
         AABoundingRect aabr2;
 
-        Vector2D max1 = aabr.getBottomRight();
-        Vector2D min1 = aabr.getTopLeft();
-        Vector2D max2, min2;
+        Vec2f max1 = aabr.getBottomRight();
+        Vec2f min1 = aabr.getTopLeft();
+        Vec2f max2, min2;
 
         for (int i = 0, len = values.size(); i < len; i++) {
             aabr2 = values.get(i).BR;
@@ -71,7 +71,7 @@ public class RenderLocks {
         return lockNodeMap.get(threadID);
     }
 
-    private static boolean brIntersects(Vector2D min1, Vector2D max1, Vector2D min2, Vector2D max2) {
+    private static boolean brIntersects(Vec2f min1, Vec2f max1, Vec2f min2, Vec2f max2) {
         return (min2.y < max1.y) && (min2.x < max1.x)
                 && (max2.x > min1.x) && (max2.y > min1.y);
     }

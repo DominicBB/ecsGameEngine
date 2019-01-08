@@ -5,7 +5,7 @@ import Rendering.renderUtil.RenderState;
 import Rendering.renderUtil.interpolation.LerperFactory;
 import Rendering.renderUtil.interpolation.phong.PhongInterpolants;
 import Rendering.renderUtil.interpolation.phong.PhongLerper_E;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4f;
 
 public class TriangleRasterizer_P implements ITriRasterizer{
     private Rasterizer_P rasterizer_P = new Rasterizer_P();
@@ -14,9 +14,9 @@ public class TriangleRasterizer_P implements ITriRasterizer{
             gI2 = new PhongInterpolants(new PhongLerper_E()),
             gI3 = new PhongInterpolants(new PhongLerper_E());
 
-    private final Vector3D fragColor, fragUtil;
+    private final Vec4f fragColor, fragUtil;
 
-    public TriangleRasterizer_P(Vector3D fragColor, Vector3D fragUtil) {
+    public TriangleRasterizer_P(Vec4f fragColor, Vec4f fragUtil) {
         this.fragColor = fragColor;
         this.fragUtil = fragUtil;
     }

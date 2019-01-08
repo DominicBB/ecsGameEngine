@@ -7,7 +7,7 @@ import core.display.Window;
 import util.FloatBuffer;
 import util.Mathf.Mathf3D.Matrix4x4;
 import util.Mathf.Mathf3D.Transform;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4f;
 
 public final class RenderState {
     public static LightingState lightingState;
@@ -26,9 +26,9 @@ public final class RenderState {
     public static final float halfWidth = (Window.defaultWidth - 1f) * 0.5f;
     public static final float halfHeight = (Window.defaultHeight - 1f) * 0.5f;
 
-    /*public static Vector3D screenSpaceToWorldSpace(Vector3D vector3D) {
+    /*public static Vec4f screenSpaceToWorldSpace(Vec4f vector3D) {
 
-        Vector3D res = new Vector3D(
+        Vec4f res = new Vec4f(
                 vector3D.x * vector3D.w,
                 vector3D.y * vector3D.w,
                 vector3D.z * vector3D.w,
@@ -39,12 +39,12 @@ public final class RenderState {
     }*/
 
     public static void createLightingState() {
-        lightingState = new LightingState(1f, Vector3D.RIGHT,
-                Vector3D.newOnes(), new Vector3D(.1f, .1f, .1f));
+        lightingState = new LightingState(1f, Vec4f.RIGHT,
+                Vec4f.newOnes(), new Vec4f(.1f, .1f, .1f));
     }
 
-    public static Vector3D modelSpaceToScreenSpace(Vector3D vector3D) {
-        Vector3D proj = mvp.multiply4x4(vector3D);
+    public static Vec4f modelSpaceToScreenSpace(Vec4f vec4f) {
+        Vec4f proj = mvp.multiply4x4(vec4f);
         float invW = 1f / proj.w;
         proj.x = proj.x * invW;
         proj.y = proj.y * invW;

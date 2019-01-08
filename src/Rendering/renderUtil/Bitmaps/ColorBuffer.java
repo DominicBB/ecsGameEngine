@@ -1,6 +1,6 @@
 package Rendering.renderUtil.Bitmaps;
 
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4f;
 
 
 class ColorBuffer extends BitmapABGR {
@@ -9,7 +9,7 @@ class ColorBuffer extends BitmapABGR {
         super(width, height);
     }
 
-    public final void setPixelFromBitmap(int x, int y, BitmapABGR bitmapABGR, int u, int v, Vector3D shade) {
+    public final void setPixelFromBitmap(int x, int y, BitmapABGR bitmapABGR, int u, int v, Vec4f shade) {
         int buffIndex = (x + y * width) << 2;
         int tIndex = (u + v * bitmapABGR.width) << 2;
         byteArray[buffIndex] = bitmapABGR.byteArray[tIndex];//a

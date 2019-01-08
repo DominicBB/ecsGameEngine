@@ -6,8 +6,8 @@ import Rendering.renderUtil.Vertex;
 import Rendering.renderUtil.VertexOut;
 import Rendering.renderUtil.interpolation.gouruad.GouruadInterpolants;
 import Rendering.shaders.interfaces.IShader;
-import util.Mathf.Mathf2D.Vector2D;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf2D.Vec2f;
+import util.Mathf.Mathf3D.Vec4f;
 
 import static Rendering.shaders.ShaderUtil.*;
 
@@ -19,7 +19,7 @@ public class GouraudShader implements IShader {
     @Override
     public void vertNonAlloc(Vertex vIn, Material material, VertexOut out) {
         out.p_proj.set((RenderState.mvp.multiply4x4(vIn.vec)));
-        out.surfaceColor.set(Vector3D.newZeros());
+        out.surfaceColor.set(Vec4f.newZeros());
         out.p_ws.set(RenderState.world.multiply4x4(vIn.vec));
         out.n_ws.set(RenderState.transform.getRotation().rotate(vIn.normal));
         out.invW = 1f / out.p_proj.w;
@@ -30,7 +30,7 @@ public class GouraudShader implements IShader {
         }
 
         if (material.isDiffuse()) {
-            Vector3D diffuse = diffuse(
+            Vec4f diffuse = diffuse(
                     RenderState.lightingState.lightColor,
                     RenderState.lightingState.lightDir,
                     out.n_ws,
@@ -60,10 +60,10 @@ public class GouraudShader implements IShader {
     public final VertexOut vert(Vertex vIn, Material material) {
         VertexOut vertexOut = new VertexOut(
                 RenderState.mvp.multiply4x4(vIn.vec),
-                Vector2D.newCopy(vIn.texCoord),
-                Vector2D.newCopy(vIn.specCoord),
+                Vec2f.newCopy(vIn.texCoord),
+                Vec2f.newCopy(vIn.specCoord),
                 0f,
-                Vector3D.newZeros(),
+                Vec4f.newZeros(),
                 RenderState.transform.getRotation().rotate(vIn.normal),
                 RenderState.world.multiply4x4(vIn.vec),
                 0f
@@ -73,7 +73,7 @@ public class GouraudShader implements IShader {
         return vertexOut;
     }
 
-    public static boolean fragNonAlloc(GouruadInterpolants gI, Material material, Vector3D outColor, Vector3D util, int y) {
+    public static boolean fragNonAlloc(GouruadInterpolants gI, Material material, Vec4f outColor, Vec4f util, int y) {
         if (!ShaderUtil.zBufferTest(RenderState.zBuffer, gI.z, gI.xInt, y))
             return false;
 
@@ -85,10 +85,10 @@ public class GouraudShader implements IShader {
 
         if (material.hasTexture()) {
             sample_persp_NonAlloc(gI.tex_u, gI.tex_v, material.getTexture().texture, w, util);
-            Vector3D.componentMulNonAlloc(outColor, util);
+            Vec4f.componentMulNonAlloc(outColor, util);
             return true;
         }
-        Vector3D.componentMulNonAlloc(outColor, material.getColor());
+        Vec4f.componentMulNonAlloc(outColor, material.getColor());
         return true;
     }
 

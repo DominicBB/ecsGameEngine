@@ -7,7 +7,7 @@ import Rendering.renderUtil.Colorf;
 import Rendering.renderUtil.RenderState;
 import Rendering.renderUtil.VertexOut;
 import util.Mathf.Mathf3D.Triangle;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4f;
 import util.Mathf.Mathf3D.Vector3DInt;
 
 import java.util.ArrayList;
@@ -59,20 +59,20 @@ public class Renderer {
         }
     }
 
-    public static void onFragShaded(int x, int y, Vector3D color, Material material) {
+    public static void onFragShaded(int x, int y, Vec4f color, Material material) {
         //check for blending etc.
         setFinalColor(x, y, color);
 //        setFinalColor(x, y, color, finalColor);
     }
 
-    private static void setFinalColor(int x, int y, Vector3D color) {
+    private static void setFinalColor(int x, int y, Vec4f color) {
         Colorf.clampMaxNonAlloc(color);
         RenderState.colorBuffer.setPixel(x, y, color);
 
     }
 
     // this sucks :(
-    private static void setFinalColor(int x, int y, Vector3D color, Vector3DInt colori) {
+    private static void setFinalColor(int x, int y, Vec4f color, Vector3DInt colori) {
         Colorf.clampMaxNonAllocBit(color, colori);
         RenderState.colorBuffer.setPixel(x, y, colori);
     }

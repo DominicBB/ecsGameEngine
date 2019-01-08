@@ -4,7 +4,7 @@ import components.Component;
 import components.PhysicsComponents.RigidBody;
 import components.TransformComponent;
 import core.coreSystems.Time;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4f;
 
 import java.util.Arrays;
 
@@ -32,7 +32,7 @@ public class SimulationSystem extends PhysicsSystem {
     }
 
     private void updateAcceleration(RigidBody rigidBody) {
-        rigidBody.currentForce = rigidBody.currentForce.plus((rigidBody.useGravity) ? rigidBody.gravityForce : Vector3D.newZeros());
+        rigidBody.currentForce = rigidBody.currentForce.plus((rigidBody.useGravity) ? rigidBody.gravityForce : Vec4f.newZeros());
         rigidBody.acceleration = rigidBody.currentForce.divide(rigidBody.weight);
     }
 

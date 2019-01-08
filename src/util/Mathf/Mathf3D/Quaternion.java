@@ -21,7 +21,7 @@ public class Quaternion {
      * @param angle in radians
      * @param axis
      */
-    public Quaternion(float angle, Vector3D axis) {
+    public Quaternion(float angle, Vec4f axis) {
         float halfA = angle / 2f;
         w = (float) Math.cos(halfA);
         float sinHalfA = (float) Math.sin(halfA);
@@ -30,7 +30,7 @@ public class Quaternion {
         z = axis.z * sinHalfA;
     }
 
-    public static Quaternion angleAxis(float angle, Vector3D axis) {
+    public static Quaternion angleAxis(float angle, Vec4f axis) {
         return new Quaternion(angle, axis);
     }
 
@@ -85,7 +85,7 @@ public class Quaternion {
         );
     }
 
-    public Quaternion multiply(Vector3D v) {
+    public Quaternion multiply(Vec4f v) {
         return new Quaternion(
                 w * v.x + y * v.z - z * v.y,
                 w * v.y + z * v.x - x * v.z,
@@ -94,9 +94,9 @@ public class Quaternion {
         );
     }
 
-    public Vector3D rotate(Vector3D v) {
+    public Vec4f rotate(Vec4f v) {
         Quaternion q = multiply(v).multiply(conjugate());
-        return new Vector3D(q.x, q.y, q.z);
+        return new Vec4f(q.x, q.y, q.z);
     }
 
     public Matrix4x4 toMatrix4x4() {

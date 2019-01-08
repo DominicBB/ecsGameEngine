@@ -7,15 +7,15 @@ import Rendering.renderUtil.interpolation.flat.FlatInterpolants;
 import Rendering.renderUtil.interpolation.flat.FlatLerper_R;
 import Rendering.shaders.FlatShader;
 import util.Mathf.Mathf;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4f;
 
 public class Rasterizer_F {
     private final FlatLerper_R flatLerper_r = new FlatLerper_R();
     private final FlatInterpolants ROW_I_INTERPOLANTS = new FlatInterpolants(null);
-    Vector3D surfaceColor;
+    Vec4f surfaceColor;
     float spec;
 
-    void rasterizeRow(FlatInterpolants left, FlatInterpolants right, int y, Vector3D fColor, Vector3D util) {
+    void rasterizeRow(FlatInterpolants left, FlatInterpolants right, int y, Vec4f fColor, Vec4f util) {
         setRowInterpolants(left);
 
         int from = Mathf.fastCeil(left.x);
@@ -36,7 +36,7 @@ public class Rasterizer_F {
         }
     }
 
-    private void fragShade(int y, Vector3D fColor, Vector3D util) {
+    private void fragShade(int y, Vec4f fColor, Vec4f util) {
         if (FlatShader.fragNonAlloc(ROW_I_INTERPOLANTS, surfaceColor, spec, RenderState.material, fColor, util, y))
             Renderer.onFragShaded(ROW_I_INTERPOLANTS.xInt, y, fColor, RenderState.material);
     }

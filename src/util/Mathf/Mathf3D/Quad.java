@@ -1,16 +1,16 @@
 package util.Mathf.Mathf3D;
 
-import util.Mathf.Mathf2D.Vector2D;
+import util.Mathf.Mathf2D.Vec2f;
 
 import java.util.Arrays;
 
 public class Quad extends Polygon{
 
 	
-	public Quad(Vector3D[] vs, Vector2D[] ts) {
+	public Quad(Vec4f[] vs, Vec2f[] ts) {
 		vectors = Arrays.copyOf(vs, vs.length);
-		colors = new Vector3D[3];
-		textures = new Vector2D[3];
+		colors = new Vec4f[3];
+		textures = new Vec2f[3];
 
 		if(ts != null){
 			textures[0] = ts[0];
@@ -18,15 +18,15 @@ public class Quad extends Polygon{
 			textures[2] = ts[2];
 		}
 
-		colors[0] = new Vector3D(0f, 255f, 0f);
-		colors[1] = new Vector3D(0f, 0f, 255f);
-		colors[2] = new Vector3D(255f, 0f, 0f);
+		colors[0] = new Vec4f(0f, 255f, 0f);
+		colors[1] = new Vec4f(0f, 0f, 255f);
+		colors[2] = new Vec4f(255f, 0f, 0f);
 
 		normal = normal();
 	}
 	
-	public Quad(Vector3D v1, Vector3D v2, Vector3D v3, Vector3D v4, Polygon p) {
-		vectors = new Vector3D[4];
+	public Quad(Vec4f v1, Vec4f v2, Vec4f v3, Vec4f v4, Polygon p) {
+		vectors = new Vec4f[4];
 		vectors[0] = v1;
 		vectors[1] = v2;
 		vectors[2] = v3;
@@ -53,7 +53,7 @@ public class Quad extends Polygon{
 	
 	
 	@Override
-	protected Vector3D normal() {
+	protected Vec4f normal() {
 		return  vectors[1].minus(vectors[0]).crossProduct(vectors[2].minus(vectors[0])).normal();
 	}
 

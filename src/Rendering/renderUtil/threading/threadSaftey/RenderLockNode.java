@@ -4,13 +4,13 @@ import Rendering.Renderers.Renderer;
 import Rendering.drawers.fill.TriangleRasterizer;
 import Rendering.renderUtil.Edges.Edge;
 import util.Mathf.Mathf2D.Bounds2D.AABoundingRect;
-import util.Mathf.Mathf2D.Vector2D;
+import util.Mathf.Mathf2D.Vec2f;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RenderLockNode {
-    public final AABoundingRect BR = new AABoundingRect(Vector2D.newZeros(), Vector2D.newZeros());
+    public final AABoundingRect BR = new AABoundingRect(Vec2f.newZeros(), Vec2f.newZeros());
 
     public final List<Edge> TODO = new ArrayList<>();
     public final List<Edge> TODODoubleEdge = new ArrayList<>();

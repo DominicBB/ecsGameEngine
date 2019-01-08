@@ -1,10 +1,10 @@
 package Rendering.Clipping;
 
 import Rendering.renderUtil.VertexOut;
-import util.Mathf.Mathf2D.Vector2D;
+import util.Mathf.Mathf2D.Vec2f;
 import util.Mathf.Mathf3D.Plane;
 import util.Mathf.Mathf3D.Triangle;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,7 +131,7 @@ public class TriangleClipper {
         }
     }
 
-    private static float calculateScaler(Plane plane, Vector3D from, Vector3D to) {
+    private static float calculateScaler(Plane plane, Vec4f from, Vec4f to) {
         float planeD = -plane.normal.dotProduct(plane.pointOnPlane);
         float fDiff = from.dotProduct(plane.normal);
         float tDiff = to.dotProduct(plane.normal);
@@ -141,27 +141,27 @@ public class TriangleClipper {
     private static VertexOut intersectPoint(float scaler, VertexOut inside, VertexOut outside) {
 
         //TODO: optimise with regards to material
-        Vector3D newP_proj = intersectPoint(scaler, inside.p_proj, outside.p_proj);
-        Vector2D newTexCoord = intersectPoint(scaler, inside.texCoord, outside.texCoord);
-        Vector2D newSpecCoord = inside.specCoord;/* intersectPoint(scaler, inside.specCoord, outside.specCoord);*/
+        Vec4f newP_proj = intersectPoint(scaler, inside.p_proj, outside.p_proj);
+        Vec2f newTexCoord = intersectPoint(scaler, inside.texCoord, outside.texCoord);
+        Vec2f newSpecCoord = inside.specCoord;/* intersectPoint(scaler, inside.specCoord, outside.specCoord);*/
         float spec = 1f;/* intersectPoint(scaler, inside.spec, outside.spec);*/
-        Vector3D sColor = intersectPoint(scaler, inside.surfaceColor, outside.surfaceColor);
-        /*Vector3D newP_ws = intersectPoint(scaler, inside.p_ws, outside.p_ws);
-        Vector3D newN_ws = intersectPoint(scaler, inside.n_ws, outside.n_ws);*/
+        Vec4f sColor = intersectPoint(scaler, inside.surfaceColor, outside.surfaceColor);
+        /*Vec4f newP_ws = intersectPoint(scaler, inside.p_ws, outside.p_ws);
+        Vec4f newN_ws = intersectPoint(scaler, inside.n_ws, outside.n_ws);*/
         float invZ = intersectPoint(scaler, inside.invW, outside.invW);
 
 
         return new VertexOut(newP_proj, newTexCoord, newSpecCoord, spec, sColor, null, null, invZ);
     }
 
-    private static Vector3D intersectPoint(float scaler, Vector3D inside, Vector3D outside) {
-        Vector3D dif = inside.minus(outside);
+    private static Vec4f intersectPoint(float scaler, Vec4f inside, Vec4f outside) {
+        Vec4f dif = inside.minus(outside);
         dif.scale(scaler);
         return inside.plus(dif);
     }
 
-    private static Vector2D intersectPoint(float scaler, Vector2D inside, Vector2D outside) {
-        Vector2D dif = inside.minus(outside);
+    private static Vec2f intersectPoint(float scaler, Vec2f inside, Vec2f outside) {
+        Vec2f dif = inside.minus(outside);
         dif.scale(scaler);
         return inside.plus(dif);
     }

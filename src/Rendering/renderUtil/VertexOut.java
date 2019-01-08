@@ -1,43 +1,43 @@
 package Rendering.renderUtil;
 
 import util.Mathf.Mathf;
-import util.Mathf.Mathf2D.Vector2D;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf2D.Vec2f;
+import util.Mathf.Mathf3D.Vec4f;
 
 public class VertexOut {
-    public final Vector3D p_proj;
-    public final Vector2D texCoord;
-    public final Vector2D specCoord;
+    public final Vec4f p_proj;
+    public final Vec2f texCoord;
+    public final Vec2f specCoord;
 
-    public final Vector3D surfaceColor;
+    public final Vec4f surfaceColor;
 
-    public final Vector3D p_ws;
-    public final Vector3D n_ws;
+    public final Vec4f p_ws;
+    public final Vec4f n_ws;
 
     public float spec;
     public float invW;
 
-    public VertexOut(Vector3D p_proj, Vector2D texCoord, Vector2D specCoord, float spec, Vector3D surfaceColor,
-                     Vector3D n_ws, Vector3D p_ws, float invW) {
+    public VertexOut(Vec4f p_proj, Vec2f texCoord, Vec2f specCoord, float spec, Vec4f surfaceColor,
+                     Vec4f n_ws, Vec4f p_ws, float invW) {
         this.p_proj = p_proj;
-        this.texCoord = (texCoord == null) ? Vector2D.newOnes() : texCoord;
-        this.specCoord = (specCoord == null) ? Vector2D.newOnes() : specCoord;
+        this.texCoord = (texCoord == null) ? Vec2f.newOnes() : texCoord;
+        this.specCoord = (specCoord == null) ? Vec2f.newOnes() : specCoord;
         this.spec = spec;
-        this.surfaceColor = (surfaceColor == null) ? Vector3D.newOnes() : surfaceColor;
-        this.p_ws = (p_ws == null) ? Vector3D.newOnes() : p_ws;
-        this.n_ws = (n_ws == null) ? Vector3D.newOnes() : n_ws;
+        this.surfaceColor = (surfaceColor == null) ? Vec4f.newOnes() : surfaceColor;
+        this.p_ws = (p_ws == null) ? Vec4f.newOnes() : p_ws;
+        this.n_ws = (n_ws == null) ? Vec4f.newOnes() : n_ws;
         this.invW = invW;
 
     }
 
     public void set(VertexOut vertexOut) {
         this.p_proj.set(vertexOut.p_proj);
-        this.texCoord.set((vertexOut.texCoord == null) ? Vector2D.ZERO : vertexOut.texCoord);
-        this.specCoord.set((vertexOut.specCoord == null) ? Vector2D.ZERO : vertexOut.specCoord);
+        this.texCoord.set((vertexOut.texCoord == null) ? Vec2f.ZERO : vertexOut.texCoord);
+        this.specCoord.set((vertexOut.specCoord == null) ? Vec2f.ZERO : vertexOut.specCoord);
         this.spec = vertexOut.spec;
         this.surfaceColor.set(vertexOut.surfaceColor);
-        this.p_ws.set((vertexOut.p_ws == null) ? Vector3D.ZERO : vertexOut.p_ws);
-        this.n_ws.set((vertexOut.n_ws == null) ? Vector3D.ZERO : vertexOut.n_ws);
+        this.p_ws.set((vertexOut.p_ws == null) ? Vec4f.ZERO : vertexOut.p_ws);
+        this.n_ws.set((vertexOut.n_ws == null) ? Vec4f.ZERO : vertexOut.n_ws);
         this.invW = vertexOut.invW;
     }
 
@@ -55,11 +55,11 @@ public class VertexOut {
         if (p_proj.w == 0)
             return this;
 
-        float w = 1f / p_proj.w;
-        Vector3D vec = new Vector3D(
-                p_proj.x * w,
-                p_proj.y * w,
-                p_proj.z * w,
+
+        Vec4f vec = new Vec4f(
+                p_proj.x * invW,
+                p_proj.y * invW,
+                p_proj.z * invW,
                 p_proj.w);
 
         return new VertexOut(vec, texCoord, specCoord, spec, surfaceColor, n_ws, p_ws, invW);
@@ -80,8 +80,8 @@ public class VertexOut {
     }
 
     public static VertexOut newZeros() {
-        return new VertexOut(Vector3D.newZeros(), Vector2D.newZeros(), Vector2D.newZeros(), 0f, Vector3D.newZeros(),
-                Vector3D.newZeros(), Vector3D.newZeros(), 0f);
+        return new VertexOut(Vec4f.newZeros(), Vec2f.newZeros(), Vec2f.newZeros(), 0f, Vec4f.newZeros(),
+                Vec4f.newZeros(), Vec4f.newZeros(), 0f);
     }
 
 

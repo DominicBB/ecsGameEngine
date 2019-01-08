@@ -7,12 +7,12 @@ import Rendering.renderUtil.interpolation.gouruad.GouruadInterpolants;
 import Rendering.renderUtil.interpolation.gouruad.GouruadLerper_R;
 import Rendering.shaders.GouraudShader;
 import util.Mathf.Mathf;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4f;
 
 class Rasterizer_G {
     private final GouruadLerper_R gouruadLerper_r = new GouruadLerper_R();
     private final GouruadInterpolants ROW_I_INTERPOLANTS = new GouruadInterpolants(null);
-    void rasterizeRow(GouruadInterpolants left, GouruadInterpolants right, int y, Vector3D fColor, Vector3D util) {
+    void rasterizeRow(GouruadInterpolants left, GouruadInterpolants right, int y, Vec4f fColor, Vec4f util) {
         setRowInterpolants(left);
 
         int from = Mathf.fastCeil(left.x);
@@ -33,7 +33,7 @@ class Rasterizer_G {
         }
     }
 
-    private void fragShade(int y, Vector3D fColor, Vector3D util) {
+    private void fragShade(int y, Vec4f fColor, Vec4f util) {
         if (GouraudShader.fragNonAlloc(ROW_I_INTERPOLANTS, RenderState.material, fColor, util, y))
             Renderer.onFragShaded(ROW_I_INTERPOLANTS.xInt, y, fColor, RenderState.material);
     }

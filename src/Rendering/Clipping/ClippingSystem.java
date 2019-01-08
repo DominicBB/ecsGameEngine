@@ -5,7 +5,7 @@ import Rendering.renderUtil.VertexOut;
 import core.display.Window;
 import util.Mathf.Mathf3D.Bounds.AABoundingBox;
 import util.Mathf.Mathf3D.Plane;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4f;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,8 +27,8 @@ public class ClippingSystem {
         );
 
         int clipCount = 0;
-        Vector3D minExtents = projectedBox.getMinExtents();
-        Vector3D maxExtents = projectedBox.getMaxExtents();
+        Vec4f minExtents = projectedBox.getMinExtents();
+        Vec4f maxExtents = projectedBox.getMaxExtents();
         if (minExtents.z < minExtents.w) {
             if (maxExtents.z <= RenderState.camera.zNear)
                 return ClippingMode.ALLOUTSIDE;
@@ -59,20 +59,20 @@ public class ClippingSystem {
     private List<Plane> createFustrumClipPlanes() {
         return Arrays.asList(
 
-                /*new Plane(new Vector3D(1.0f, 0, 0), new Vector3D(200f, 0f, 0f)),
-                new Plane(new Vector3D(-1.0f, 0, 0), new Vector3D(Window.defaultWidth - 200.5f, 0f, 0f)),
+                /*new Plane(new Vec4f(1.0f, 0, 0), new Vec4f(200f, 0f, 0f)),
+                new Plane(new Vec4f(-1.0f, 0, 0), new Vec4f(Window.defaultWidth - 200.5f, 0f, 0f)),
 
-                new Plane(new Vector3D(0f, 1f, 0), new Vector3D(200f, 0, 0f)),
-                new Plane(new Vector3D(0f, -1f, 0), new Vector3D(0f, Window.defaultHeight - 200.5f, 0f)),
+                new Plane(new Vec4f(0f, 1f, 0), new Vec4f(200f, 0, 0f)),
+                new Plane(new Vec4f(0f, -1f, 0), new Vec4f(0f, Window.defaultHeight - 200.5f, 0f)),
 
-                new Plane(new Vector3D(0f, 0, 1), new Vector3D(0f, 0f,*//*camera.zNear*//*.1f))*/
-                new Plane(new Vector3D(1.0f, 0, 0), new Vector3D(-1f, 0f, 0f)),
-                new Plane(new Vector3D(-1.0f, 0, 0), new Vector3D(1f, 0f, 0f)),
+                new Plane(new Vec4f(0f, 0, 1), new Vec4f(0f, 0f,*//*camera.zNear*//*.1f))*/
+                new Plane(new Vec4f(1.0f, 0, 0), new Vec4f(-1f, 0f, 0f)),
+                new Plane(new Vec4f(-1.0f, 0, 0), new Vec4f(1f, 0f, 0f)),
 
-                new Plane(new Vector3D(0f, 1f, 0), new Vector3D(-1, 0, 0f)),
-                new Plane(new Vector3D(0f, -1f, 0), new Vector3D(0f, 1f, 0f)),
+                new Plane(new Vec4f(0f, 1f, 0), new Vec4f(-1, 0, 0f)),
+                new Plane(new Vec4f(0f, -1f, 0), new Vec4f(0f, 1f, 0f)),
 
-                new Plane(new Vector3D(0f, 0, 1), new Vector3D(0f, 0f,/*camera.zNear*/.1f))
+                new Plane(new Vec4f(0f, 0, 1), new Vec4f(0f, 0f,/*camera.zNear*/.1f))
 
         );
     }

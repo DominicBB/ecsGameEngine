@@ -1,7 +1,7 @@
 package util.Mathf;
 
-import util.Mathf.Mathf2D.Vector2D;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf2D.Vec2f;
+import util.Mathf.Mathf3D.Vec4f;
 
 public class Mathf {
     public static final float epsilon = 0.00000001f;
@@ -15,8 +15,8 @@ public class Mathf {
         return (value < max) ? (value > min) ? value : min : max;
     }*/
 
-    public static Vector3D clamp(Vector3D minComponents, Vector3D value, Vector3D maxComponents) {
-        return new Vector3D(
+    public static Vec4f clamp(Vec4f minComponents, Vec4f value, Vec4f maxComponents) {
+        return new Vec4f(
                 clamp(minComponents.x, value.x, maxComponents.x),
                 clamp(minComponents.y, value.y, maxComponents.y),
                 clamp(minComponents.z, value.z, maxComponents.z),
@@ -25,32 +25,31 @@ public class Mathf {
         );
     }
 
-    public static void clampNonAlloc(Vector3D minComponents, Vector3D value, Vector3D maxComponents) {
+    public static void clampNonAlloc(Vec4f minComponents, Vec4f value, Vec4f maxComponents) {
         value.x = clamp(minComponents.x, value.x, maxComponents.x);
         value.y = clamp(minComponents.y, value.y, maxComponents.y);
         value.z = clamp(minComponents.z, value.z, maxComponents.z);
         value.w = clamp(minComponents.w, value.w, maxComponents.w);
     }
 
-    public static void clampMinNonAlloc(Vector3D minComponents, Vector3D value) {
+    public static void clampMinNonAlloc(Vec4f minComponents, Vec4f value) {
         value.x = (value.x >= minComponents.x) ? value.x : minComponents.x;
         value.y = (value.y >= minComponents.y) ? value.y : minComponents.y;
         value.z = (value.z >= minComponents.z) ? value.z : minComponents.z;
         value.w = (value.w >= minComponents.w) ? value.w : minComponents.w;
     }
 
-    public static void clampMaxNonAlloc(Vector3D value, Vector3D maxComponents) {
+    public static void clampMaxNonAlloc(Vec4f value, Vec4f maxComponents) {
         value.x = (value.x <= maxComponents.x) ? value.x : maxComponents.x;
         value.y = (value.y <= maxComponents.y) ? value.y : maxComponents.y;
         value.z = (value.z <= maxComponents.z) ? value.z : maxComponents.z;
         value.w = (value.w <= maxComponents.w) ? value.w : maxComponents.w;
     }
 
-    public static Vector2D clamp(Vector2D minComponents, Vector2D value, Vector2D maxComponents) {
-        return new Vector2D(
+    public static Vec2f clamp(Vec2f minComponents, Vec2f value, Vec2f maxComponents) {
+        return new Vec2f(
                 clamp(minComponents.x, value.x, maxComponents.x),
-                clamp(minComponents.y, value.y, maxComponents.y),
-                clamp(minComponents.w, value.w, maxComponents.w)
+                clamp(minComponents.y, value.y, maxComponents.y)
         );
     }
 
@@ -72,14 +71,14 @@ public class Mathf {
         return (f0 <= f1) ? f0 : f1;
     }
 
-    public static void min(Vector3D min, Vector3D other){
+    public static void min(Vec4f min, Vec4f other){
         min.x = min(other.x ,min.x);
         min.y = min(other.y ,min.y);
         min.z = min(other.z ,min.z);
         min.w = min(other.w ,min.w);
     }
 
-    public static void max(Vector3D max, Vector3D other){
+    public static void max(Vec4f max, Vec4f other){
         max.x = max(other.x ,max.x);
         max.y = max(other.y ,max.y);
         max.z = max(other.z ,max.z);

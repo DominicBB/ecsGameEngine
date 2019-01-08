@@ -1,10 +1,10 @@
 package Physics.physicsUtil;
 
-import util.Mathf.Mathf2D.Vector2D;
+import util.Mathf.Mathf2D.Vec2f;
 
 class Raycast2D {
 
-    public static boolean raycast2D(Vector2D origin, Vector2D direction) {
+    public static boolean raycast2D(Vec2f origin, Vec2f direction) {
         return false;
     }
 }

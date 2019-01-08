@@ -9,7 +9,7 @@ import util.FloatWrapper;
 import util.Mathf.Mathf;
 import util.Mathf.Mathf2D.Bounds2D.AABoundingRect;
 import util.Mathf.Mathf3D.Triangle;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4f;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class TriangleRasterizer {
     private final VertexOut[] edgeVertices = new VertexOut[6];
     private final FloatWrapper xMax = new FloatWrapper(0f), xMin = new FloatWrapper(0f);
 
-    private final Vector3D fragColor = Vector3D.newZeros(), fragUtil = Vector3D.newZeros();
+    private final Vec4f fragColor = Vec4f.newZeros(), fragUtil = Vec4f.newZeros();
     private final TriangleRasterizer_G triangleRasterizer_g = new TriangleRasterizer_G(fragColor, fragUtil);
     private final TriangleRasterizer_F triangleRasterizer_f = new TriangleRasterizer_F(fragColor, fragUtil);
     private final TriangleRasterizer_P triangleRasterizer_p = new TriangleRasterizer_P(fragColor, fragUtil);
@@ -141,8 +141,8 @@ public class TriangleRasterizer {
         scanEdge(e1, e2);
     }
 
-    private void calcMinMaxX(FloatWrapper minX, FloatWrapper maxX, Vector3D v1, Vector3D v2, Vector3D v3) {
-        Vector3D max = v1, mid = v2, min = v3, temp;
+    private void calcMinMaxX(FloatWrapper minX, FloatWrapper maxX, Vec4f v1, Vec4f v2, Vec4f v3) {
+        Vec4f max = v1, mid = v2, min = v3, temp;
         if (max.x < mid.x) {
             temp = v2;
             max = mid;

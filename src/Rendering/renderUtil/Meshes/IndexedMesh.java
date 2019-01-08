@@ -7,11 +7,11 @@ import Rendering.renderUtil.Vertex;
 import Rendering.renderUtil.VertexOut;
 import Rendering.shaders.interfaces.IShader;
 import util.Mathf.Mathf;
-import util.Mathf.Mathf2D.Vector2D;
+import util.Mathf.Mathf2D.Vec2f;
 import util.Mathf.Mathf3D.Bounds.AABoundingBox;
 import util.Mathf.Mathf3D.Matrix4x4;
 import util.Mathf.Mathf3D.Transform;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf3D.Vec4f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,9 +42,9 @@ public class IndexedMesh {
 
     private void initTV() {
         for (int i = 0; i < transformedVertices.length; i++) {
-            transformedVertices[i] = new VertexOut(Vector3D.newZeros(),
-                    Vector2D.newZeros(), Vector2D.newZeros(),
-                    0f, Vector3D.newZeros(), Vector3D.newZeros(), Vector3D.newZeros(), 0f);
+            transformedVertices[i] = new VertexOut(Vec4f.newZeros(),
+                    Vec2f.newZeros(), Vec2f.newZeros(),
+                    0f, Vec4f.newZeros(), Vec4f.newZeros(), Vec4f.newZeros(), 0f);
         }
     }
 
@@ -74,8 +74,8 @@ public class IndexedMesh {
     }
 
     public AABoundingBox computeAABB() {
-        Vector3D minValues = new Vector3D(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
-        Vector3D maxValues = new Vector3D(Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY);
+        Vec4f minValues = new Vec4f(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
+        Vec4f maxValues = new Vec4f(Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY);
 
         int end = vertices.size();
         for (int i = 0; i < end; i++) {
@@ -83,8 +83,8 @@ public class IndexedMesh {
             Mathf.max(maxValues, vertices.get(i).vec);
         }
 
-        Vector3D size = maxValues.minus(minValues);
-        Vector3D center = minValues.plus(size.divide(2f));
+        Vec4f size = maxValues.minus(minValues);
+        Vec4f center = minValues.plus(size.divide(2f));
 
         return new AABoundingBox(center, size);
     }

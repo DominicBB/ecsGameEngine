@@ -1,20 +1,20 @@
 package util.Mathf.Mathf3D;
-import util.Mathf.Mathf2D.Vector2D;
+import util.Mathf.Mathf2D.Vec2f;
 
 public abstract class Polygon {
 
-	public Vector3D[] vectors;
-	public Vector2D[] textures;
-	public Vector3D[] colors;
+	public Vec4f[] vectors;
+	public Vec2f[] textures;
+	public Vec4f[] colors;
 
 	/*public Color reflectance;*/
-	protected Vector3D shade = new Vector3D(1f,1f,1f);
-	public Vector3D normal;
+	protected Vec4f shade = new Vec4f(1f,1f,1f);
+	public Vec4f normal;
 	
-	protected abstract Vector3D normal();
+	protected abstract Vec4f normal();
 
 
-	public void setShade(Vector3D shade) {
+	public void setShade(Vec4f shade) {
 		this.shade = shade;
 	}
 	
@@ -32,7 +32,7 @@ public abstract class Polygon {
 		return builder.toString();
 	}
 
-	public Vector3D getShade(){
+	public Vec4f getShade(){
 		return shade;
 	}
 }

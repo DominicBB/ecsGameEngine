@@ -2,15 +2,15 @@ package Rendering.drawers.draw;
 
 import Rendering.drawers.Draw;
 import Rendering.renderUtil.RenderState;
-import util.Mathf.Mathf2D.Vector2D;
-import util.Mathf.Mathf3D.Vector3D;
+import util.Mathf.Mathf2D.Vec2f;
+import util.Mathf.Mathf3D.Vec4f;
 
 public class DrawCircle extends Draw {
 
     /*private static final float DA_START = 12f;
     private static final float DB_START = 20f;*/
 
-    public static void drawCircle(Vector2D center, float radius, Vector3D color) {
+    public static void drawCircle(Vec2f center, float radius, Vec4f color) {
 
         //mid-point circle
         /*float x = center.x, y = radius, d = 5 - 4 * radius,
@@ -64,7 +64,7 @@ public class DrawCircle extends Draw {
         }
     }
 
-    public static void fillCircle(Vector2D center, float radius, Vector3D color) {
+    public static void fillCircle(Vec2f center, float radius, Vec4f color) {
         int cX = (int) center.x;
         int cY = (int) center.y;
 
