@@ -21,12 +21,6 @@ public class PhongInterpolants {
     }
 
 
-    public PhongInterpolants(float x, float z, float invW, float tex_u, float tex_v, float spec_u, float spec_v,
-                             float p_ws_x, float p_ws_y, float p_ws_z, float n_ws_x, float n_ws_y, float n_ws_z) {
-        phongLerper_e = null;
-        reset(x, z, invW, tex_u, tex_v, spec_u, spec_v, p_ws_x, p_ws_y, p_ws_z, n_ws_x, n_ws_y, n_ws_z);
-    }
-
     public void reset(VertexOut v) {
         reset(v.p_proj.x, v.p_proj.z, v.invW, v.texCoord.x, v.texCoord.y, v.specCoord.x, v.specCoord.y, v.p_ws.x,
                 v.p_ws.y, v.p_ws.z, v.n_ws.x, v.n_ws.y, v.n_ws.z);

@@ -19,11 +19,6 @@ public class FlatInterpolants {
     }
 
 
-    public FlatInterpolants(float x, float z, float invW,
-                            float tex_u, float tex_v, float spec_u, float spec_v) {
-        this.flatLerper_e = null;
-        reset(x, z, invW, tex_u, tex_v, spec_u, spec_v);
-    }
 
     public void reset(VertexOut v) {
         reset(v.p_proj.x, v.p_proj.z, v.invW, v.texCoord.x, v.texCoord.y, v.specCoord.x, v.specCoord.y);
