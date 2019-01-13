@@ -1,6 +1,6 @@
 package core.display;
 
-import Rendering.renderUtil.Bitmaps.BitmapBGR;
+import rendering.renderUtil.bitmaps.BitmapBGR;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;

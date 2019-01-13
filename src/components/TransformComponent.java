@@ -1,6 +1,6 @@
 package components;
 
-import util.Mathf.Mathf3D.Transform;
+import util.mathf.Mathf3D.Transform;
 
 /**
  * A composed matrix that represents were the entity is in the world

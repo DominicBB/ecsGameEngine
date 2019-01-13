@@ -1,9 +1,9 @@
 package components;
 
-import Rendering.Materials.Material;
-import Rendering.renderUtil.Meshes.IndexedMesh;
-import Rendering.Materials.RenderMode;
-import util.Mathf.Mathf3D.Bounds.AABoundingBox;
+import rendering.materials.Material;
+import rendering.renderUtil.meshes.IndexedMesh;
+import rendering.materials.RenderMode;
+import util.mathf.Mathf3D.Bounds.AABoundingBox;
 
 public class RenderableMesh extends Component {
 	public IndexedMesh indexedMesh;

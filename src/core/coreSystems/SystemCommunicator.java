@@ -1,7 +1,7 @@
 package core.coreSystems;
 
-import Physics.physicsSystems.PhysicsSystem;
-import Rendering.renderingSystems.RenderSystem;
+import physics.physicsSystems.PhysicsSystem;
+import rendering.renderingSystems.RenderSystem;
 import components.Component;
 import core.Entity;
 import grabbers.EntityGrabber;

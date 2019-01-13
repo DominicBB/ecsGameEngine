@@ -1,8 +1,8 @@
 package core.coreSystems;
 
-import Physics.physicsSystems.PhysicsSystem;
-import Rendering.renderUtil.threading.threadSaftey.RenderLocks;
-import Rendering.renderingSystems.RenderSystem;
+import physics.physicsSystems.PhysicsSystem;
+import rendering.renderUtil.threading.threadSaftey.RenderLocks;
+import rendering.renderingSystems.RenderSystem;
 import core.EntityFactory;
 import core.display.Window;
 

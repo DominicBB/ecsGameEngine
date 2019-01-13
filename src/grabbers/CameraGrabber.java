@@ -1,6 +1,6 @@
 package grabbers;
 
-import Rendering.renderUtil.RenderState;
+import rendering.renderUtil.RenderState;
 import components.Camera;
 import components.Component;
 import core.coreSystems.EntityGrabberSystem;

@@ -1,7 +1,7 @@
 package components;
 
 import core.display.Window;
-import util.Mathf.Mathf3D.Transform;
+import util.mathf.Mathf3D.Transform;
 
 public class Camera extends Component {
     public Transform transform;

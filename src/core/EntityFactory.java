@@ -1,12 +1,12 @@
 package core;
 
-import Rendering.renderUtil.Bitmaps.BitmapABGR;
-import Rendering.renderUtil.Bitmaps.Texture;
-import Rendering.renderUtil.Meshes.IndexedMesh;
+import rendering.renderUtil.bitmaps.BitmapABGR;
+import rendering.renderUtil.bitmaps.Texture;
+import rendering.renderUtil.meshes.IndexedMesh;
 import components.*;
 import core.coreSystems.EntitySystem;
 
-import util.Mathf.Mathf3D.Transform;
+import util.mathf.Mathf3D.Transform;
 import util.ObjFileToIndexedMesh;
 
 import java.io.IOException;

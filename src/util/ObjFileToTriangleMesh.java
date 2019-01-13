@@ -4,11 +4,11 @@ import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import Rendering.renderUtil.Meshes.TriangleMesh;
-import util.Mathf.Mathf2D.Vec2f;
-import util.Mathf.Mathf3D.Quad;
-import util.Mathf.Mathf3D.Triangle;
-import util.Mathf.Mathf3D.Vec4f;
+import rendering.renderUtil.meshes.TriangleMesh;
+import util.mathf.Mathf2D.Vec2f;
+import util.mathf.Mathf3D.Quad;
+import util.mathf.Mathf3D.Triangle;
+import util.mathf.Mathf3D.Vec4f;
 
 public class ObjFileToTriangleMesh {
 

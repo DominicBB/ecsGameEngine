@@ -1,10 +1,10 @@
 package util;
 
-import Rendering.renderUtil.Meshes.IndexedMesh;
-import Rendering.renderUtil.Vertex;
-import util.Mathf.Mathf2D.Vec2f;
-import util.Mathf.Mathf3D.Bounds.AABoundingBox;
-import util.Mathf.Mathf3D.Vec4f;
+import rendering.renderUtil.meshes.IndexedMesh;
+import rendering.renderUtil.Vertex;
+import util.mathf.Mathf2D.Vec2f;
+import util.mathf.Mathf3D.Bounds.AABoundingBox;
+import util.mathf.Mathf3D.Vec4f;
 
 import java.io.*;
 import java.util.ArrayList;
