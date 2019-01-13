@@ -1,8 +1,8 @@
 package util.Mathf.Mathf3D;
 
-import Rendering.drawers.fill.Rasterfi;
-import Rendering.renderUtil.Vertex;
-import Rendering.renderUtil.VertexOut;
+import rendering.drawers.fill.Rasterfi;
+import rendering.renderUtil.Vertex;
+import rendering.renderUtil.VertexOut;
 import util.Mathf.Mathf2D.Vec2f;
 
 import java.util.Arrays;
@@ -122,12 +122,20 @@ public class Triangle extends Polygon {
         return vertices;
     }
 
-    public static float z_crossProd(Vec4f v1, Vec4f v2, Vec4f v3) {
-        float e1X = v2.x - v1.x;
-        float e1Y = v2.y - v1.y;
+    public static float z_crossProd(Vec2f v1, Vec2f v2, Vec2f v3) {
+        return z_crossProd(v1.y, v2.y, v3.y, v1.x, v2.x, v3.x);
+    }
 
-        float e2X = v3.x - v1.x;
-        float e2Y = v3.y - v1.y;
+    public static float z_crossProd(Vec4f v1, Vec4f v2, Vec4f v3) {
+       return z_crossProd(v1.y, v2.y, v3.y, v1.x, v2.x, v3.x);
+    }
+
+    private static float z_crossProd(float v1_y, float v2_y, float v3_y, float v1_x, float v2_x, float v3_x) {
+        float e1X = v2_x - v1_x;
+        float e1Y = v2_y - v1_y;
+
+        float e2X = v3_x - v1_x;
+        float e2Y = v3_y - v1_y;
 
         return e1X * e2Y - e2X * e1Y;
     }
@@ -139,6 +147,7 @@ public class Triangle extends Polygon {
         int e2X = v3.x - v1.x;
         int e2Y = v3.y - v1.y;
 
+        //TODO should look at better multiply
         return Rasterfi.multiply(e1X, e2Y) - Rasterfi.multiply(e2X, e1Y);
     }
 

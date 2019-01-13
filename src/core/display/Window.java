@@ -1,6 +1,6 @@
 package core.display;
 
-import Rendering.renderUtil.RenderState;
+import rendering.renderUtil.RenderState;
 import core.coreSystems.InputSystem;
 
 import javax.swing.*;

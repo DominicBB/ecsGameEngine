@@ -1,5 +1,6 @@
 package util.Mathf.Mathf2D;
 
+import rendering.drawers.fill.Rasterfi;
 import util.Mathf.Mathfi;
 
 public class Vec2fi {
@@ -179,6 +180,11 @@ public class Vec2fi {
         this.x = other.x << shift;
         this.y = other.y << shift;
 
+    }
+
+    public void set(Vec2f vec2f) {
+        this.x = Rasterfi.floatToFixed(vec2f.x);
+        this.y = Rasterfi.floatToFixed(vec2f.y);
     }
 
    /* public static void lerp(Vec2fi start, Vec2fi destination, int lerpAmt) {

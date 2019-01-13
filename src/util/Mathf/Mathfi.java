@@ -3,7 +3,7 @@ package util.Mathf;
 public class Mathfi {
     private static final int CONST_D_SHIFT = 30;
     private static final int CONST_D_FACT = 1 << 30;
-    private static final FixedPoint reallyCloseToOne = new FixedPoint(floatToFixed(0.99999f, CONST_D_FACT), CONST_D_SHIFT);
+    public static final FixedPoint reallyCloseToOne = new FixedPoint(floatToFixed(0.99999f, CONST_D_FACT), CONST_D_SHIFT);
     public static final FixedPoint HALF = new FixedPoint(floatToFixed(0.5f, CONST_D_FACT), CONST_D_SHIFT);
 
     public static final int MAX_D_FACT = 1 << 30;

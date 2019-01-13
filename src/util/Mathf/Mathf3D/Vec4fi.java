@@ -123,7 +123,7 @@ public class Vec4fi {
         this.x >>= D_SHIFT;
         this.y >>= D_SHIFT;
         this.z >>= D_SHIFT;
-        this.w >>= D_SHIFT;
+//        this.w >>= D_SHIFT;
     }
 
     public static Vec4fi newDown(int D_SHIFT) {

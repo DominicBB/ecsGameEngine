@@ -1,8 +1,8 @@
 package core;
 
-import Rendering.renderUtil.Bitmaps.BitmapABGR;
-import Rendering.renderUtil.Bitmaps.Texture;
-import Rendering.renderUtil.Meshes.IndexedMesh;
+import rendering.renderUtil.Bitmaps.BitmapABGR;
+import rendering.renderUtil.Bitmaps.Texture;
+import rendering.renderUtil.Meshes.IndexedMesh;
 import components.*;
 import core.coreSystems.EntitySystem;
 

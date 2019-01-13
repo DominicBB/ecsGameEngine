@@ -1,7 +1,7 @@
 package util;
 
-import Rendering.renderUtil.Meshes.IndexedMesh;
-import Rendering.renderUtil.Vertex;
+import rendering.renderUtil.Meshes.IndexedMesh;
+import rendering.renderUtil.Vertex;
 import util.Mathf.Mathf2D.Vec2f;
 import util.Mathf.Mathf3D.Bounds.AABoundingBox;
 import util.Mathf.Mathf3D.Vec4f;

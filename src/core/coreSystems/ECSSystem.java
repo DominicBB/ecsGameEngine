@@ -1,8 +1,8 @@
 package core.coreSystems;
 
 import Physics.physicsSystems.PhysicsSystem;
-import Rendering.renderUtil.threading.threadSaftey.RenderLocks;
-import Rendering.renderingSystems.RenderSystem;
+import rendering.renderUtil.threading.threadSaftey.RenderLocks;
+import rendering.renderingSystems.RenderSystem;
 import core.EntityFactory;
 import core.display.Window;
 
@@ -106,7 +106,7 @@ public abstract class ECSSystem implements Updateable, Runnable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }*/
-       Thread.currentThread().interrupt();
+//       Thread.currentThread().interrupt();
     }
 
     protected synchronized void stop() {
