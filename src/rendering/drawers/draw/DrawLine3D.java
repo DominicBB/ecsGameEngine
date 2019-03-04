@@ -13,7 +13,6 @@ public class DrawLine3D extends Draw {
      * @param v1
      * @param v2
      * @param material
-     * @param renderer
      */
     public static void drawLine(VertexOut v1, VertexOut v2, Material material) {
         // DDA implementation, with z buff

@@ -44,7 +44,7 @@ public class Renderer {
         for (int i = 1; i < end; i++) {
             v2Out = clippedVertices.get(i);
             v3Out = clippedVertices.get(i + 1);
-            if (v2Out.invW > 1f || v2Out.invW < 0.009f) System.out.println("invW: " + v2Out.invW);
+//            if (v2Out.invW > 1f || v2Out.invW < 0.009f) System.out.println("invW: " + v2Out.invW);
 
 
             //perspective divide

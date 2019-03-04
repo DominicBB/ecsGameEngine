@@ -9,13 +9,11 @@ public class LightingState {
     public Vec4f ambientColor;
 
     public LightingState(float attenuation, Vec4f lightDir, Vec4f lightColor, Vec4f ambientColor) {
-        this.attenuation = attenuation;
-        this.lightDir = lightDir;
-        this.lightColor = lightColor;
-        this.ambientColor = ambientColor;
+        setState(attenuation, lightDir, lightColor, ambientColor);
     }
 
     public void setState(float attenuation, Vec4f lightDir, Vec4f lightColor, Vec4f ambientColor) {
+
         this.attenuation = attenuation;
         this.lightDir = lightDir;
         this.lightColor = lightColor;

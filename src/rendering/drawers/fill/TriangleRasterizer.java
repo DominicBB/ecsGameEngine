@@ -95,10 +95,10 @@ public class TriangleRasterizer {
             setUpForOneHorizontal();
             return;
         }
-        setUpForNoHorizontal(maxY, midY, minY, dy1, dy2, dy3);
+        setUpAllThree(maxY, midY, minY, dy1, dy2, dy3);
     }
 
-    private void setUpForNoHorizontal(VertexOut maxY, VertexOut midY, VertexOut minY, float dy1, float dy2, float dy3) {
+    private void setUpAllThree(VertexOut maxY, VertexOut midY, VertexOut minY, float dy1, float dy2, float dy3) {
         boolean isOnLeft = Triangle.z_crossProd(minY.p_proj, maxY.p_proj, midY.p_proj) < 0f;
         boundingRect.set(maxY.p_proj.y, minY.p_proj.y, xMax.value, xMin.value);
 
@@ -141,6 +141,7 @@ public class TriangleRasterizer {
         scanEdge(e1, e2);
     }
 
+    //TODO: FIX THIS IN FLOAT AND FIXED SCANLINE
     private void calcMinMaxX(FloatWrapper minX, FloatWrapper maxX, Vec4f v1, Vec4f v2, Vec4f v3) {
         Vec4f max = v1, mid = v2, min = v3, temp;
         if (max.x < mid.x) {
@@ -149,13 +150,13 @@ public class TriangleRasterizer {
             mid = temp;
         }
 
-        if (mid.y < min.y) {
+        if (mid.x < min.x) {
             temp = mid;
             mid = min;
             min = temp;
         }
 
-        if (max.y < mid.y) {
+        if (max.x < mid.x) {
             max = mid;
         }
 

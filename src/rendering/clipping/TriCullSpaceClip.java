@@ -34,16 +34,14 @@ public class TriCullSpaceClip {
         if (allInside)
             return;
 
-        clipVerticesAgainstPlanes(2, clippedVs);//z
+        clipVerticesAgainstPlanes(2, clippedVs);//z plane
         if (clippedVs.isEmpty())
             return;
 
-        clipVerticesAgainstPlanes(0, clippedVs);//x
+        clipVerticesAgainstPlanes(0, clippedVs);//x plane
         if (clippedVs.isEmpty())
             return;
-        clipVerticesAgainstPlanes(1, clippedVs);//y
-        /*if (clippedVs.isEmpty())
-            return;*/
+        clipVerticesAgainstPlanes(1, clippedVs);//y plane
 
 
     }
@@ -55,6 +53,12 @@ public class TriCullSpaceClip {
         clipAgainstPlane(planeComponent, -1f, tempL, clippedVs);
     }
 
+    /**
+     * @param planeComponent, a number representing xyz with 123 respectively
+     * @param planeF, 1 or -1 to represent either of the parallel planes
+     * @param in, all vertices that need to be clipped, in clockwise order
+     * @param out, all the clipped vertices, in clockwise order
+     */
     private static void clipAgainstPlane(int planeComponent, float planeF, List<VertexOut> in, List<VertexOut> out) {
         VertexOut previous = in.get(0);
         float prevComponent = previous.p_proj.getComponentValue(planeComponent) * planeF;
@@ -68,7 +72,7 @@ public class TriCullSpaceClip {
             prevComponent = currComponent;
         }
 
-        //clip initial
+        //clip final line of triangle
         VertexOut c = in.get(0);
         float currComponent = c.p_proj.getComponentValue(planeComponent) * planeF;
         clipVertex(previous, prevInside, c, prevComponent, currComponent, out);
@@ -76,17 +80,22 @@ public class TriCullSpaceClip {
         in.clear();
     }
 
-    private static boolean clipVertex(VertexOut previous, boolean prevInside, VertexOut c,
+    /**
+     * Clip a single line of a primitive
+     * @param prevComponent, a number representing xyz with 123 respectively
+     * @param currComponent, a number representing xyz with 123 respectively
+     */
+    private static boolean clipVertex(VertexOut previous, boolean prevInside, VertexOut current,
                                       float prevComponent, float currComponent,
                                       List<VertexOut> res) {
 
-        boolean isVertexInside = isVertInside(currComponent, c.p_proj.w);
+        boolean isVertexInside = isVertInside(currComponent, current.p_proj.w);
 
         if (isVertexInside ^ prevInside)
-            res.add(calculateClippedVertex(previous, c, prevComponent, currComponent));
+            res.add(calculateClippedVertex(previous, current, prevComponent, currComponent));
 
         if (isVertexInside)
-            res.add(c);
+            res.add(current);
 
         return isVertexInside;
     }

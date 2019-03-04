@@ -237,20 +237,20 @@ public class Vec4f {
         }
     }
 
-    public static void lerp(Vec4f start, Vec4f destination, float lerpAmt) {
+    public static void lerpWithoutW(Vec4f start, Vec4f destination, float lerpAmt) {
         start.add(destination.minus(start).mul(lerpAmt));
     }
 
-    public static void lerpWithW(Vec4f start, Vec4f destination, float lerpAmt) {
+    public static void lerp(Vec4f start, Vec4f destination, float lerpAmt) {
         start.add(destination.minus(start).mul(lerpAmt));
         start.w = Mathf.lerp(start.w, destination.w, lerpAmt);
     }
 
-    public Vec4f lerp(Vec4f destination, float lerpAmt) {
+    public Vec4f lerpWithoutW(Vec4f destination, float lerpAmt) {
         return destination.minus(this).mul(lerpAmt).plus(this);
     }
 
-    public Vec4f lerpWithW(Vec4f destination, float lerpAmt) {
+    public Vec4f lerp(Vec4f destination, float lerpAmt) {
         Vec4f res = destination.minus(this);
         res.x = res.x * lerpAmt + x;
         res.y = res.y * lerpAmt + y;

@@ -68,13 +68,13 @@ public class VertexOut {
 
     public VertexOut lerp(VertexOut destination, float lerpAmt) {
         return new VertexOut(
-                p_proj.lerpWithW(destination.p_proj, lerpAmt),
+                p_proj.lerp(destination.p_proj, lerpAmt),
                 texCoord.lerp(destination.texCoord, lerpAmt),
                 specCoord.lerp(destination.specCoord, lerpAmt),
                 Mathf.lerp(spec, destination.spec, lerpAmt),
-                surfaceColor.lerpWithW(destination.surfaceColor, lerpAmt),
-                n_ws.lerpWithW(destination.n_ws, lerpAmt),
-                p_ws.lerpWithW(destination.p_ws, lerpAmt),
+                surfaceColor.lerp(destination.surfaceColor, lerpAmt),
+                n_ws.lerp(destination.n_ws, lerpAmt),
+                p_ws.lerp(destination.p_ws, lerpAmt),
                 Mathf.lerp(invW, destination.invW, lerpAmt)
         );
     }
