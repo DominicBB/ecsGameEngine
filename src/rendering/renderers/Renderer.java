@@ -51,7 +51,7 @@ public class Renderer {
             v2Out = moveToScreenSpaceNew(v2Out);
             v3Out = moveToScreenSpaceNew(v3Out);
 
-            //backfaceCull, HAVE TO BACKFACE CULL HERE
+            //backfaceCull
             if (backFaceCullPreClip(v1Out, v2Out, v3Out))
                 return;
 
@@ -97,7 +97,7 @@ public class Renderer {
     static VertexOut moveToScreenSpaceNew(VertexOut v) {
         VertexOut nV = v.wDivideNew();
         nV.p_proj.x = (nV.p_proj.x + 1) * halfWidth;
-        nV.p_proj.y = (nV.p_proj.y + 1) * halfHeight;
+        nV.p_proj.y = (nV.p_proj.y + 1f) * halfHeight;
         return nV;
     }
 
