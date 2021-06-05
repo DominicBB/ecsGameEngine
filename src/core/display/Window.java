@@ -51,7 +51,7 @@ public class Window extends JFrame implements Runnable {
         this.toFront();
         this.setFocusable(true);
         this.setFocusableWindowState(true);
-        this.setLocation(500, 0);
+        this.setLocation(0, 0);
         setupInputSystem();
         this.add(drawing);
         this.pack();

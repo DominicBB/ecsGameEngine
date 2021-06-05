@@ -5,8 +5,8 @@ public class Time {
     static float deltaTime = 0f;
     static float unscaledDeltaTime = 0f;
 
-    static long nanoTime = 0l;
-    static long timeMili = 0l;
+    static long nanoTime = 0L;
+    static long timeMili = 0L;
     static float time = 0f;
 
     static long startTime;
