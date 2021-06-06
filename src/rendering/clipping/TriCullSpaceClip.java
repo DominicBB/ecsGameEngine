@@ -54,7 +54,7 @@ public class TriCullSpaceClip {
     }
 
     /**
-     * @param planeComponent, a number representing xyz with 123 respectively
+     * @param planeComponent, a number representing xyz with 012 respectively
      * @param planeF, 1 or -1 to represent either of the parallel planes
      * @param in, all vertices that need to be clipped, in clockwise order
      * @param out, all the clipped vertices, in clockwise order
@@ -82,8 +82,8 @@ public class TriCullSpaceClip {
 
     /**
      * Clip a single line of a primitive
-     * @param prevComponent, a number representing xyz with 123 respectively
-     * @param currComponent, a number representing xyz with 123 respectively
+     * @param prevComponent, a number representing xyz with 012 respectively
+     * @param currComponent, a number representing xyz with 012 respectively
      */
     private static boolean clipVertex(VertexOut previous, boolean prevInside, VertexOut current,
                                       float prevComponent, float currComponent,

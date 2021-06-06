@@ -16,6 +16,9 @@ import java.util.List;
 import static rendering.renderUtil.RenderState.halfHeight;
 import static rendering.renderUtil.RenderState.halfWidth;
 
+/**
+ *
+ */
 public class Renderer {
 
     private final ClippingSystem clippingSystem = new ClippingSystem();
@@ -23,6 +26,7 @@ public class Renderer {
     private final VertexOut[] vertexOuts = new VertexOut[]{VertexOut.newZeros(), VertexOut.newZeros(), VertexOut.newZeros()};
     public final TriangleRasterizer triangleRasterizer = new TriangleRasterizer();
     private static final Vector3DInt finalColor = new Vector3DInt(0, 0, 0, 0);
+
 
     public void drawTriangle(VertexOut v1, VertexOut v2, VertexOut v3) {
         //check for geometry shader

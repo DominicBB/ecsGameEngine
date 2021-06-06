@@ -93,8 +93,16 @@ final class ShaderUtil {
     }
 
 
+    /**
+     * Is this pixel further away than another already drawn pixel?
+     * @param zBuffer
+     * @param zVal
+     * @param x
+     * @param y
+     * @return
+     */
     static boolean zBufferTest(FloatBuffer zBuffer, float zVal, int x, int y) {
-        if (zBuffer.getFloat(x, y) > zVal) {// if pixel is further away
+        if (zBuffer.getFloat(x, y) > zVal) {// if pixel is closer
             zBuffer.setFloat(x, y, zVal);
             return true;
         }

@@ -16,6 +16,12 @@ public class GouraudShader implements IShader {
     GouraudShader() {
     }
 
+    /**
+     * Vertex shade
+     * @param vIn
+     * @param material
+     * @param out the shaded vertex.
+     */
     @Override
     public void vertNonAlloc(Vertex vIn, Material material, VertexOut out) {
         out.p_proj.set((RenderState.mvp.multiply4x4(vIn.vec)));
@@ -56,6 +62,12 @@ public class GouraudShader implements IShader {
         }
     }
 
+    /**
+     * Vertex shade
+     * @param vIn
+     * @param material
+     * @return
+     */
     @Override
     public final VertexOut vert(Vertex vIn, Material material) {
         VertexOut vertexOut = new VertexOut(
@@ -73,7 +85,18 @@ public class GouraudShader implements IShader {
         return vertexOut;
     }
 
+    /**
+     * Shade a pixel without newing up any objects
+     *
+     * @param gI Gourad values for this pixel
+     * @param material the material
+     * @param outColor
+     * @param util
+     * @param y
+     * @return
+     */
     public static boolean fragNonAlloc(GouruadInterpolants gI, Material material, Vec4f outColor, Vec4f util, int y) {
+        // don't draw pixel if it is further away than an already drawn pixel
         if (!ShaderUtil.zBufferTest(RenderState.zBuffer, gI.z, gI.xInt, y))
             return false;
 

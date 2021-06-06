@@ -7,8 +7,17 @@ import rendering.renderUtil.interpolation.gouruad.GouruadInterpolants;
 import rendering.renderUtil.interpolation.gouruad.GouruadLerper_E;
 import util.mathf.Mathf3D.Vec4f;
 
+/**
+ * Handles the actual filling of a triangle. for the Gouruad shader.
+ */
 public class TriangleRasterizer_G implements ITriRasterizer {
+    /**
+     * Handles the actual filling of a single row
+     */
     private final Rasterizer_G rasterizer_G = new Rasterizer_G();
+    /*
+    The values to be interpolated across the triangle
+     */
     private final GouruadInterpolants
             gI1 = new GouruadInterpolants(new GouruadLerper_E()),
             gI2 = new GouruadInterpolants(new GouruadLerper_E()),
@@ -21,19 +30,32 @@ public class TriangleRasterizer_G implements ITriRasterizer {
         this.fragUtil = fragUtil;
     }
 
+    /**
+     * Fills and entire triangle from top to bottom.
+     * @param tallest
+     * @param bottom
+     * @param top
+     */
     @Override
     public void fillTriangle(Edge tallest, Edge bottom, Edge top) {
         gI1.reset(tallest.v1);
         gI2.reset(bottom.v1);
         gI3.reset(top.v1);
 
+        // setup what needs to be interpolated
         LerperFactory.gouruadLerper(RenderState.material, gI1.gouruadLerper_E, tallest.v1, tallest.v2, 1f / tallest.dy);
         LerperFactory.gouruadLerper(RenderState.material, gI2.gouruadLerper_E, bottom.v1, bottom.v2, 1f / bottom.dy);
         LerperFactory.gouruadLerper(RenderState.material, gI3.gouruadLerper_E, top.v1, top.v2, 1f / top.dy);
 
+        // render the triangle
         scan(gI1, gI2, gI3, tallest.isOnLeft, bottom.yStart, top.yStart, bottom.deltaYInt, top.deltaYInt);
     }
 
+    /**
+     * Fill a triangle that has one horizontal edge.
+     * @param left
+     * @param right
+     */
     @Override
     public void fillTriangle(Edge left, Edge right) {
         gI1.reset(left.v1);
@@ -68,6 +90,7 @@ public class TriangleRasterizer_G implements ITriRasterizer {
 
     private void scanSegment_G(GouruadInterpolants left, GouruadInterpolants right, int y, int yChange) {
         int i = 1;
+        // Rasterize each row
         while (i <= yChange) {
             rasterizer_G.rasterizeRow(left, right, y, fragColor, fragUtil);
             left.gouruadLerper_E.lerp(left);

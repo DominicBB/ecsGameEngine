@@ -12,7 +12,13 @@ import java.util.List;
 public class RenderLockNode {
     public final AABoundingRect BR = new AABoundingRect(Vec2f.newZeros(), Vec2f.newZeros());
 
+    /**
+     * Triangles that could not be rendered in first pass due to render locks,
+     */
     public final List<Edge> TODO = new ArrayList<>();
+    /**
+     * Triangles with one horizontal edge that need to be rendered
+     */
     public final List<Edge> TODODoubleEdge = new ArrayList<>();
 
     public final long threadID;

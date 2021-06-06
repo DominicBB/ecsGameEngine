@@ -9,9 +9,21 @@ import rendering.shaders.GouraudShader;
 import util.mathf.Mathf;
 import util.mathf.Mathf3D.Vec4f;
 
+/**
+ * Handles rasterizing a single row.
+ */
 class Rasterizer_G {
     private final GouruadLerper_R gouruadLerper_r = new GouruadLerper_R();
     private final GouruadInterpolants ROW_I_INTERPOLANTS = new GouruadInterpolants(null);
+
+    /**
+     * Rasterize a row.
+     * @param left left edge
+     * @param right right edge
+     * @param y y value of row
+     * @param fColor
+     * @param util
+     */
     void rasterizeRow(GouruadInterpolants left, GouruadInterpolants right, int y, Vec4f fColor, Vec4f util) {
         setRowInterpolants(left);
 
