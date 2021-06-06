@@ -39,6 +39,9 @@ public class RenderLockNode {
         TODODoubleEdge.clear();
     }
 
+    /**
+     * Draw the triangles that could not be rendered due to render locks
+     */
     public void drawTODOs() {
         for (int i = 0, len = TODO.size(); i < len; i += 3) {
             renderer.triangleRasterizer.scanEdge(TODO.get(i), TODO.get(i + 1), TODO.get(i + 2));

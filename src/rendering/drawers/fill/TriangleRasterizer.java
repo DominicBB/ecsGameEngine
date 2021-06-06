@@ -193,7 +193,7 @@ public class TriangleRasterizer {
         scanEdge(e1, e2);
     }
 
-    //TODO: FIX THIS IN FLOAT AND FIXED SCANLINE
+
     private void calcMinMaxX(FloatWrapper minX, FloatWrapper maxX, Vec4f v1, Vec4f v2, Vec4f v3) {
         Vec4f max = v1, mid = v2, min = v3, temp;
         if (max.x < mid.x) {
